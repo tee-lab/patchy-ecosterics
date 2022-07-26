@@ -5,8 +5,9 @@ from utils import load_automaton_data
 
 
 if __name__ == '__main__':
-    model_name = "scanlon_kalahari"
-    simulation_indices = range(5)
+    """ Plots the time variation of density of a particular state """
+    model_name = "contact_spatial"
+    simulation_indices = range(10)
     measure_state = 1
 
     records = []
@@ -29,5 +30,7 @@ if __name__ == '__main__':
         averaged_densities += record
     averaged_densities /= len(records)
 
+    print("Average density at final time-step:", averaged_densities[-1])
+
     plt.plot(averaged_densities)
-    plt.show()
+    plt.show()    

@@ -101,7 +101,7 @@ if __name__ == '__main__':
 
     # model parameters
     length = 100
-    time = 100
+    time = 1000
     birth_probability = 0.7
 
     with ThreadPoolExecutor(7) as pool:

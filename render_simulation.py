@@ -11,7 +11,7 @@ def animate(i):
 
 if __name__ == '__main__':
     """ Renders the simulation of a given automaton corresponding to the given model """
-    model_name = "scanlon_kalahari"
+    model_name = "contact_spatial"
     simulation_index = 0
     time_series = load_automaton_data(model_name, simulation_index)
     num_frames = len(time_series)

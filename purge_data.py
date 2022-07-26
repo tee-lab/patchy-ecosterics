@@ -2,7 +2,8 @@ import os
 
 
 if __name__ == '__main__':
-    model_name = "scanlon_kalahari"
+    """ Clears all simulation data in the given model's directory """
+    model_name = "contact_spatial"
 
     model_path = "models\\" + model_name
     folder_path = os.path.join(os.path.dirname(__file__), model_path)
