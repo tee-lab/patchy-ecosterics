@@ -14,16 +14,25 @@ def update(lattice):
         i, j = get_random_site(lattice)
 
         if i == -1 and j == -1:
-            # no active sites
             return
         else:
-            if random() < birth_probability:
-                # birth
-                new_i, new_j = get_random_neighbour(i, j)
-                lattice[new_i, new_j] = 1
+            new_i, new_j = get_random_neighbour(i, j)
+
+            if lattice[new_i, new_j] == 0:
+                if random() < p:
+                    # birth
+                    lattice[new_i, new_j] = 1
+                else:
+                    # death
+                    lattice[i, j] = 0
             else:
-                #death
-                lattice[i, j] = 0
+                if random() < q:
+                    # positive feedback birth
+                    third_i, third_j = get_pair_neighbour(i, j, new_i, new_j)
+                    lattice[third_i, third_j] = 1
+                else:
+                    # density death
+                    lattice[i, j] = 0
 
 
 @njit(nogil=True, fastmath=True)
@@ -59,6 +68,41 @@ def get_random_neighbour(i, j):
         return i, (j - 1 + length) % length
 
 
+@njit(nogil=True, fastmath=True)
+def get_pair_neighbour(i1, j1, i2, j2):
+    neighbour = randint(0, 6)
+
+    # periodic boundary condition
+    if i1 == i2:
+        # same row
+        if neighbour == 0:
+            return (i1 - 1 + length) % length, j1
+        elif neighbour == 1:
+            return (i1 - 1 + length) % length, j2
+        elif neighbour == 2:
+            return i1, (j2 + 1) % length
+        elif neighbour == 3:
+            return (i1 + 1) % length, j2
+        elif neighbour == 4:
+            return (i1 + 1) % length, j1
+        elif neighbour == 5:
+            return i1, (j1 - 1 + length) % length
+    else:
+        # same column
+        if neighbour == 0:
+            return (i1 - 1 + length) % length, j1
+        elif neighbour == 1:
+            return i1, (j1 + 1) % length
+        elif neighbour == 2:
+            return i2, (j1 + 1) % length
+        elif neighbour == 3:
+            return (i2 + 1) % length, j1
+        elif neighbour == 4:
+            return i2, (j1 - 1 + length) % length
+        elif neighbour == 5:
+            return i1, (j1 - 1 + length) % length
+
+
 def simulate(simulation_index):
     lattice = randint(0, 2, (length, length))
     time_series = [copy(lattice)]
@@ -66,7 +110,6 @@ def simulate(simulation_index):
     for i in range(time):
         update(lattice)
         time_series.append(copy(lattice))
-
         if simulation_index == 0:
             print(f"{i * 100 / time} %")
 
@@ -88,8 +131,7 @@ def save_automaton_data(time_series):
     dump(array(time_series, dtype=bool), open(save_path, 'wb'))
 
     info_string = f"\nSimulation {num_automaton_simulations}:\n"
-    info_string += f"Birth probability: {birth_probability}\n"
-    info_string += f"Final occupancy: {sum(time_series[-1]) / (length * length)}\n"
+    info_string += f"p: {p}, q: {q}, occupancy: {sum(time_series[-1]) / (length * length)}\n"
 
     info_path = os.path.join(current_path, "info.txt")
     with open(info_path, 'a') as info_file:
@@ -97,12 +139,13 @@ def save_automaton_data(time_series):
 
 
 if __name__ == '__main__':
-    num_parallel = 10
+    num_parallel = 5
 
     # model parameters
     length = 100
     time = 1000
-    birth_probability = 0.7
+    p = 0.7
+    q = 0.5
 
     with ThreadPoolExecutor(7) as pool:
         time_series_records = pool.map(simulate, range(num_parallel))
