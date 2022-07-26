@@ -1,10 +1,8 @@
 from concurrent.futures import ThreadPoolExecutor
-from itertools import product
 from math import floor, sqrt
-from multiprocessing.pool import ThreadPool
-from threading import Thread
 from numba import njit
-from numpy import array, copy, sum, zeros
+from numpy import array, copy, sum
+from numpy.random import randint
 from pickle import dump
 from random import random
 
@@ -52,11 +50,7 @@ def get_positive_feedback(lattice, i, j):
 
 def simulate(simulation_index):
     # initialize lattice and time series
-    lattice = zeros((length, length), dtype=int)
-    for row, col in product(range(length), range(length)):
-        if random() < 0.5:
-            lattice[row, col] = 1
-
+    lattice = randint(0, 2, (length, length))
     time_series = [copy(lattice)]
 
     # simulate
