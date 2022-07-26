@@ -131,7 +131,7 @@ def save_automaton_data(time_series):
     dump(array(time_series, dtype=bool), open(save_path, 'wb'))
 
     info_string = f"\nSimulation {num_automaton_simulations}:\n"
-    info_string += f"p: {p}, q: {q}, occupancy: {sum(time_series[-1]) / (length * length)}\n"
+    info_string += f"p: {p}, q: {q}, final occupancy: {sum(time_series[-1]) / (length * length)}\n"
 
     info_path = os.path.join(current_path, "info.txt")
     with open(info_path, 'a') as info_file:
@@ -139,13 +139,13 @@ def save_automaton_data(time_series):
 
 
 if __name__ == '__main__':
-    num_parallel = 5
+    num_parallel = 10
 
     # model parameters
     length = 100
-    time = 1000
-    p = 0.7
-    q = 0.5
+    time = 100
+    p = 1
+    q = 0.92
 
     with ThreadPoolExecutor(7) as pool:
         time_series_records = pool.map(simulate, range(num_parallel))

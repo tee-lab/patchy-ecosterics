@@ -22,7 +22,7 @@ def update(lattice):
                 new_i, new_j = get_random_neighbour(i, j)
                 lattice[new_i, new_j] = 1
             else:
-                #death
+                # death
                 lattice[i, j] = 0
 
 

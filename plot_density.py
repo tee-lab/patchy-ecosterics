@@ -6,7 +6,10 @@ from utils import load_automaton_data
 
 if __name__ == '__main__':
     """ Plots the time variation of density of a particular state """
-    model_name = "contact_spatial"
+    # model_name = "contact_spatial"
+    # model_name = "scanlon_kalahari"
+    model_name = "tricritical"
+
     simulation_indices = range(10)
     measure_state = 1
 
