@@ -9,7 +9,7 @@ import os
 
 
 @njit(nogil=True, fastmath=True)
-def update(lattice):
+def update(lattice, birth_probability):
     for _ in range(length * length):
         i, j = get_random_site(lattice)
 
@@ -67,7 +67,7 @@ def simulate(simulation_index):
         print("Compiling functions...")
 
     for i in range(time):
-        update(lattice)
+        update(lattice, birth_probability)
         time_series.append(copy(lattice))
 
         if simulation_index == 0:
@@ -102,19 +102,27 @@ def save_automaton_data(time_series):
 def contact_spatial(p = 0.5, num_parallel = 10, save = False):
     # model parameters
     global length, time, birth_probability
+    
     length = 100
-    time = 1000
+    time = 100
     birth_probability = p
 
     print(f"Simulating {num_parallel} automata in parallel ...")
-    with ThreadPoolExecutor(7) as pool:
-        time_series_records = pool.map(simulate, range(num_parallel))
+    with ThreadPoolExecutor(num_parallel) as pool:
+        time_series_records = list(pool.map(simulate, range(num_parallel)))
 
     if save:
         print("Saving data...")
         for time_series in time_series_records:
             save_automaton_data(time_series)
 
+    avg_final_density = 0
+    for time_series in time_series_records:
+        avg_final_density += (sum(time_series[-1]) / (length * length))
+    avg_final_density /= num_parallel
+
+    return avg_final_density
+
 
 if __name__ == '__main__':
-    contact_spatial(0.7)
+    print(contact_spatial(0.7, 1, False))

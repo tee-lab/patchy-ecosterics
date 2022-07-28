@@ -10,7 +10,7 @@ import os
 
 
 @njit(nogil=True, fastmath=True)
-def mc_step(lattice):
+def mc_step(lattice, f_carrying):
     """ Simulates a single mc step on the lattice """
     f_current = sum(lattice) / (length * length)
 
@@ -58,7 +58,7 @@ def simulate(simulation_index):
 
     # simulate
     for i in range(mc_steps):
-        mc_step(lattice)
+        mc_step(lattice, f_carrying)
         time_series.append(copy(lattice))
 
         if simulation_index == 0:
@@ -115,7 +115,7 @@ def scanlon_kalahari(rainfall_ext = 800, num_parallel = 10, save = False):
 
     print(f"Simulating {num_parallel} automatons in parallel ...")
     with ThreadPoolExecutor(7) as pool:
-        time_series_records = pool.map(simulate, range(num_parallel))
+        time_series_records = list(pool.map(simulate, range(num_parallel)))
 
     if save:
         print("Saving data...")

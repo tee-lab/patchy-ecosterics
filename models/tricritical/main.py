@@ -9,7 +9,7 @@ import os
 
 
 @njit(nogil=True, fastmath=True)
-def update(lattice):
+def update(lattice, p, q):
     for _ in range(length * length):
         i, j = get_random_site(lattice)
 
@@ -111,7 +111,7 @@ def simulate(simulation_index):
         print("Compiling functions...")
 
     for i in range(time):
-        update(lattice)
+        update(lattice, p, q)
         time_series.append(copy(lattice))
         if simulation_index == 0:
             print(f"{i * 100 / time} %", end="\r")
@@ -151,7 +151,7 @@ def tricritical(p_ext = 0.5, q_ext = 0.5, num_parallel = 10, save = False):
 
     print(f"Simulating {num_parallel} automata in parallel...")
     with ThreadPoolExecutor(7) as pool:
-        time_series_records = pool.map(simulate, range(num_parallel))
+        time_series_records = list(pool.map(simulate, range(num_parallel)))
 
     if save:
         print("Saving data...")
