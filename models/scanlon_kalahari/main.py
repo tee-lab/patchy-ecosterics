@@ -53,6 +53,9 @@ def simulate(simulation_index):
     lattice = randint(0, 2, (length, length))
     time_series = [copy(lattice)]
 
+    if simulation_index == 0:
+        print("Compiling functions...")
+
     # simulate
     for i in range(mc_steps):
         mc_step(lattice)
@@ -60,7 +63,7 @@ def simulate(simulation_index):
 
         if simulation_index == 0:
             # display progress of simulation
-            print(f"{i * 100 / mc_steps} %")
+            print(f"{i * 100 / mc_steps} %", end="\r")
 
     return time_series
 
@@ -96,18 +99,20 @@ def save_automaton_data(time_series):
         info_file.write(info_string)
 
 
-if __name__ == '__main__':
+def scanlon_kalahari(rainfall_ext = 800, save = False):
     # number of simulations to run in parallel
     num_parallel = 5
 
     # model parameters
+    global length, rainfall, f_carrying, r_influence, immediacy
     length = 512
-    rainfall = 800
+    rainfall = rainfall_ext
     f_carrying = get_forest_cover(rainfall)
     r_influence = 6
     immediacy = 24
 
     # simulation parameters
+    global mc_steps, mc_updates
     mc_steps = 200
     mc_updates = floor(0.2 * length * length)
 
@@ -115,5 +120,14 @@ if __name__ == '__main__':
     with ThreadPoolExecutor(7) as pool:
         time_series_records = pool.map(simulate, range(num_parallel))
 
+    if save:
+        print("Saving data...")
+        for time_series in time_series_records:
+            save_automaton_data(time_series)
+
+    avg_final_density = 0
     for time_series in time_series_records:
-        save_automaton_data(time_series)
+        avg_final_density += sum(time_series[-1]) / (length * length)
+    avg_final_density /= num_parallel
+
+    return avg_final_density

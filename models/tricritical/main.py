@@ -107,11 +107,14 @@ def simulate(simulation_index):
     lattice = randint(0, 2, (length, length))
     time_series = [copy(lattice)]
 
+    if simulation_index == 0:
+        print("Compiling functions...")
+
     for i in range(time):
         update(lattice)
         time_series.append(copy(lattice))
         if simulation_index == 0:
-            print(f"{i * 100 / time} %")
+            print(f"{i * 100 / time} %", end="\r")
 
     return time_series
 
@@ -138,17 +141,32 @@ def save_automaton_data(time_series):
         info_file.write(info_string)
 
 
-if __name__ == '__main__':
+def tricritical(p_ext = 0.5, q_ext = 0.5, save = False):
     num_parallel = 10
 
     # model parameters
+    global length, time, p, q
     length = 100
     time = 100
-    p = 1
-    q = 0.92
+    p = p_ext
+    q = q_ext
 
+    print(f"Simulating {num_parallel} automata in parallel...")
     with ThreadPoolExecutor(7) as pool:
         time_series_records = pool.map(simulate, range(num_parallel))
 
+    if save:
+        print("Saving data...")
+        for time_series in time_series_records:
+            save_automaton_data(time_series)
+
+    avg_final_density = 0
     for time_series in time_series_records:
-        save_automaton_data(time_series)
+        avg_final_density += sum(time_series[-1]) / (length * length)
+    avg_final_density /= num_parallel
+
+    return avg_final_density
+
+
+if __name__ == '__main__':
+    tricritical(1, 0.92)
