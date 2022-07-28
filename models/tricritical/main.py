@@ -141,9 +141,7 @@ def save_automaton_data(time_series):
         info_file.write(info_string)
 
 
-def tricritical(p_ext = 0.5, q_ext = 0.5, save = False):
-    num_parallel = 10
-
+def tricritical(p_ext = 0.5, q_ext = 0.5, num_parallel = 10, save = False):
     # model parameters
     global length, time, p, q
     length = 100

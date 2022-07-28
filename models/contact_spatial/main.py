@@ -99,12 +99,9 @@ def save_automaton_data(time_series):
         info_file.write(info_string)
 
 
-def contact_spatial(p = 0.5, save = False):
-    num_parallel = 10
-
+def contact_spatial(p = 0.5, num_parallel = 10, save = False):
     # model parameters
     global length, time, birth_probability
-
     length = 100
     time = 1000
     birth_probability = p

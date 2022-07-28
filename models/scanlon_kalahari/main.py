@@ -99,10 +99,7 @@ def save_automaton_data(time_series):
         info_file.write(info_string)
 
 
-def scanlon_kalahari(rainfall_ext = 800, save = False):
-    # number of simulations to run in parallel
-    num_parallel = 5
-
+def scanlon_kalahari(rainfall_ext = 800, num_parallel = 10, save = False):
     # model parameters
     global length, rainfall, f_carrying, r_influence, immediacy
     length = 512

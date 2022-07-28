@@ -4,17 +4,9 @@ from numpy import sum, zeros, zeros_like
 from utils import load_automaton_data
 
 
-if __name__ == '__main__':
+def plot_density(model_name, simulation_indices, measure_state = 1):
     """ Plots the time variation of density of a particular state """
-    # model_name = "contact_spatial"
-    # model_name = "scanlon_kalahari"
-    model_name = "tricritical"
-
-    simulation_indices = range(10)
-    measure_state = 1
-
     records = []
-
     for simulation_index in simulation_indices:
         time_series = load_automaton_data(model_name, simulation_index)
         num_frames = len(time_series)
@@ -36,4 +28,8 @@ if __name__ == '__main__':
     print("Average density at final time-step:", averaged_densities[-1])
 
     plt.plot(averaged_densities)
-    plt.show()    
+    plt.show()  
+
+
+if __name__ == '__main__':
+    plot_density("tricritical", 1)
