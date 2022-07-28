@@ -24,4 +24,4 @@ def render_simulation(model_name, simulation_index):
 
 
 if __name__ == '__main__':
-    render_simulation("tricritial", 0)
+    render_simulation("contact_spatial", 0)

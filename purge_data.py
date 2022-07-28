@@ -8,6 +8,7 @@ def purge_data(model_name = None):
         purge_data("contact_spatial")
         purge_data("scanlon_kalahari")
         purge_data("tricritical")
+        return
 
     model_path = "models\\" + model_name
     folder_path = os.path.join(os.path.dirname(__file__), model_path)
@@ -20,4 +21,4 @@ def purge_data(model_name = None):
 
 
 if __name__ == '__main__':
-    purge_data("tricritical")
+    purge_data()

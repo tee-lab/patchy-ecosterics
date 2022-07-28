@@ -62,7 +62,6 @@ def simulate(simulation_index):
         time_series.append(copy(lattice))
 
         if simulation_index == 0:
-            # display progress of simulation
             print(f"{i * 100 / mc_steps} %", end="\r")
 
     return time_series
@@ -102,7 +101,7 @@ def save_automaton_data(time_series):
 def scanlon_kalahari(rainfall_ext = 800, num_parallel = 10, save = False):
     # model parameters
     global length, rainfall, f_carrying, r_influence, immediacy
-    length = 512
+    length = 250
     rainfall = rainfall_ext
     f_carrying = get_forest_cover(rainfall)
     r_influence = 6
@@ -110,7 +109,7 @@ def scanlon_kalahari(rainfall_ext = 800, num_parallel = 10, save = False):
 
     # simulation parameters
     global mc_steps, mc_updates
-    mc_steps = 200
+    mc_steps = 100
     mc_updates = floor(0.2 * length * length)
 
     print(f"Simulating {num_parallel} automatons in parallel ...")
