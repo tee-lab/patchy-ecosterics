@@ -23,13 +23,26 @@ class ConnectedComponents:
         return self.find(x) == self.find(y)
 
 
-def cluster(lattice):
+def minimize_labels(labels):
+    labels_encountered = []
+
+    for i, j in product(range(len(labels)), repeat=2):
+        if labels[i][j] > 0 and labels[i][j] not in labels_encountered:
+            labels_encountered.append(labels[i][j])
+
+    print("Number of cluster:", len(labels_encountered))
+
+    for i, j in product(range(len(labels)), repeat=2):
+        if labels[i][j] > 0:
+            labels[i][j] = labels_encountered.index(labels[i][j]) + 1
+
+
+def label_clusters(lattice):
     length = len(lattice)
     labels = zeros((length, length), dtype=int)
     cc = ConnectedComponents(length * length // 2)
     current_equivalence = 1
 
-    # assign labels
     for i, j in product(range(length), repeat=2):
         if lattice[i][j]:
             current_value = lattice[i][j]
@@ -56,24 +69,21 @@ def cluster(lattice):
                 labels[i][j] = current_equivalence
                 current_equivalence += 1
 
-    # print(labels)
-
-    # merge labels
     for i, j in product(range(length), repeat=2):
         labels[i][j] = cc.find(labels[i][j])
 
-    # print(labels)
+    minimize_labels(labels)
+    return labels    
+
+
+if __name__ == '__main__':
+    lattice = randint(0, 2, (10, 10))
+    labels = label_clusters(lattice)
 
     plt.subplot(1, 2, 1)
     plt.title("Lattice")
     plt.imshow(lattice)
     plt.subplot(1, 2, 2)
     plt.title("Clustered")
-    plt.imshow(labels, cmap='gray')
+    plt.imshow(labels)
     plt.show()
-
-
-if __name__ == '__main__':
-    lattice = randint(0, 2, (10, 10))
-    # print(lattice)
-    cluster(lattice)
