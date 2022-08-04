@@ -131,10 +131,12 @@ def save_automaton_data(time_series):
 
     file_name = 'simulation_{}.pkl'.format(num_automaton_simulations)
     save_path = os.path.join(current_path, file_name)
-    dump(array(time_series, dtype=bool), open(save_path, 'wb'))
+    info_string = f"TDP with p: {p}, q: {q}\n"
 
-    info_string = f"\nSimulation {num_automaton_simulations}:\n"
-    info_string += f"p: {p}, q: {q}, final occupancy: {sum(time_series[-1]) / (length * length)}\n"
+    automaton_data = {}
+    automaton_data["time_series"] = array(time_series, dtype=bool)
+    automaton_data["info"] = info_string
+    dump(automaton_data, open(save_path, 'wb'))
 
     info_path = os.path.join(current_path, "info.txt")
     with open(info_path, 'a') as info_file:
@@ -167,4 +169,4 @@ def tricritical(p_ext = 0.5, q_ext = 0.5, num_parallel = 10, save = False):
 
 
 if __name__ == '__main__':
-    tricritical(1, 0.92)
+    tricritical(0.75, 0.75, 10, True)

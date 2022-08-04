@@ -88,11 +88,12 @@ def save_automaton_data(time_series):
 
     file_name = 'simulation_{}.pkl'.format(num_automaton_simulations)
     save_path = os.path.join(current_path, file_name)
-    dump(array(time_series, dtype=bool), open(save_path, 'wb'))
+    info_string = f"Contact Process with birth probability = {birth_probability}\n"
 
-    info_string = f"\nSimulation {num_automaton_simulations}:\n"
-    info_string += f"Birth probability: {birth_probability}\n"
-    info_string += f"Final occupancy: {sum(time_series[-1]) / (length * length)}\n"
+    automaton_data = {}
+    automaton_data["time_series"] = array(time_series, dtype=bool)
+    automaton_data["info"] = info_string
+    dump(automaton_data, open(save_path, 'wb'))
 
     info_path = os.path.join(current_path, "info.txt")
     with open(info_path, 'a') as info_file:
@@ -125,4 +126,4 @@ def contact_spatial(p = 0.5, num_parallel = 10, save = False):
 
 
 if __name__ == '__main__':
-    print(contact_spatial(0.7, 1, False))
+    print(contact_spatial(0.7, 1, True))

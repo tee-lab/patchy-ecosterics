@@ -87,11 +87,12 @@ def save_automaton_data(time_series):
 
     file_name = 'simulation_{}.pkl'.format(num_automaton_simulations)
     save_path = os.path.join(current_path, file_name)
-    dump(array(time_series, dtype=bool), open(save_path, 'wb'))
+    info_string = f"Scanlon Kalahari with rainfall: {rainfall} mm\n"
 
-    info_string = f"\nSimulation {num_automaton_simulations}:\n"
-    info_string += f"Rainfall: {rainfall}, carrying_capacity: {f_carrying} "
-    info_string += f"radius of influence: {r_influence}, immediacy: {immediacy}"
+    automaton_data = {}
+    automaton_data["time_series"] = array(time_series, dtype=bool)
+    automaton_data["info"] = info_string
+    dump(automaton_data, open(save_path, 'wb'))
 
     info_path = os.path.join(current_path, "info.txt")
     with open(info_path, 'a') as info_file:
@@ -127,3 +128,7 @@ def scanlon_kalahari(rainfall_ext = 800, num_parallel = 10, save = False):
     avg_final_density /= num_parallel
 
     return avg_final_density
+
+
+if __name__ == '__main__':
+    scanlon_kalahari(save = True)
