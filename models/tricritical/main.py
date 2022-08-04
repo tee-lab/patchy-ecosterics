@@ -11,28 +11,27 @@ import os
 @njit(nogil=True, fastmath=True)
 def update(lattice, p, q):
     for _ in range(length * length):
-        i, j = get_random_site(lattice)
+        focal_i = randint(0, length)
+        focal_j = randint(0, length)
 
-        if i == -1 and j == -1:
-            return
-        else:
-            new_i, new_j = get_random_neighbour(i, j)
+        if lattice[focal_i, focal_j]:
+            neigh_i, neigh_j = get_random_neighbour(focal_i, focal_j)
 
-            if lattice[new_i, new_j] == 0:
+            if lattice[neigh_i, neigh_j] == 0:
                 if random() < p:
-                    # birth
-                    lattice[new_i, new_j] = 1
+                    # contact process birth with probability p
+                    lattice[neigh_i, neigh_j] = 1
                 else:
-                    # death
-                    lattice[i, j] = 0
+                    # contact process death with probability 1 - p
+                    lattice[focal_i, focal_j] = 0
             else:
                 if random() < q:
-                    # positive feedback birth
-                    third_i, third_j = get_pair_neighbour(i, j, new_i, new_j)
+                    # positive feedback birth with probability q
+                    third_i, third_j = get_pair_neighbour(focal_i, focal_j, neigh_i, neigh_j)
                     lattice[third_i, third_j] = 1
-                else:
-                    # density death
-                    lattice[i, j] = 0
+                elif random() < 1 - p:
+                    # pair death with probability with probability (1 - p) (1 - q)
+                    lattice[focal_i, focal_j] = 0
 
 
 @njit(nogil=True, fastmath=True)
@@ -147,7 +146,7 @@ def tricritical(p_ext = 0.5, q_ext = 0.5, num_parallel = 10, save = False):
     # model parameters
     global length, time, p, q
     length = 100
-    time = 100
+    time = 1000
     p = p_ext
     q = q_ext
 
