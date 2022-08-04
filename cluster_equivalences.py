@@ -1,9 +1,11 @@
 from itertools import product
-from matplotlib import pyplot as plt
 
 
 def establish_equivalences(lattice_1, lattice_2):
-    ancestries, descents = get_pure_equivalences(lattice_1, lattice_2)
+    """ returns (and prints) equivalences between clusters of two lattices """
+    relationships = get_relationships(lattice_1, lattice_2)
+    ancestries = get_common_ancestors(relationships)
+    descents = get_common_descendents(relationships)
 
     for ancestry in ancestries:
         ancestor = f"Cluster {ancestry[0]} in lattice 1 gave rise to cluster(s)"
@@ -14,12 +16,6 @@ def establish_equivalences(lattice_1, lattice_2):
         descendent = f"Cluster {descent[0]} in lattice 2 came from to cluster(s)"
         ancestors = " ".join([f"{ancestor}" for ancestor in descent[1]]) + " in lattice 1"
         print(f"{descendent} {ancestors}")
-
-
-def get_pure_equivalences(lattice_1, lattice_2):
-    relationships = get_relationships(lattice_1, lattice_2)
-    ancestors = get_common_ancestors(relationships)
-    descendents = get_common_descendents(relationships)
 
     return ancestors, descendents
 

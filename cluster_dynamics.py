@@ -7,6 +7,7 @@ from cluster_tracking import track_clusters
 
 
 def analyse_changes(lattice_1, lattice_2):
+    """ Looks at all the changes that have taken place, and plots P(dS) vs dS """
     labels_prev = label_clusters(lattice_1)
     labels_next = label_clusters(lattice_2)
     net_changes = array(track_clusters(labels_prev, labels_next))

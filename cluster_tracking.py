@@ -23,6 +23,7 @@ def get_cluster_size(labels, cluster_id):
 
 
 def track_clusters(labels_prev, labels_next):
+    """ returns (and prints) the changes in cluster sizes """
     length = len(labels_prev)
 
     prev_num_clusters = get_num_clusters(labels_prev)

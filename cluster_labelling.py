@@ -5,6 +5,7 @@ from numpy.random import randint
 
 
 class ConnectedComponents:
+    """ Union-find disjoint set data structure """
     def __init__(self, size):
         self.root = [i for i in range(size)]
 
@@ -36,6 +37,7 @@ def minimize_labels(labels):
 
 
 def label_clusters(lattice):
+    """ Associates a unique label with each cluster """
     length = len(lattice)
     labels = zeros((length, length), dtype=int)
     cc = ConnectedComponents(length * length // 2)
