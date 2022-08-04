@@ -112,8 +112,8 @@ def simulate(simulation_index):
     for i in range(time):
         update(lattice, p, q)
         time_series.append(copy(lattice))
-        if simulation_index == 0:
-            print(f"{i * 100 / time} %", end="\r")
+        # if simulation_index == 0:
+        #     print(f"{i * 100 / time} %", end="\r")
 
     return time_series
 
@@ -146,7 +146,7 @@ def tricritical(p_ext = 0.5, q_ext = 0.5, num_parallel = 10, save = False):
     # model parameters
     global length, time, p, q
     length = 100
-    time = 1000
+    time = 100
     p = p_ext
     q = q_ext
 
