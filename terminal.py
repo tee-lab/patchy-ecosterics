@@ -1,39 +1,27 @@
 # libraries
 from matplotlib import pyplot as plt
-from numpy import arange, zeros
+from numpy import abs, arange, array, zeros
 # models
 from models.contact_spatial.main import contact_spatial
 from models.scanlon_kalahari.main import scanlon_kalahari
 from models.tricritical.main import tricritical
 # analysis
+from cluster_dynamics import analyse_changes
+from cluster_labelling import label_clusters
+from cluster_tracking import track_clusters
 from plot_density import plot_density
 from purge_data import purge_data
 from render_simulation import render_simulation
+from utils import load_automaton_data
 
 
 if __name__ == '__main__':
     """ Write automated scripts here """
 
-    p_range = arange(0, 1, 0.025)
-    q_range = arange(0, 1, 0.025)
-    all_values = [[p, q] for p in p_range for q in q_range]
-    n = len(p_range)
+    tricritical(0.5, 0.5, 1, True)
+    automaton_data = load_automaton_data("tricritical", 0)
+    time_series_data, info = automaton_data["time_series"], automaton_data["info"]
 
-    densities = zeros((n, n), dtype=float)
+    analyse_changes(time_series_data[0], time_series_data[1])
 
-    for j, p in enumerate(p_range):
-        for i, q in enumerate(q_range):
-            print(f"For ({p}, {q}):")
-            mean_density = tricritical(p, q, 5, False)
-            densities[i, j] = mean_density
-            print(f"Mean density: {mean_density}")
-            print("")
-
-            with open("output.txt", "a") as file:
-                file.write(f"{round(p, 2)}\t{round(q, 2)}\t{round(mean_density, 4)}\n")
-
-    plt.title("Phase diagram of TDP")
-    plt.xlabel("p")
-    plt.ylabel("q")
-    plt.imshow(densities, origin="lower", extent=[0, 1, 0, 1])
-    plt.show()
+    purge_data()

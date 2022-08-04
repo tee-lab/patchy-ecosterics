@@ -30,8 +30,6 @@ def minimize_labels(labels):
         if labels[i][j] > 0 and labels[i][j] not in labels_encountered:
             labels_encountered.append(labels[i][j])
 
-    print("Number of cluster:", len(labels_encountered))
-
     for i, j in product(range(len(labels)), repeat=2):
         if labels[i][j] > 0:
             labels[i][j] = labels_encountered.index(labels[i][j]) + 1

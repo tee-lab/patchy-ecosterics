@@ -48,3 +48,19 @@ def track_clusters(labels_prev, labels_next):
     records_length = len(prev_considered)
     for i in range(records_length):
         print(f"Cluster {prev_considered[i]} = Cluster {next_considered[i]}. Net change: {net_change[i]}")
+
+    for i in range(prev_num_clusters):
+        cluster_label = i + 1
+        if cluster_label not in prev_considered:
+            change = -get_cluster_size(labels_prev, cluster_label)
+            net_change.append(change)
+            print(f"Cluster {cluster_label} in lattice 1 disappeared. Net change: {change}")
+
+    for i in range(next_num_clusters):
+        cluster_label = i + 1
+        if cluster_label not in next_considered:
+            change = get_cluster_size(labels_next, cluster_label)
+            net_change.append(change)
+            print(f"Cluster {cluster_label} in lattice 2 appeared. Net change: {change}")
+
+    return net_change
