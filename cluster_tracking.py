@@ -47,7 +47,7 @@ def track_clusters(labels_prev, labels_next):
 
     records_length = len(prev_considered)
     for i in range(records_length):
-        print(f"Cluster {prev_considered[i]} = Cluster {next_considered[i]}. Net change: {net_change[i]}")
+        print(f"Cluster {prev_considered[i]} in lattice 1 = Cluster {next_considered[i]} in lattice 2. Net change: {net_change[i]}")
 
     for i in range(prev_num_clusters):
         cluster_label = i + 1
