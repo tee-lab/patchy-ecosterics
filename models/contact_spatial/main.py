@@ -126,4 +126,4 @@ def contact_spatial(p = 0.5, num_parallel = 10, save = False):
 
 
 if __name__ == '__main__':
-    print(contact_spatial(0.7, 1, True))
+    print(contact_spatial(0.8, 8, True))

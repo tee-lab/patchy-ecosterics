@@ -168,4 +168,4 @@ def tricritical(p_ext = 0.5, q_ext = 0.5, num_parallel = 10, save = False):
 
 
 if __name__ == '__main__':
-    tricritical(0.75, 0.75, 10, True)
+    tricritical(0.75, 0.75, 8, True)

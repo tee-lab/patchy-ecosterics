@@ -110,7 +110,7 @@ def scanlon_kalahari(rainfall_ext = 800, num_parallel = 10, save = False):
 
     # simulation parameters
     global mc_steps, mc_updates
-    mc_steps = 100
+    mc_steps = 1000
     mc_updates = floor(0.2 * length * length)
 
     print(f"Simulating {num_parallel} automatons in parallel ...")
@@ -131,4 +131,4 @@ def scanlon_kalahari(rainfall_ext = 800, num_parallel = 10, save = False):
 
 
 if __name__ == '__main__':
-    scanlon_kalahari(save = True)
+    scanlon_kalahari(800, 8, True)
