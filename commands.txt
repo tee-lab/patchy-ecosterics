@@ -12,3 +12,15 @@ cd code/vegetation-dynamics
 
 Execute terminal script:
 python3 terminal.py
+
+Get list of running tmux sessions:
+tmux ls
+
+Attach to a particular tmux session:
+tmux attach-session -t <session-name>
+
+Detach from a particular tmux session:
+Ctrl B + D
+
+Delete a particular tmux session:
+Ctrl B + &

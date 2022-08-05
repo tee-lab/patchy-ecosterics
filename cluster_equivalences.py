@@ -7,15 +7,19 @@ def establish_equivalences(lattice_1, lattice_2):
     ancestries = get_common_ancestors(relationships)
     descents = get_common_descendents(relationships)
 
+    print("\n---> Cluster splits <---")
     for ancestry in ancestries:
-        ancestor = f"Cluster {ancestry[0]} in lattice 1 gave rise to cluster(s)"
-        descendents = " ".join([f"{descendant}" for descendant in ancestry[1]]) + " in lattice 2"
-        print(f"{ancestor} {descendents}")
+        if len(ancestry[1]) > 1:
+            ancestor = f"Cluster {ancestry[0]} in lattice 1 split into to clusters"
+            descendents = " ".join([f"{descendant}" for descendant in ancestry[1]]) + " in lattice 2"
+            print(f"{ancestor} {descendents}")
 
+    print("\n---> Cluster mergers <---")
     for descent in descents:
-        descendent = f"Cluster {descent[0]} in lattice 2 came from to cluster(s)"
-        ancestors = " ".join([f"{ancestor}" for ancestor in descent[1]]) + " in lattice 1"
-        print(f"{descendent} {ancestors}")
+        if len(descent[1]) > 1:
+            descendent = f"merged to form cluster {descent[0]} in lattice 2"
+            ancestors = "Clusters " + " ".join([f"{ancestor}" for ancestor in descent[1]]) + " in lattice 1"
+            print(f"{ancestors} {descendent}")
 
     return ancestors, descendents
 

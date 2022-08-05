@@ -38,4 +38,4 @@ def render_simulation(model_name, simulation_index):
 
 
 if __name__ == '__main__':
-    render_simulation("scanlon_kalahari", 2)
+    render_simulation("tricritical", 0)

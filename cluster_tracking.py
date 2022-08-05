@@ -46,10 +46,12 @@ def track_clusters(labels_prev, labels_next):
     print(f"In lattice 1, there are {get_num_active(labels_prev)} active cells and {prev_num_clusters} clusters.")
     print(f"In lattice 2, there are {get_num_active(labels_next)} active cells and {next_num_clusters} clusters.")
 
+    print("\n---> Cluster size changes <---")
     records_length = len(prev_considered)
     for i in range(records_length):
         print(f"Cluster {prev_considered[i]} in lattice 1 = Cluster {next_considered[i]} in lattice 2. Net change: {net_change[i]}")
 
+    print("\n---> Cluster disappearances <---")
     for i in range(prev_num_clusters):
         cluster_label = i + 1
         if cluster_label not in prev_considered:
@@ -57,6 +59,7 @@ def track_clusters(labels_prev, labels_next):
             net_change.append(change)
             print(f"Cluster {cluster_label} in lattice 1 disappeared. Net change: {change}")
 
+    print("\n---> Cluster appearances <---")
     for i in range(next_num_clusters):
         cluster_label = i + 1
         if cluster_label not in next_considered:
