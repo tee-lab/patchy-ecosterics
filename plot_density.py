@@ -38,4 +38,4 @@ def plot_density(model_name, simulation_indices, measure_state = 1):
 
 
 if __name__ == '__main__':
-    plot_density("scanlon_kalahari", range(8))
+    plot_density("tricritical", range(10))

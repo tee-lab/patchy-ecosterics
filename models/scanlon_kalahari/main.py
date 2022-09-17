@@ -102,7 +102,7 @@ def save_automaton_data(time_series):
 def scanlon_kalahari(rainfall_ext = 800, num_parallel = 10, save = False):
     # model parameters
     global length, rainfall, f_carrying, r_influence, immediacy
-    length = 100
+    length = 500
     rainfall = rainfall_ext
     f_carrying = get_forest_cover(rainfall)
     r_influence = 6
@@ -131,4 +131,4 @@ def scanlon_kalahari(rainfall_ext = 800, num_parallel = 10, save = False):
 
 
 if __name__ == '__main__':
-    scanlon_kalahari(800, 1, True)
+    scanlon_kalahari(698, 10, True)

@@ -10,7 +10,7 @@ import os
 
 @njit(nogil=True, fastmath=True)
 def update(lattice, p, q):
-    for _ in range(0.1 * length * length):
+    for _ in range(length * length):
         focal_i = randint(0, length)
         focal_j = randint(0, length)
 
@@ -112,8 +112,8 @@ def simulate(simulation_index):
     for i in range(time):
         update(lattice, p, q)
         time_series.append(copy(lattice))
-        # if simulation_index == 0:
-        #     print(f"{i * 100 / time} %", end="\r")
+        if simulation_index == 0:
+            print(f"{i * 100 / time} %", end="\r")
 
     return time_series
 
@@ -145,8 +145,8 @@ def save_automaton_data(time_series):
 def tricritical(p_ext = 0.5, q_ext = 0.5, num_parallel = 10, save = False):
     # model parameters
     global length, time, p, q
-    length = 10
-    time = 100
+    length = 500
+    time = 200
     p = p_ext
     q = q_ext
 
@@ -168,4 +168,4 @@ def tricritical(p_ext = 0.5, q_ext = 0.5, num_parallel = 10, save = False):
 
 
 if __name__ == '__main__':
-    tricritical(0.75, 0.75, 1, True)
+    tricritical(0.35, 0.92, 10, True)
