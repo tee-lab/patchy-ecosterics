@@ -1,11 +1,14 @@
 from itertools import product
+from numba import njit
 
 
+@njit
 def get_num_active(labels):
     num_active = 0
-    for i, j in product(range(len(labels)), repeat=2):
-        if labels[i][j] > 0:
-            num_active += 1
+    for i in range(len(labels)):
+        for j in range(len(labels[0])):
+            if labels[i][j] > 0:
+                num_active += 1
     return num_active
 
 
@@ -13,12 +16,14 @@ def get_num_clusters(labels):
     return labels.max()
 
 
+@njit
 def get_cluster_size(labels, cluster_id):
     length = len(labels)
     cluster_size = 0
-    for i, j in product(range(length), repeat=2):
-        if labels[i][j] == cluster_id:
-            cluster_size += 1
+    for i in range(length):
+        for j in range(length):
+            if labels[i][j] == cluster_id:
+                cluster_size += 1
     return cluster_size
 
 

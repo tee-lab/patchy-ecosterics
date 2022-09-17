@@ -10,7 +10,7 @@ import os
 
 @njit(nogil=True, fastmath=True)
 def update(lattice, birth_probability):
-    for _ in range(length * length):
+    for _ in range(0.1 * length * length):
         i, j = get_random_site(lattice)
 
         if i == -1 and j == -1:
@@ -126,4 +126,4 @@ def contact_spatial(p = 0.5, num_parallel = 10, save = False):
 
 
 if __name__ == '__main__':
-    print(contact_spatial(0.8, 8, True))
+    print(contact_spatial(0.75, 1, True))
