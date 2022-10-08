@@ -9,43 +9,40 @@ from random import random
 import os
 
 
-@njit(nogil=True, fastmath=True)
-def mc_step(lattice, f_carrying):
-    """ Simulates a single mc step on the lattice """
+@njit(fastmath=True, nogil=False)
+def mc_step(lattice):
+    """ Simulates a single Monte Carlo step of the automaton """
     f_current = sum(lattice) / (length * length)
 
     for _ in range(mc_updates):
         i = int(random() * length)
         j = int(random() * length)
-        rho = get_positive_feedback(lattice, i, j)
+        rho = get_density(lattice, i, j)
 
         if lattice[i, j] == 0:
             prob_growth = rho + (f_carrying - f_current) / (1 - f_current)
             if random() < prob_growth:
                 lattice[i, j] = 1
-                f_current += 1 / (length * length)
         else:
             prob_decay = (1 - rho) + (f_current - f_carrying) / f_current
             if random() < prob_decay:
                 lattice[i, j] = 0
-                f_current -= 1 / (length * length)
 
 
-@njit(nogil=True, fastmath=True)
-def get_positive_feedback(lattice, i, j):
-    """ Calculates the positive feedback operating at (i, j) """
-    density = 0
+@njit(fastmath=True, nogil=False)
+def get_density(lattice, i, j):
+    """ Calculates the vegetation density in the neighbourhood of a given cell (i, j) """
     normalization = 0
+    density = 0
 
-    for a in range(i - r_influence, i + r_influence + 1):
-        for b in range(j - r_influence, j + r_influence + 1):
-            distance = sqrt((i - a) ** 2 + (j - b) ** 2)
-            if 0 <= a < length and 0 <= b < length and distance < r_influence:
-                weight_term = 1 - (distance / immediacy)
-                density += weight_term * lattice[a, b]
-                normalization += weight_term
-
-    return (density / normalization)
+    for a in range(max(i - r_influence, 0), min(i + r_influence + 1, length)):
+        for b in range(max(j - r_influence, 0), min(j + r_influence + 1, length)):
+            distance = sqrt((a - i) ** 2 + (b - j) ** 2)
+            if distance < r_influence:
+                weightage_term = 1 - (distance / immediacy)
+                density += weightage_term * lattice[a, b]
+                normalization += weightage_term
+    return density / normalization
 
 
 def simulate(simulation_index):
@@ -58,7 +55,7 @@ def simulate(simulation_index):
 
     # simulate
     for i in range(mc_steps):
-        mc_step(lattice, f_carrying)
+        mc_step(lattice)
         time_series.append(copy(lattice))
 
         if simulation_index == 0:
@@ -105,7 +102,7 @@ def scanlon_kalahari(rainfall_ext = 800, num_parallel = 10, save = False):
     length = 500
     rainfall = rainfall_ext
     f_carrying = get_forest_cover(rainfall)
-    r_influence = 6
+    r_influence = 9
     immediacy = 24
 
     # simulation parameters
@@ -131,4 +128,4 @@ def scanlon_kalahari(rainfall_ext = 800, num_parallel = 10, save = False):
 
 
 if __name__ == '__main__':
-    scanlon_kalahari(698, 10, True)
+    scanlon_kalahari(900, 10, True)

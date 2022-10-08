@@ -14,8 +14,8 @@ def render_simulation(model_name, simulation_index):
     """ Renders the simulation of a given automaton corresponding to the given model """
     global time_series, im
 
-    automaton_data = load_automaton_data(model_name, simulation_index)
-    time_series, info = automaton_data["time_series"], automaton_data["info"]
+    automaton_data = load_automaton_data(model_name, simulation_index, "series")
+    time_series, info = automaton_data["series_data"], automaton_data["info"]
     num_frames = len(time_series)
 
     density_record = zeros(num_frames, dtype=float)

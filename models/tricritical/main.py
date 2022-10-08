@@ -146,7 +146,7 @@ def tricritical(p_ext = 0.5, q_ext = 0.5, num_parallel = 10, save = False):
     # model parameters
     global length, time, p, q
     length = 500
-    time = 200
+    time = 250
     p = p_ext
     q = q_ext
 
@@ -168,4 +168,4 @@ def tricritical(p_ext = 0.5, q_ext = 0.5, num_parallel = 10, save = False):
 
 
 if __name__ == '__main__':
-    tricritical(0.35, 0.92, 10, True)
+    tricritical(0.36, 0.92, 10, True)

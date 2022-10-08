@@ -19,22 +19,16 @@ from render_simulation import render_simulation
 from utils import load_automaton_data
 
 
-
 if __name__ == '__main__':
     """ Write automated scripts here """
 
-    automaton_data = load_automaton_data("contact_spatial", 0)
-    time_series, info = automaton_data["time_series"], automaton_data["info"]
-    lattice_1, lattice_2 = time_series[0], time_series[10]
-    analyse_changes(lattice_1, lattice_2)
+    p_values = arange(0.2, 0.4, 0.01)
+    f_values = zeros(len(p_values), dtype=float)
+    
+    q = 0.92
+    for i, p in enumerate(p_values):
+        print(p)
+        f_values[i] = tricritical(p, q, 5, False)
 
-    track_clusters(lattice_1, lattice_2)
-    establish_equivalences(lattice_1, lattice_2)
-
-    plt.subplot(1, 2, 1)
-    plt.title("Lattice 1")
-    plt.imshow(lattice_1)
-    plt.subplot(1, 2, 2)
-    plt.title("Lattice 2")
-    plt.imshow(lattice_2)
+    plt.plot(p_values, f_values)
     plt.show()
