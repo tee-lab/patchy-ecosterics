@@ -1,49 +1,43 @@
+from copy import copy
 from matplotlib import pyplot as plt
-from numba import njit
-from numpy import array, exp, log, pad, zeros
+from numpy import array, log, pad, zeros
 from skimage.measure import label
-from sklearn.linear_model import LinearRegression
 
-from cluster_tracking import get_cluster_size
+from depth_first_clustering import depth_first_clustering
 from linear_regression import perform_linear_regression
 from utils import load_automaton_data
 
 
-@njit
-def get_cdf(cluster_sizes):
-    num_clusters = len(cluster_sizes)
-    cdf = []
+def get_probabilities(lattice):
+    """ Returns an array such that the i^th element is the probability of that any cluster has area greater than or equal to i """
+    final_cluster_sizes = depth_first_clustering(lattice, trim=True)[1:]
+    print(f"Clustering completed. {sum(final_cluster_sizes)} clusters found.")
+    print(len(final_cluster_sizes))
 
-    for size in range(1, max(cluster_sizes) + 1):
-        probability = 0
-        for cluster_size in cluster_sizes:
-            if cluster_size >= size:
-                probability += 1
-        probability /= num_clusters
-        cdf.append(probability)
+    cumulative_cluster_sizes = array(copy(final_cluster_sizes), dtype=float)
+    for i in range(len(cumulative_cluster_sizes) - 2, -1, -1):
+        cumulative_cluster_sizes[i] += cumulative_cluster_sizes[i + 1]
+    probabilities = cumulative_cluster_sizes / sum(final_cluster_sizes)
 
-    truncate_index = cdf.index(min(cdf))
-
-    return cdf[:truncate_index]
+    return probabilities
 
 
-def get_all_cluster_sizes(lattice):
-    labelled_lattice = label(lattice, background=1)
-    num_clusters = labelled_lattice.max()
+def trim_log_probabilities(y):
+    """ Trims the last few repetitive elements of log_probabilities """
+    last_value = y[-1]
 
-    cluster_sizes = []
-    for i in range(1, num_clusters):
-        cluster_size = get_cluster_size(labelled_lattice, i)
-        cluster_sizes.append(cluster_size)
+    start_index = -1
+    for i in range(len(y)):
+        if y[i] == last_value:
+            start_index = i
+            break
 
-    return cluster_sizes
+    return y[:start_index + 1]
 
 
 if __name__ == '__main__':
     model = "tricritical"
     simulation_indices = range(0, 10)
-
-    print("Computing CDFs ...")
 
     probability_ensembles = []
     for i, simulation_index in enumerate(simulation_indices):
@@ -52,8 +46,7 @@ if __name__ == '__main__':
         data = load_automaton_data(model, simulation_index)
         time_series, info = data["time_series"], data["info"]
 
-        cluster_sizes = array(get_all_cluster_sizes(time_series[-1]), dtype=int)
-        probabilities = get_cdf(cluster_sizes)
+        probabilities = get_probabilities(time_series[-1])
         probability_ensembles.append(probabilities)
 
     print("Averaging results ...")
@@ -66,18 +59,16 @@ if __name__ == '__main__':
         averaged_probabilities += padded_probabilities
 
     averaged_probabilities /= len(probability_ensembles)
-    sizes = array(list(range(1, len(averaged_probabilities) + 1)))
-
-    log_probabilities = log(averaged_probabilities)
-    log_sizes = log(sizes)
+    log_probabilities = trim_log_probabilities(log(averaged_probabilities))
+    log_sizes = log(range(1, len(log_probabilities) + 1))
 
     print("Fitting line ...")
     beta, c, r_squared = perform_linear_regression(log_sizes, log_probabilities)
 
     plt.title(info)
-    plt.xlabel("Cluster sizes")
-    plt.ylabel("P(A >= a)")
-    plt.plot(log_sizes, log_probabilities, 'o')
+    plt.xlabel("log of Cluster sizes")
+    plt.ylabel("log P(A >= a)")
+    plt.plot(log_sizes, log_probabilities, 'o', markersize=2)
     plt.plot(log_sizes, beta * log_sizes + c)
-    plt.legend([f'Averaged data of {len(probability_ensembles)} simulations', f'Power-law fit with beta = {-beta:.3f}'])
+    plt.legend([f'Averaged data of {len(probability_ensembles)} simulations', f'Power-law fit with beta = {-beta:.3f}, R2 = {r_squared:.3f}'])
     plt.show()
