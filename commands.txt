@@ -27,3 +27,6 @@ Ctrl B + D
 
 Delete a particular tmux session:
 Ctrl B + &
+
+GitHub PAT:
+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

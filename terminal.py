@@ -21,5 +21,5 @@ from utils import load_automaton_data
 
 if __name__ == '__main__':
     purge_data()
-    tricritical(0.38, 0.92, 100, save_series=False, save_cluster=True)
-    analyze_rates("tricritical", range(100))
+    tricritical(0.66, 0.0, 20, save_series=False, save_cluster=True)
+    analyze_rates("tricritical", range(20))
