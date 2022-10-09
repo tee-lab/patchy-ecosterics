@@ -13,6 +13,9 @@ cd code/vegetation-dynamics
 Execute terminal script:
 python3 terminal.py
 
+Create new tmux session:
+tmux new -s <session-name>
+
 Get list of running tmux sessions:
 tmux ls
 

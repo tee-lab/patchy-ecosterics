@@ -11,4 +11,4 @@ def print_cluster_data(model_name, simulation_index):
 
 
 if __name__ == '__main__':
-    print_cluster_data("contact_spatial", 0)
+    print_cluster_data("tricritical", 0)

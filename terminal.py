@@ -4,13 +4,13 @@ from matplotlib import pyplot as plt
 from numpy import abs, arange, array, zeros
 from skimage.measure import label
 # models
-from models.contact_spatial.main import contact_spatial
+from models.contact_spatial.in_place_processing import contact_spatial
 from models.null.main import null
-from models.scanlon_kalahari.main import scanlon_kalahari
-from models.tricritical.main import tricritical
+from models.scanlon_kalahari.in_place_processing import scanlon_kalahari
+from models.tricritical.in_place_processing import tricritical
 # analysis
+from analyze_rates import analyze_rates
 from cluster_coefficient import cluster_coefficient
-from cluster_dynamics import analyse_changes
 from cluster_equivalences import establish_equivalences
 from cluster_tracking import track_clusters
 from plot_density import plot_density
@@ -20,15 +20,6 @@ from utils import load_automaton_data
 
 
 if __name__ == '__main__':
-    """ Write automated scripts here """
-
-    p_values = arange(0.2, 0.4, 0.01)
-    f_values = zeros(len(p_values), dtype=float)
-    
-    q = 0.92
-    for i, p in enumerate(p_values):
-        print(p)
-        f_values[i] = tricritical(p, q, 5, False)
-
-    plt.plot(p_values, f_values)
-    plt.show()
+    purge_data()
+    tricritical(0.38, 0.92, 100, save_series=False, save_cluster=True)
+    analyze_rates("tricritical", range(100))

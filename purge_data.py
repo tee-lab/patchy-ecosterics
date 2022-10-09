@@ -11,7 +11,7 @@ def purge_data(model_name = None):
         purge_data("null")
         return
 
-    model_path = "models\\" + model_name
+    model_path = os.path.join("models", model_name)
     folder_path = os.path.join(os.path.dirname(__file__), model_path)
     file_names = os.listdir(folder_path)
 

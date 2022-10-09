@@ -174,13 +174,13 @@ def tricritical(p_ext = 0.5, q_ext = 0.5, num_parallel = 10, save_series = False
     # model parameters
     global length, time, p, q
     length = 100
-    time = 100
+    time = 10000
     p = p_ext
     q = q_ext
 
     print(f"Simulating {num_parallel} automata in parallel...")
     data = [(simulation_index, save_series, save_cluster) for simulation_index in range(num_parallel)]
-    with ThreadPoolExecutor(7) as pool:
+    with ThreadPoolExecutor(num_parallel) as pool:
         records = list(pool.map(simulate, data))
 
     print("Saving data...")
@@ -201,4 +201,4 @@ def tricritical(p_ext = 0.5, q_ext = 0.5, num_parallel = 10, save_series = False
 
 
 if __name__ == '__main__':
-    print(tricritical(0.5, 0.92, 1, save_series=True, save_cluster=True))
+    print(tricritical(0.4, 0.92, 1, save_series=False, save_cluster=True))
