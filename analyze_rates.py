@@ -6,7 +6,8 @@ def analyze_rates(model_name, simulation_indices, plot_name='rates.png'):
     growth_sizes = []
     decay_sizes = []
 
-    for simulation_index in simulation_indices:
+    for i, simulation_index in enumerate(simulation_indices):
+        print(f"Analyzing simulation {i + 1} of {len(simulation_indices)}")
         automaton_data = load_automaton_data(model_name, simulation_index, "cluster")
         cluster_data, info = automaton_data["cluster_data"], automaton_data["info"]
 
@@ -39,6 +40,8 @@ def analyze_rates(model_name, simulation_indices, plot_name='rates.png'):
         print(f"{i + 1}: {prob}")
 
     plt.title("Cluster Growth and Decay Probabilities")
+    plt.xlabel("Cluster size")
+    plt.ylabel("Probability")
     plt.plot(sizes, growth_probabilities, label="Growth")
     plt.plot(sizes, decay_probabilities, label="Decay")
     plt.legend()
@@ -46,4 +49,4 @@ def analyze_rates(model_name, simulation_indices, plot_name='rates.png'):
 
 
 if __name__ == '__main__':
-    analyze_rates("tricritical", range(20))
+    analyze_rates("tricritical", range(1))
