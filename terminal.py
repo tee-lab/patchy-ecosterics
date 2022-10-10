@@ -21,6 +21,6 @@ from utils import load_automaton_data
 
 if __name__ == '__main__':
     purge_data()
-    num_simulations = 20
-    tricritical(0.65, 0, num_simulations, save_series=False, save_cluster=True)
-    analyze_rates("tricritical", range(num_simulations), "0p65.png")
+    num_simulations = 48
+    tricritical(0.4, 0.92, num_simulations, save_series=False, save_cluster=True)
+    analyze_rates("tricritical", range(num_simulations), "0p4.png")

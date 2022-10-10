@@ -172,7 +172,7 @@ def save_data(automaton_data, format_type, p, q):
 def tricritical(p_ext = 0.5, q_ext = 0.5, num_parallel = 10, save_series = False, save_cluster = True):
     # model parameters
     length = 100
-    time = 100000
+    time = 100 * length * length
     p = p_ext
     q = q_ext
 
