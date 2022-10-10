@@ -2,7 +2,7 @@ from matplotlib import pyplot as plt
 from utils import load_automaton_data
 
 
-def analyze_rates(model_name, simulation_indices):
+def analyze_rates(model_name, simulation_indices, plot_name='rates.png'):
     growth_sizes = []
     decay_sizes = []
 
@@ -42,7 +42,7 @@ def analyze_rates(model_name, simulation_indices):
     plt.plot(sizes, growth_probabilities, label="Growth")
     plt.plot(sizes, decay_probabilities, label="Decay")
     plt.legend()
-    plt.savefig("rates.png")
+    plt.savefig(plot_name)
 
 
 if __name__ == '__main__':

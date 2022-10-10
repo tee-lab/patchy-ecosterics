@@ -1,4 +1,5 @@
 from concurrent.futures import ThreadPoolExecutor
+from multiprocessing import Pool
 from numba import njit
 from numpy import array, copy, sum
 from numpy.random import randint
@@ -9,14 +10,14 @@ import os
 from cluster_dynamics import get_cluster_dynamics
 
 
-@njit(nogil=True, fastmath=True)
 def update(lattice, p, q):
     changed_coords = None
+    length = len(lattice)
     focal_i = randint(0, length)
     focal_j = randint(0, length)
 
     if lattice[focal_i, focal_j]:
-        neigh_i, neigh_j = get_random_neighbour(focal_i, focal_j)
+        neigh_i, neigh_j = get_random_neighbour(focal_i, focal_j, length)
 
         if lattice[neigh_i, neigh_j] == 0:
             if random() < p:
@@ -30,7 +31,7 @@ def update(lattice, p, q):
         else:
             if random() < q:
                 # positive feedback birth with probability q
-                third_i, third_j = get_pair_neighbour(focal_i, focal_j, neigh_i, neigh_j)
+                third_i, third_j = get_pair_neighbour(focal_i, focal_j, neigh_i, neigh_j, length)
                 if lattice[third_i, third_j] == 0:
                     changed_coords = (third_i, third_j)
                 lattice[third_i, third_j] = 1
@@ -42,8 +43,8 @@ def update(lattice, p, q):
     return lattice, changed_coords
 
 
-@njit(nogil=True, fastmath=True)
 def get_random_site(lattice):
+    length = len(lattice)
     num_active = sum(lattice)
 
     if num_active == 0:
@@ -61,8 +62,7 @@ def get_random_site(lattice):
                 return i, j
 
 
-@njit(nogil=True, fastmath=True)
-def get_random_neighbour(i, j):
+def get_random_neighbour(i, j, length):
     neighbour = randint(0, 4)
     # periodic boundary conditon
     if neighbour == 0:
@@ -75,8 +75,7 @@ def get_random_neighbour(i, j):
         return i, (j - 1 + length) % length
 
 
-@njit(nogil=True, fastmath=True)
-def get_pair_neighbour(i1, j1, i2, j2):
+def get_pair_neighbour(i1, j1, i2, j2, length):
     neighbour = randint(0, 6)
 
     # periodic boundary condition
@@ -111,7 +110,7 @@ def get_pair_neighbour(i1, j1, i2, j2):
 
 
 def simulate(data):
-    simulation_index, save_series, save_cluster = data
+    simulation_index, save_series, save_cluster, length, time, p, q = data
     lattice = randint(0, 2, (length, length))
 
     series_data = [copy(lattice)]
@@ -146,7 +145,7 @@ def simulate(data):
     return records
 
 
-def save_data(automaton_data, format_type):
+def save_data(automaton_data, format_type, p, q):
     """ Saves the entire simulation data in a pickle file, in the same folder """
     current_path = os.path.dirname(__file__)
     files_list = os.listdir(current_path)
@@ -172,24 +171,23 @@ def save_data(automaton_data, format_type):
 
 def tricritical(p_ext = 0.5, q_ext = 0.5, num_parallel = 10, save_series = False, save_cluster = True):
     # model parameters
-    global length, time, p, q
     length = 100
-    time = 10000
+    time = 100000
     p = p_ext
     q = q_ext
 
     print(f"Simulating {num_parallel} automata in parallel...")
-    data = [(simulation_index, save_series, save_cluster) for simulation_index in range(num_parallel)]
-    with ThreadPoolExecutor(num_parallel) as pool:
+    data = [(simulation_index, save_series, save_cluster, length, time, p, q) for simulation_index in range(num_parallel)]
+    with Pool(num_parallel) as pool:
         records = list(pool.map(simulate, data))
 
     print("Saving data...")
     for record in records:
         _, series_data, cluster_data = record
         if save_series:
-            save_data(series_data, "series")
+            save_data(series_data, "series", p, q)
         if save_cluster:
-            save_data(cluster_data, "cluster")
+            save_data(cluster_data, "cluster", p, q)
 
     avg_final_density = 0
     for record in records:
@@ -201,4 +199,4 @@ def tricritical(p_ext = 0.5, q_ext = 0.5, num_parallel = 10, save_series = False
 
 
 if __name__ == '__main__':
-    print(tricritical(0.4, 0.92, 1, save_series=False, save_cluster=True))
+    print(tricritical(0.4, 0.92, 8, save_series=False, save_cluster=True))
