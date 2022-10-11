@@ -47,7 +47,7 @@ def analyze_rates(model_name, simulation_indices, plot_name='rates.png'):
         growth_sizes.extend(d["growth"])
         decay_sizes.extend(d["decay"])
 
-    sizes = list(range(2, 100))
+    sizes = list(range(2, 200))
     with Pool(len(simulation_indices)) as p:
         cluster_data = p.starmap(get_cluster_dynamics, [(growth_sizes, decay_sizes, size) for size in sizes])
 
@@ -99,4 +99,4 @@ def analyze_rates(model_name, simulation_indices, plot_name='rates.png'):
 
 
 if __name__ == '__main__':
-    analyze_rates("tricritical", range(6))
+    analyze_rates("tricritical", range(48))
