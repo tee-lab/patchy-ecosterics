@@ -130,7 +130,7 @@ def simulate(data):
                 status = get_cluster_dynamics(old_lattice, new_lattice, changed_coords)
                 cluster_data.append(status)
 
-        if save_series:
+        if save_series and (i % (length * length)) == 0:
             series_data.append(copy(new_lattice))
 
         if simulation_index == 0:
@@ -199,4 +199,4 @@ def tricritical(p_ext = 0.5, q_ext = 0.5, num_parallel = 10, save_series = False
 
 
 if __name__ == '__main__':
-    print(tricritical(0.4, 0.92, 8, save_series=False, save_cluster=True))
+    print(tricritical(0.4, 0.92, 6, save_series=False, save_cluster=True))
