@@ -1,3 +1,4 @@
+from joblib import Parallel, delayed
 from matplotlib import pyplot as plt
 from multiprocessing import Pool
 from utils import load_automaton_data
@@ -41,7 +42,7 @@ def analyze_rates(model_name, simulation_indices, plot_name='rates.png'):
 
     # multiprocessing code
     print("Obtaining size data...")    
-    with Pool(len(simulation_indices)) as p:
+    with Pool(6) as p:
         size_data = p.starmap(get_sizes, [(model_name, i) for i in simulation_indices])
 
     print("Collating size data...")
@@ -49,10 +50,14 @@ def analyze_rates(model_name, simulation_indices, plot_name='rates.png'):
         growth_sizes.extend(d["growth"])
         decay_sizes.extend(d["decay"])
 
+    # print("Obtaining cluster dynamics...")
+    # sizes = list(range(2, 200))
+    # with Pool(6) as p:
+    #     cluster_data = p.starmap(get_cluster_dynamics, [(growth_sizes, decay_sizes, size) for size in sizes])
+
     print("Obtaining cluster dynamics...")
     sizes = list(range(2, 200))
-    with Pool(len(sizes)) as p:
-        cluster_data = p.starmap(get_cluster_dynamics, [(growth_sizes, decay_sizes, size) for size in sizes])
+    cluster_data = Parallel(n_jobs=6)(delayed(get_cluster_dynamics)(growth_sizes, decay_sizes, size) for size in sizes)
 
     print("Stringing together probabilities")
     growth_probabilities = [d["growth"] for d in cluster_data]
