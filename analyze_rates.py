@@ -42,7 +42,7 @@ def analyze_rates(model_name, simulation_indices, plot_name='rates.png'):
 
     # multiprocessing code
     print("Obtaining size data...")    
-    with Pool(6) as p:
+    with Pool(48) as p:
         size_data = p.starmap(get_sizes, [(model_name, i) for i in simulation_indices])
 
     print("Collating size data...")
@@ -57,7 +57,7 @@ def analyze_rates(model_name, simulation_indices, plot_name='rates.png'):
 
     print("Obtaining cluster dynamics...")
     sizes = list(range(2, 200))
-    cluster_data = Parallel(n_jobs=6)(delayed(get_cluster_dynamics)(growth_sizes, decay_sizes, size) for size in sizes)
+    cluster_data = Parallel(n_jobs=48)(delayed(get_cluster_dynamics)(growth_sizes, decay_sizes, size) for size in sizes)
 
     print("Stringing together probabilities")
     growth_probabilities = [d["growth"] for d in cluster_data]
