@@ -51,7 +51,7 @@ def analyze_rates(model_name, simulation_indices, plot_name='rates.png'):
 
     print("Obtaining cluster dynamics...")
     sizes = list(range(2, 200))
-    with Pool(len(simulation_indices)) as p:
+    with Pool(len(sizes)) as p:
         cluster_data = p.starmap(get_cluster_dynamics, [(growth_sizes, decay_sizes, size) for size in sizes])
 
     print("Stringing together probabilities")
