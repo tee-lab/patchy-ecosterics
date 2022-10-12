@@ -23,5 +23,5 @@ from utils import load_automaton_data
 if __name__ == '__main__':
     purge_data()
     num_simulations = cpu_count() - 2
-    tricritical(0.36, 0.92, num_simulations, save_series=False, save_cluster=True)
-    analyze_rates("tricritical", range(num_simulations), plot_name="0p36.png")
+    tricritical(0.34, 0.92, num_simulations, save_series=False, save_cluster=True)
+    analyze_rates("tricritical", range(num_simulations), plot_name="0p34")
