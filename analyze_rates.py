@@ -1,6 +1,7 @@
 from copy import copy
 from matplotlib import pyplot as plt
 from multiprocessing import Pool, cpu_count, set_start_method, get_context
+from numpy import histogram
 from utils import load_automaton_data
 
 
@@ -69,14 +70,32 @@ def analyze_rates(model_name, simulation_indices, plot_name='rates'):
     #     growth_sizes.extend(d["growth"])
     #     decay_sizes.extend(d["decay"])
 
-    print("Obtaining cluster dynamics...")
-    sizes = list(range(2, 100))
-    with get_context("spawn").Pool(num_cpus) as p:
-        cluster_data = p.starmap(get_cluster_dynamics, [(copy(growth_sizes), copy(decay_sizes), size) for size in sizes])
+    start = 2
+    sizes = list(range(start, 100))
+    growth_sizes_histogram = histogram(growth_sizes, bins=sizes)[0]
+    decay_sizes_histogram = histogram(decay_sizes, bins=sizes)[0]
+    sizes = sizes[:-1]
 
-    print("Stringing together probabilities")
-    growth_probabilities = [d["growth"] for d in cluster_data]
-    decay_probabilities = [d["decay"] for d in cluster_data]
+    growth_probabilities, decay_probabilities = [], []
+
+    for size in sizes:
+        total_events = growth_sizes_histogram[size - start] + decay_sizes_histogram[size - start]
+
+        if total_events != 0:
+            growth_probabilities.append(growth_sizes_histogram[size - 2] / total_events)
+            decay_probabilities.append(decay_sizes_histogram[size - 2] / total_events)
+        else:
+            growth_probabilities.append(0)
+            decay_probabilities.append(0)
+
+    # print("Obtaining cluster dynamics...")
+    # sizes = list(range(2, 100))
+    # with get_context("spawn").Pool(num_cpus) as p:
+    #     cluster_data = p.starmap(get_cluster_dynamics, [(copy(growth_sizes), copy(decay_sizes), size) for size in sizes])
+
+    # print("Stringing together probabilities")
+    # growth_probabilities = [d["growth"] for d in cluster_data]
+    # decay_probabilities = [d["decay"] for d in cluster_data]
 
     # single threaded code
     # for i, simulation_index in enumerate(simulation_indices):
@@ -130,4 +149,4 @@ def analyze_rates(model_name, simulation_indices, plot_name='rates'):
 
 
 if __name__ == '__main__':
-    analyze_rates("tricritical", range(6))
+    analyze_rates("tricritical", range(48))
