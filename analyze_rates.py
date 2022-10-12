@@ -1,4 +1,3 @@
-from joblib import Parallel, delayed
 from matplotlib import pyplot as plt
 from multiprocessing import Pool
 from utils import load_automaton_data
@@ -36,28 +35,39 @@ def get_cluster_dynamics(growth_sizes, decay_sizes, size):
     return data
 
 
-def analyze_rates(model_name, simulation_indices, plot_name='rates.png'):
+def analyze_rates(model_name, simulation_indices, plot_name='rates'):
     growth_sizes = []
     decay_sizes = []
 
     # multiprocessing code
-    print("Obtaining size data...")    
-    with Pool(48) as p:
-        size_data = p.starmap(get_sizes, [(model_name, i) for i in simulation_indices])
+    # print("Obtaining size data...")    
+    # with Pool(48) as p:
+    #     size_data = p.starmap(get_sizes, [(model_name, i) for i in simulation_indices])
 
-    print("Collating size data...")
-    for d in size_data:
-        growth_sizes.extend(d["growth"])
-        decay_sizes.extend(d["decay"])
+    # single processing code
+    print("Obtaining size data...")
+    for i, simulation_index in enumerate(simulation_indices):
+        print(f"Analyzing simulation {i + 1} of {len(simulation_indices)}")
+        automaton_data = load_automaton_data(model_name, simulation_index, "cluster")
+        cluster_data, info = automaton_data["cluster_data"], automaton_data["info"]
 
-    # print("Obtaining cluster dynamics...")
-    # sizes = list(range(2, 200))
-    # with Pool(6) as p:
-    #     cluster_data = p.starmap(get_cluster_dynamics, [(growth_sizes, decay_sizes, size) for size in sizes])
+        for update in cluster_data:
+            if update is None:
+                continue
+            elif update["type"] == "growth":
+                growth_sizes.append(update["size"])
+            elif update["type"] == "decay":
+                decay_sizes.append(update["size"])
+
+    # print("Collating size data...")
+    # for d in size_data:
+    #     growth_sizes.extend(d["growth"])
+    #     decay_sizes.extend(d["decay"])
 
     print("Obtaining cluster dynamics...")
-    sizes = list(range(2, 200))
-    cluster_data = Parallel(n_jobs=48)(delayed(get_cluster_dynamics)(growth_sizes, decay_sizes, size) for size in sizes)
+    sizes = list(range(2, 100))
+    with Pool(6) as p:
+        cluster_data = p.starmap(get_cluster_dynamics, [(growth_sizes, decay_sizes, size) for size in sizes])
 
     print("Stringing together probabilities")
     growth_probabilities = [d["growth"] for d in cluster_data]
@@ -104,7 +114,14 @@ def analyze_rates(model_name, simulation_indices, plot_name='rates.png'):
     plt.plot(sizes, growth_probabilities, label="Growth")
     plt.plot(sizes, decay_probabilities, label="Decay")
     plt.legend()
-    plt.savefig(plot_name)
+    plt.savefig(plot_name + '.png')
+
+    fp = open(plot_name + '.txt', "w")
+    output_string = ""
+    for i, size in enumerate(sizes):
+        output_string += f"{size}: {growth_probabilities[i]} {decay_probabilities[i]}\n"
+    fp.write(output_string)
+    fp.close()
 
 
 if __name__ == '__main__':
