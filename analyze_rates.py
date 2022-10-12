@@ -1,5 +1,6 @@
 from matplotlib import pyplot as plt
-from multiprocessing import Pool
+from multiprocessing import Pool, cpu_count
+from numpy import histogram
 from utils import load_automaton_data
 
 
@@ -36,12 +37,13 @@ def get_cluster_dynamics(growth_sizes, decay_sizes, size):
 
 
 def analyze_rates(model_name, simulation_indices, plot_name='rates'):
+    num_cpus = cpu_count()
     growth_sizes = []
     decay_sizes = []
 
     # multiprocessing code
     # print("Obtaining size data...")    
-    # with Pool(48) as p:
+    # with Pool(num_cpus) as p:
     #     size_data = p.starmap(get_sizes, [(model_name, i) for i in simulation_indices])
 
     # single processing code
@@ -66,7 +68,7 @@ def analyze_rates(model_name, simulation_indices, plot_name='rates'):
 
     print("Obtaining cluster dynamics...")
     sizes = list(range(2, 100))
-    with Pool(6) as p:
+    with Pool(num_cpus) as p:
         cluster_data = p.starmap(get_cluster_dynamics, [(growth_sizes, decay_sizes, size) for size in sizes])
 
     print("Stringing together probabilities")
@@ -119,7 +121,7 @@ def analyze_rates(model_name, simulation_indices, plot_name='rates'):
     fp = open(plot_name + '.txt', "w")
     output_string = ""
     for i, size in enumerate(sizes):
-        output_string += f"{size}: {growth_probabilities[i]} {decay_probabilities[i]}\n"
+        output_string += f"{size}: {growth_probabilities[i]}\n"
     fp.write(output_string)
     fp.close()
 
