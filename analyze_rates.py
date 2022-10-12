@@ -1,6 +1,6 @@
+from copy import copy
 from matplotlib import pyplot as plt
 from multiprocessing import Pool, cpu_count
-from numpy import histogram
 from utils import load_automaton_data
 
 
@@ -69,7 +69,7 @@ def analyze_rates(model_name, simulation_indices, plot_name='rates'):
     print("Obtaining cluster dynamics...")
     sizes = list(range(2, 100))
     with Pool(num_cpus) as p:
-        cluster_data = p.starmap(get_cluster_dynamics, [(growth_sizes, decay_sizes, size) for size in sizes])
+        cluster_data = p.starmap(get_cluster_dynamics, [(copy(growth_sizes), copy(decay_sizes), size) for size in sizes])
 
     print("Stringing together probabilities")
     growth_probabilities = [d["growth"] for d in cluster_data]
@@ -127,4 +127,4 @@ def analyze_rates(model_name, simulation_indices, plot_name='rates'):
 
 
 if __name__ == '__main__':
-    analyze_rates("tricritical", range(48))
+    analyze_rates("tricritical", range(6))
