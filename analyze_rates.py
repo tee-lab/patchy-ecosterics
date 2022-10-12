@@ -1,6 +1,6 @@
 from copy import copy
 from matplotlib import pyplot as plt
-from multiprocessing import Pool, cpu_count
+from multiprocessing import Pool, cpu_count, set_start_method, get_context
 from utils import load_automaton_data
 
 
@@ -38,6 +38,8 @@ def get_cluster_dynamics(growth_sizes, decay_sizes, size):
 
 def analyze_rates(model_name, simulation_indices, plot_name='rates'):
     num_cpus = cpu_count()
+    set_start_method("spawn")
+
     growth_sizes = []
     decay_sizes = []
 
@@ -68,7 +70,7 @@ def analyze_rates(model_name, simulation_indices, plot_name='rates'):
 
     print("Obtaining cluster dynamics...")
     sizes = list(range(2, 100))
-    with Pool(num_cpus) as p:
+    with get_context("spawn").Pool(num_cpus) as p:
         cluster_data = p.starmap(get_cluster_dynamics, [(copy(growth_sizes), copy(decay_sizes), size) for size in sizes])
 
     print("Stringing together probabilities")
@@ -127,4 +129,4 @@ def analyze_rates(model_name, simulation_indices, plot_name='rates'):
 
 
 if __name__ == '__main__':
-    analyze_rates("tricritical", range(6))
+    analyze_rates("tricritical", range(48))
