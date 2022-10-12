@@ -38,6 +38,7 @@ def get_cluster_dynamics(growth_sizes, decay_sizes, size):
 
 def analyze_rates(model_name, simulation_indices, plot_name='rates'):
     num_cpus = cpu_count()
+    print("Using {} CPUs".format(num_cpus))
     set_start_method("spawn")
 
     growth_sizes = []
@@ -129,4 +130,4 @@ def analyze_rates(model_name, simulation_indices, plot_name='rates'):
 
 
 if __name__ == '__main__':
-    analyze_rates("tricritical", range(48))
+    analyze_rates("tricritical", range(6))
