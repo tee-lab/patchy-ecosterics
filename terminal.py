@@ -1,6 +1,7 @@
 # libraries
 from concurrent.futures import ThreadPoolExecutor
 from matplotlib import pyplot as plt
+from multiprocessing import cpu_count
 from numpy import abs, arange, array, zeros
 from skimage.measure import label
 # models
@@ -21,6 +22,6 @@ from utils import load_automaton_data
 
 if __name__ == '__main__':
     purge_data()
-    num_simulations = 48
-    tricritical(0.38, 0.92, num_simulations, save_series=False, save_cluster=True)
-    analyze_rates("tricritical", range(num_simulations), plot_name="0p38.png")
+    num_simulations = cpu_count - 2
+    tricritical(0.36, 0.92, num_simulations, save_series=False, save_cluster=True)
+    analyze_rates("tricritical", range(num_simulations), plot_name="0p36.png")
