@@ -61,4 +61,4 @@ def analyze_rates(model_name, simulation_indices, plot_name='rates'):
 
 
 if __name__ == '__main__':
-    analyze_rates("tricritical", range(6))
+    analyze_rates("tricritical", range(48))
