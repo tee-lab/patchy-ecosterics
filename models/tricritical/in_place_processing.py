@@ -1,6 +1,4 @@
-from concurrent.futures import ThreadPoolExecutor
 from multiprocessing import Pool
-from numba import njit
 from numpy import array, copy, sum
 from numpy.random import randint
 from pickle import dump
@@ -10,7 +8,36 @@ import os
 from cluster_dynamics import get_cluster_dynamics
 
 
-def update(lattice, p, q):
+def landscape_update(lattice, p, q):
+    length = len(lattice)
+
+    for _ in range(length * length):
+        focal_i = randint(0, length)
+        focal_j = randint(0, length)
+
+        if lattice[focal_i, focal_j]:
+            neigh_i, neigh_j = get_random_neighbour(focal_i, focal_j, length)
+
+            if lattice[neigh_i, neigh_j] == 0:
+                if random() < p:
+                    # contact process birth with probability p
+                    lattice[neigh_i, neigh_j] = 1
+                else:
+                    # contact process death with probability 1 - p
+                    lattice[focal_i, focal_j] = 0
+            else:
+                if random() < q:
+                    # positive feedback birth with probability q
+                    third_i, third_j = get_pair_neighbour(focal_i, focal_j, neigh_i, neigh_j, length)
+                    lattice[third_i, third_j] = 1
+                elif random() < 1 - p:
+                    # pair death with probability with probability (1 - p) (1 - q)
+                    lattice[focal_i, focal_j] = 0
+
+    return lattice
+
+
+def single_update(lattice, p, q):
     changed_coords = None
     length = len(lattice)
     focal_i = randint(0, length)
@@ -110,19 +137,34 @@ def get_pair_neighbour(i1, j1, i2, j2, length):
 
 
 def simulate(data):
-    simulation_index, save_series, save_cluster, length, time, p, q = data
+    simulation_index, save_series, save_cluster, length, eq_time, simulation_time, p, q = data
     lattice = randint(0, 2, (length, length))
 
-    series_data = [copy(lattice)]
+    density_data = []
+    series_data = []
     cluster_data = []
 
+    for i in range(eq_time): 
+        lattice = landscape_update(lattice, p, q)
+
+        # save density and series data
+        density_data.append(sum(lattice) / (length * length))
+        if save_series:
+            series_data.append(copy(lattice))
+
+        # show progress
+        if simulation_index == 0:
+            print(f"Equilibriation: {round(i * 100 / eq_time)} %", end="\r")
+
     if simulation_index == 0:
-        print("Compiling functions...")
+        print("Equilibriation: 100 %\n", end="\r")
 
-    for i in range(time):
+    for i in range(int(simulation_time * length * length)):
+        # single update
         old_lattice = copy(lattice)
-        new_lattice, changed_coords = update(lattice, p, q)
+        new_lattice, changed_coords = single_update(lattice, p, q)
 
+        # save cluster data
         if save_cluster:
             if changed_coords is None:
                 cluster_data.append(None)
@@ -130,26 +172,33 @@ def simulate(data):
                 status = get_cluster_dynamics(old_lattice, new_lattice, changed_coords)
                 cluster_data.append(status)
 
-        if save_series and (i % (length * length)) == 0:
-            series_data.append(copy(new_lattice))
+        # periodic saving of series and density data
+        if (i % (length & length)) == 0:
+            density_data.append(sum(lattice) / (length * length))
 
+            if save_series:
+                series_data.append(copy(lattice))
+
+        # show progress
         if simulation_index == 0:
-            print(f"{i * 100 / time} %", end="\r")
+            print(f"Simulation: {round(i * 100 / (simulation_time * length * length), 2)} %", end="\r")
+
+    print("Simulation: 100.00 %\n", end="\r")
 
     if len(series_data) == 1:
         series_data = None
     if cluster_data == []:
         cluster_data = None
 
-    records = [new_lattice, series_data, cluster_data]
+    records = [density_data, cluster_data, series_data]
     return records
 
 
-def save_data(automaton_data, format_type, p, q):
+def save_data(record, p, q):
     """ Saves the entire simulation data in a pickle file, in the same folder """
     current_path = os.path.dirname(__file__)
     files_list = os.listdir(current_path)
-    precursor_file_name = format_type + "_"
+    precursor_file_name = "simulation" + "_"
 
     num_files = 0
     for file_name in files_list:
@@ -160,43 +209,45 @@ def save_data(automaton_data, format_type, p, q):
     save_path = os.path.join(current_path, file_name)
     info_string = f"TDP with p: {p}, q: {q}\n"
 
+    # save everything available
     data = {}
-    if format_type == "series":
-        data["series_data"] = array(automaton_data, dtype=bool)
-    elif format_type == "cluster":
-        data["cluster_data"] = automaton_data
+    density_data, cluster_data, series_data = record
     data["info"] = info_string
+    data["density_data"] = density_data
+    
+    if cluster_data is not None:
+        data["cluster_data"] = cluster_data
+    if series_data is not None:
+        data["series_data"] = array(series_data, dtype=bool)
+    
     dump(data, open(save_path, 'wb'))
 
 
 def tricritical(p_ext = 0.5, q_ext = 0.5, num_parallel = 10, save_series = False, save_cluster = True):
     # model parameters
     length = 100
-    time = 100 * length * length
+    eq_time = 100
+    simulation_time = 0.1
     p = p_ext
     q = q_ext
 
-    print(f"Simulating {num_parallel} automata in parallel...")
-    data = [(simulation_index, save_series, save_cluster, length, time, p, q) for simulation_index in range(num_parallel)]
+    print(f"Preparing {num_parallel} automata in parallel...")
+    data = [(simulation_index, save_series, save_cluster, length, eq_time, simulation_time, p, q) for simulation_index in range(num_parallel)]
     with Pool(num_parallel) as pool:
         records = list(pool.map(simulate, data))
 
     print("Saving data...")
     for record in records:
-        _, series_data, cluster_data = record
-        if save_series:
-            save_data(series_data, "series", p, q)
-        if save_cluster:
-            save_data(cluster_data, "cluster", p, q)
+        save_data(record, p, q)
 
     avg_final_density = 0
     for record in records:
-        final_lattice, _, _ = record
-        avg_final_density += sum(final_lattice) / (length * length)
+        density_data, _, _ = record
+        avg_final_density += density_data[-1]
     avg_final_density /= num_parallel
 
     return avg_final_density
 
 
 if __name__ == '__main__':
-    print(tricritical(0.4, 0.92, 6, save_series=False, save_cluster=True))
+    print(tricritical(0.4, 0.92, 4, save_series=True, save_cluster=True))
