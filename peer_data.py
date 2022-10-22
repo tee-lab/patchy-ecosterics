@@ -1,5 +1,6 @@
 from matplotlib import pyplot as plt
 from matplotlib.animation import FuncAnimation
+from numpy import array, zeros
 from utils import load_automaton_data
 
 
@@ -36,6 +37,27 @@ def plot_density(model_name, simulation_index):
     plt.show()
 
 
+def plot_average_density(model_name, simulation_indices):
+    data = load_automaton_data(model_name, simulation_indices[0])
+    density_data = data["density_data"]
+    data_length = len(density_data)
+
+    average_density = zeros(data_length)
+    for simulation_index in simulation_indices:
+        data = load_automaton_data(model_name, simulation_index)
+        density_data = data["density_data"]
+        average_density += array(density_data)
+
+    average_density /= len(simulation_indices)
+
+    plt.title(f"Average density for {model_name}")
+    plt.xlabel("Time (N^2)")
+    plt.ylabel("Density")
+    plt.plot(average_density)
+    plt.show()
+
+
+
 def print_cluster_data(model_name, simulation_index):
     data = load_automaton_data(model_name, simulation_index)
     cluster_data = data["cluster_data"]
@@ -70,9 +92,9 @@ def animate(i):
     return [im]
 
 
-
 if __name__ == "__main__":
     data_summary("tricritical", 0)
     plot_density("tricritical", 0)
+    plot_average_density("tricritical", range(0, 4))
     print_cluster_data("tricritical", 0)
     visualize_series_data("tricritical", 0)

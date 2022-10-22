@@ -173,7 +173,7 @@ def simulate(data):
                 cluster_data.append(status)
 
         # periodic saving of series and density data
-        if (i % (length & length)) == 0:
+        if (i % (length * length)) == 0:
             density_data.append(sum(lattice) / (length * length))
 
             if save_series:
@@ -183,7 +183,8 @@ def simulate(data):
         if simulation_index == 0:
             print(f"Simulation: {round(i * 100 / (simulation_time * length * length), 2)} %", end="\r")
 
-    print("Simulation: 100.00 %\n", end="\r")
+    if simulation_index == 0:
+        print("Simulation: 100.00 %\n", end="\r")
 
     if len(series_data) == 1:
         series_data = None
@@ -227,7 +228,7 @@ def tricritical(p_ext = 0.5, q_ext = 0.5, num_parallel = 10, save_series = False
     # model parameters
     length = 100
     eq_time = 100
-    simulation_time = 0.1
+    simulation_time = 1
     p = p_ext
     q = q_ext
 

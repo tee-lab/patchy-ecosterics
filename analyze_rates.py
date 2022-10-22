@@ -11,8 +11,10 @@ def analyze_rates(model_name, simulation_indices, plot_name='rates'):
     print("Analyzing data")
     for i, simulation_index in enumerate(simulation_indices):
         print(f"Simulation {i + 1} of {len(simulation_indices)}", end='\r')
-        automaton_data = load_automaton_data(model_name, simulation_index, "cluster")
-        cluster_data, info = automaton_data["cluster_data"], automaton_data["info"]
+        data = load_automaton_data(model_name, simulation_index)
+        
+        info = data["info"]
+        cluster_data = data["cluster_data"]
 
         for update in cluster_data:
             if update is None:
@@ -21,6 +23,14 @@ def analyze_rates(model_name, simulation_indices, plot_name='rates'):
                 growth_sizes.append(update["size"])
             elif update["type"] == "decay":
                 decay_sizes.append(update["size"])
+            elif update["type"] == "merge":
+                initial_sizes, final_size = update["initial_sizes"], update["final_size"]
+                change = final_size - min(initial_sizes)
+                growth_sizes.append(change)
+            elif update["type"] == "split":
+                initial_size, final_sizes = update["initial_size"], update["final_sizes"]
+                change = max(final_sizes) - initial_size
+                decay_sizes.append(change)
 
     print("Computing histogram")
     start = 2
@@ -44,7 +54,7 @@ def analyze_rates(model_name, simulation_indices, plot_name='rates'):
     for size in sizes:
         print(f"{size}: {growth_probabilities[size - start]}")
 
-    plt.title("Cluster Growth and Decay Probabilities")
+    plt.title(f"Cluster Growth and Decay Probabilities for {info}")
     plt.xlabel("Cluster size")
     plt.ylabel("Probability")
     plt.plot(sizes, growth_probabilities, label="Growth")
@@ -61,4 +71,4 @@ def analyze_rates(model_name, simulation_indices, plot_name='rates'):
 
 
 if __name__ == '__main__':
-    analyze_rates("tricritical", range(48))
+    analyze_rates("tricritical", range(4))
