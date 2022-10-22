@@ -1,19 +1,10 @@
 from matplotlib import pyplot as plt
-from os import path
+from matplotlib.animation import FuncAnimation
 from utils import load_automaton_data
 
 
-def plot_density(density_data):
-    plt.title("Variation of density with time")
-    plt.xlabel("Time (N^2)")
-    plt.ylabel("Density")
-    plt.plot(density_data)
-    plt.show()
-
-
-def peer_data(model_name, simulation_index):
+def data_summary(model_name, simulation_index):
     data = load_automaton_data(model_name, simulation_index)
-
     info_string = data["info"]
     density_data = data["density_data"]
     cluster_data = data["cluster_data"]
@@ -32,9 +23,56 @@ def peer_data(model_name, simulation_index):
     else:
         print("Series data does not exist")
 
-    plot_density(density_data)
+
+def plot_density(model_name, simulation_index):
+    data = load_automaton_data(model_name, simulation_index)
+    info = data["info"]
+    density_data = data["density_data"]
+
+    plt.title(f"Variation of density with time for {info}")
+    plt.xlabel("Time (N^2)")
+    plt.ylabel("Density")
+    plt.plot(density_data)
+    plt.show()
+
+
+def print_cluster_data(model_name, simulation_index):
+    data = load_automaton_data(model_name, simulation_index)
+    cluster_data = data["cluster_data"]
+
+    if cluster_data is not None:
+        for iteration, update in enumerate(cluster_data):
+            print(f"iteration {iteration}: {update}")
+    else:
+        print("Cluster data does not exist")
+
+
+def visualize_series_data(model_name, simulation_index):
+    global series_data, im, info
+    
+    data = load_automaton_data(model_name, simulation_index)
+    info = data["info"]
+    series_data = data["series_data"]
+
+    if series_data is not None:
+        num_frames = len(series_data)
+        fig = plt.figure()
+        im = plt.imshow(series_data[0])
+        animation = FuncAnimation(fig, animate, frames=num_frames, interval=100, repeat=False)
+        plt.show()
+    else:
+        print("Series data does not exist")
+
+
+def animate(i):
+    plt.title(f"Frame {i} of {info}")
+    im.set_array(series_data[i])
+    return [im]
+
 
 
 if __name__ == "__main__":
-    peer_data("tricritical", 0)
-    
+    data_summary("tricritical", 0)
+    plot_density("tricritical", 0)
+    print_cluster_data("tricritical", 0)
+    visualize_series_data("tricritical", 0)
