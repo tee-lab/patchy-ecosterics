@@ -50,19 +50,25 @@ def get_cluster_dynamics(old_lattice, new_lattice, changed_coords):
             status['type'] = 'growth'
             status['size'] = old_cluster_sizes[new_labels[changed_coords]]
     elif num_old_clusters < num_new_clusters:
-        status['type'] = 'split'
-        parent_cluster = old_labels[changed_coords]
         split_clusters = get_clusters_around(new_labels, changed_coords)
 
-        status['initial_size'] = old_cluster_sizes[parent_cluster]
-        status['final_sizes'] = [new_cluster_sizes[cluster] for cluster in split_clusters]
+        if len(split_clusters) > 1:
+            status['type'] = 'split'
+            parent_cluster = old_labels[changed_coords]
+            status['initial_size'] = old_cluster_sizes[parent_cluster]
+            status['final_sizes'] = [new_cluster_sizes[cluster] for cluster in split_clusters]
+        else:
+            status['type'] = 'appearance'
     else:
-        status['type'] = 'merge'
         merging_clusters = get_clusters_around(old_labels, changed_coords)
-        merged_cluster = new_labels[changed_coords]
 
-        status['initial_sizes'] = [old_cluster_sizes[cluster] for cluster in merging_clusters]
-        status['final_size'] = new_cluster_sizes[merged_cluster]
+        if len(merging_clusters) > 1:
+            status['type'] = 'merge'
+            merged_cluster = new_labels[changed_coords]
+            status['initial_sizes'] = [old_cluster_sizes[cluster] for cluster in merging_clusters]
+            status['final_size'] = new_cluster_sizes[merged_cluster]
+        else:
+            status['type'] = 'disappearance'
 
     return status
 
@@ -156,9 +162,53 @@ def test_split():
     plt.imshow(new_lattice)
     plt.show()
 
+def test_appearance():
+    old_lattice = zeros((4, 4), dtype=int)
+    new_lattice = zeros((4, 4), dtype=int)
+
+    old_lattice[1:3, 1:3] = 1
+    new_lattice[1:3, 1:3] = 1
+
+    new_lattice[0, 0] = 1
+    changed_coords = (0, 0)
+    status = get_cluster_dynamics(old_lattice, new_lattice, changed_coords)
+    print(status)
+
+    plt.subplot(121)
+    plt.title("Initial lattice")
+    plt.imshow(old_lattice)
+    plt.subplot(122)
+    plt.title("Appeared cluster")
+    plt.imshow(new_lattice)
+    plt.show()
+
+
+def test_disappearance():
+    old_lattice = zeros((4, 4), dtype=int)
+    new_lattice = zeros((4, 4), dtype=int)
+
+    old_lattice[1:3, 1:3] = 1
+    old_lattice[0, 0] = 1
+    new_lattice[1:3, 1:3] = 1
+
+    changed_coords = (0, 0)
+    status = get_cluster_dynamics(old_lattice, new_lattice, changed_coords)
+    print(status)
+
+    plt.subplot(121)
+    plt.title("Initial lattice")
+    plt.imshow(old_lattice)
+    plt.subplot(122)
+    plt.title("Disappeared cluster")
+    plt.imshow(new_lattice)
+    plt.show()
+
+
 
 if __name__ == '__main__':
     test_growth()
     test_decay()
     test_merge()
     test_split()
+    test_appearance()
+    test_disappearance()
