@@ -18,7 +18,7 @@ def purge_data(model_name = None):
     for file_name in file_names:
         if file_name.endswith(".pkl") or file_name.endswith(".txt"):
             os.remove(os.path.join(folder_path, file_name))
-            print(f"Removed {file_name}")
+            print(f"Removed {file_name}", end=', ')
 
 
 if __name__ == '__main__':
