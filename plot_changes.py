@@ -1,10 +1,11 @@
 from matplotlib import pyplot as plt
 from numpy import loadtxt, transpose
-from os import path
+from os import makedirs, path
 
 
 def plot_changes(filename):
     output_path = path.join(path.dirname(__file__), "outputs")
+    makedirs(output_path, exist_ok=True)
 
     cluster_data = transpose(loadtxt(open(path.join(output_path, filename + '_cluster.txt'), 'r')))
     sizes, growth_probabilities = cluster_data[0], cluster_data[1]
@@ -42,7 +43,7 @@ def plot_changes(filename):
             value += changes_probabilities[changes.index(-abs_change)]
         
         abs_changes_histogram[abs_change] = value
-        
+
     abs_changes_histogram[0] = abs_changes_histogram[0] / 2
 
     plt.title("Cluster Absolute Change Probabilities")

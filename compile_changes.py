@@ -1,6 +1,6 @@
 from matplotlib import pyplot as plt
 from numpy import histogram
-from os import path
+from os import makedirs, path
 from utils import load_automaton_data
 
 
@@ -58,6 +58,7 @@ def compile_changes(model_name, simulation_indices, plot_name='data'):
             decay_probabilities.append(0)
 
     folder_path = path.join(path.dirname(__file__), "outputs")
+    makedirs(folder_path, exist_ok=True)
 
     fp = open(path.join(folder_path, plot_name + '_cluster.txt'), "w")
     output_string = ""
