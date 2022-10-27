@@ -1,11 +1,13 @@
 from matplotlib import pyplot as plt
 from numpy import loadtxt, transpose
+from os import path
 
 
 def plot_changes(filename):
     cluster_data = transpose(loadtxt(open(filename + '_cluster.txt', 'r')))
     sizes, growth_probabilities = cluster_data[0], cluster_data[1]
     decay_probabilities = 1 - growth_probabilities
+    output_path = path.join(path.dirname(__file__), "outputs")
 
     plt.title("Cluster Growth and Decay Probabilities")
     plt.xlabel("Cluster Size")
@@ -13,7 +15,7 @@ def plot_changes(filename):
     plt.plot(sizes, growth_probabilities, label="Growth")
     plt.plot(sizes, decay_probabilities, label="Decay")
     plt.legend()
-    plt.savefig(filename + '_cluster.png')
+    plt.savefig(path.join(output_path, filename + '_cluster.png'))
     plt.show()
 
     changes_data = transpose(loadtxt(open(filename + '_changes.txt', 'r')))
@@ -24,7 +26,7 @@ def plot_changes(filename):
     plt.xlabel("dS")
     plt.ylabel("P(dS)")
     plt.plot(changes, changes_probabilities)
-    plt.savefig(filename + '_changes.png')
+    plt.savefig(path.join(output_path, filename + '_changes.png'))
     plt.show()
 
     abs_changes = list(range(0, max(max(changes), -min(changes))))
@@ -40,5 +42,5 @@ def plot_changes(filename):
     plt.xlabel("|dS|")
     plt.ylabel("P(|dS|)")
     plt.plot(abs_changes, abs_changes_histogram)
-    plt.savefig(filename + '_abs_changes.png')
+    plt.savefig(path.join(output_path, filename + '_changes_abs.png'))
     plt.show()

@@ -1,5 +1,6 @@
 from matplotlib import pyplot as plt
 from numpy import histogram
+from os import path
 from utils import load_automaton_data
 
 
@@ -56,14 +57,16 @@ def compile_changes(model_name, simulation_indices, plot_name='data'):
             growth_probabilities.append(0)
             decay_probabilities.append(0)
 
-    fp = open(plot_name + '_cluster.txt', "w")
+    folder_path = path.join(path.dirname(__file__), "outputs")
+
+    fp = open(path.join(folder_path, plot_name + '_cluster.txt'), "w")
     output_string = ""
     for size in sizes:
         output_string += f"{size} {growth_probabilities[size - start]}\n"
     fp.write(output_string)
     fp.close()
 
-    fp = open(plot_name + '_changes.txt', 'w')
+    fp = open(path.join(folder_path, plot_name + '_changes.txt'), 'w')
     output_string = ""
     for change in changes:
         output_string += f"{change} {changes_histogram[change - min(changes)]}\n"
