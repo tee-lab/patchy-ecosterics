@@ -226,13 +226,13 @@ def save_data(record, p, q):
 
 def tricritical(p_ext = 0.5, q_ext = 0.5, num_parallel = 10, save_series = False, save_cluster = True):
     # model parameters
-    length = 100
+    length = 50
     eq_time = 100
     simulation_time = 0.1
     p = p_ext
     q = q_ext
 
-    print(f"Preparing {num_parallel} automata in parallel...")
+    print(f"\nPreparing {num_parallel} automata in parallel...")
     data = [(simulation_index, save_series, save_cluster, length, eq_time, simulation_time, p, q) for simulation_index in range(num_parallel)]
     with Pool(num_parallel) as pool:
         records = list(pool.map(simulate, data))

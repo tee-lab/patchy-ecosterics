@@ -7,7 +7,7 @@ from utils import load_automaton_data
 def compile_changes(model_name, simulation_indices, plot_name='data'):
     grown_clusters = []
     decayed_clusters = []
-    changes = []
+    changes_list = []
 
     # single processing code
     print("Analyzing data")
@@ -20,30 +20,30 @@ def compile_changes(model_name, simulation_indices, plot_name='data'):
 
         for update in cluster_data:
             if update is None:
-                changes.append(0)
+                changes_list.append(0)
             elif update["type"] == "growth":
                 grown_clusters.append(update["size"])
-                changes.append(1)
+                changes_list.append(1)
             elif update["type"] == "decay":
                 decayed_clusters.append(update["size"])
-                changes.append(-1)
+                changes_list.append(-1)
             elif update["type"] == "merge":
                 initial_sizes, final_size = update["initial_sizes"], update["final_size"]
                 grown_clusters.append(min(initial_sizes))
-                changes.append(final_size - min(initial_sizes))
             elif update["type"] == "split":
                 initial_size, final_sizes = update["initial_size"], update["final_sizes"]
                 decayed_clusters.append(initial_size)
-                changes.append(min(final_sizes) - initial_size)
+                changes_list.append(int(min(final_sizes)) - int(initial_size))
 
     print("Computing histogram")
     start = 2
     sizes = list(range(start, 100))
-    changes = list(range(min(changes), max(changes) + 1))
+    changes = list(range(int(min(changes_list)), int(max(changes_list)) + 1))
     growth_sizes_histogram = histogram(grown_clusters, bins=sizes)[0]
     decay_sizes_histogram = histogram(decayed_clusters, bins=sizes)[0]
-    changes_histogram = histogram(changes, bins=changes)[0]
+    changes_histogram = histogram(changes_list, bins=changes)[0]
     sizes.pop()
+    changes.pop()
 
     print("Computing probabilities")
     growth_probabilities, decay_probabilities = [], []
@@ -69,7 +69,7 @@ def compile_changes(model_name, simulation_indices, plot_name='data'):
     fp = open(path.join(folder_path, plot_name + '_changes.txt'), 'w')
     output_string = ""
     for change in changes:
-        output_string += f"{change} {changes_histogram[change - min(changes)]}\n"
+        output_string += f"{change + 1} {changes_histogram[change - min(changes)]}\n"
     fp.write(output_string)
     fp.close()
 

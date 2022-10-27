@@ -19,9 +19,13 @@ from purge_data import purge_data
 from utils import load_automaton_data
 
 
-if __name__ == '__main__':
-    purge_data()
+if __name__ == '__main__': 
     num_simulations = cpu_count() - 4
-    tricritical(0.64, 0.0, num_simulations, save_series=False, save_cluster=True)
-    compile_changes("tricritical", range(num_simulations), plot_name="0p64")
-    plot_changes("0p64")
+
+    for p in arange(0.63, 0.69, 0.02):
+        purge_data()
+        print(f"\n---> Simulating p = {p} <---")
+        file_string = str(p).replace('.', 'p')
+        tricritical(0.64, 0.0, num_simulations, save_series=False, save_cluster=True)
+        compile_changes("tricritical", range(num_simulations), plot_name=file_string)
+        plot_changes(file_string)
