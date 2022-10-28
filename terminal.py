@@ -22,7 +22,7 @@ from utils import load_automaton_data
 if __name__ == '__main__': 
     num_simulations = cpu_count() - 8
 
-    for p in arange(0.66, 0.69, 0.01):
+    for p in arange(0.69, 0.70, 0.01):
         purge_data()
         print(f"\n---> Simulating p = {p} <---")
         file_string = str(p).replace('.', 'p')
