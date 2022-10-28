@@ -52,3 +52,7 @@ def plot_changes(filename):
     plt.plot(abs_changes, abs_changes_histogram)
     plt.savefig(path.join(output_path, filename + '_changes_abs.png'))
     plt.show()
+
+
+if __name__ == '__main__':
+    plot_changes("0p67")

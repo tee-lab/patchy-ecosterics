@@ -7,6 +7,9 @@ ssh chandan@10.58.97.211
 Copy <file> from remote:
 scp chandan@10.58.97.211:/home/chandan/code/vegetation-dynamics/<file> "C:\Code\Github\vegetation-dynamics"
 
+Copy outputs from remote:
+scp -r chandan@10.58.97.211:/home/chandan/code/vegetation-dynamics/outputs "C:\Code\Github\vegetation-dynamics"
+
 Navigate to project root from user root:
 cd code/vegetation-dynamics
 
