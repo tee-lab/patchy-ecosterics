@@ -191,7 +191,7 @@ def simulate(data):
     if cluster_data == []:
         cluster_data = None
 
-    records = [density_data, cluster_data, series_data]
+    records = [density_data, cluster_data, series_data, new_lattice]
     return records
 
 
@@ -212,9 +212,10 @@ def save_data(record, p, q):
 
     # save everything available
     data = {}
-    density_data, cluster_data, series_data = record
+    density_data, cluster_data, series_data, final_lattice = record
     data["info"] = info_string
     data["density_data"] = density_data
+    data["final_lattice"] = final_lattice
     
     if cluster_data is not None:
         data["cluster_data"] = cluster_data
@@ -228,7 +229,7 @@ def tricritical(p_ext = 0.5, q_ext = 0.5, num_parallel = 10, save_series = False
     # model parameters
     length = 100
     eq_time = 100
-    simulation_time = 100
+    simulation_time = 1
     p = p_ext
     q = q_ext
 
@@ -243,7 +244,7 @@ def tricritical(p_ext = 0.5, q_ext = 0.5, num_parallel = 10, save_series = False
 
     avg_final_density = 0
     for record in records:
-        density_data, _, _ = record
+        density_data, _, _, _ = record
         avg_final_density += density_data[-1]
     avg_final_density /= num_parallel
 

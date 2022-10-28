@@ -1,15 +1,17 @@
 from matplotlib import pyplot as plt
-from numpy import histogram
+from numpy import histogram, zeros
 from os import makedirs, path
 from utils import load_automaton_data
+
+from depth_first_clustering import depth_first_clustering
 
 
 def compile_changes(model_name, simulation_indices, plot_name='data'):
     grown_clusters = []
     decayed_clusters = []
     changes_list = []
+    final_lattices = []
 
-    # single processing code
     print("Analyzing data")
     for i, simulation_index in enumerate(simulation_indices):
         print(f"Simulation {i + 1} of {len(simulation_indices)}", end='\r')
@@ -17,6 +19,7 @@ def compile_changes(model_name, simulation_indices, plot_name='data'):
         
         info = data["info"]
         cluster_data = data["cluster_data"]
+        final_lattices.append(data["final_lattice"])
 
         for update in cluster_data:
             if update is None:
@@ -60,7 +63,25 @@ def compile_changes(model_name, simulation_indices, plot_name='data'):
     folder_path = path.join(path.dirname(__file__), "outputs")
     makedirs(folder_path, exist_ok=True)
 
-    fp = open(path.join(folder_path, plot_name + '_cluster.txt'), "w")
+    print("Computing final cluster distribution")
+    lattice_length = len(final_lattices[0])
+    cluster_distribution = zeros((lattice_length * lattice_length + 1))
+
+    for lattice in final_lattices:
+        distribution = depth_first_clustering(lattice, False)
+        probabilities = distribution / sum(distribution[1:])
+        cluster_distribution += probabilities
+
+    max_index = -1
+    for i in range(len(cluster_distribution) - 1, -1, -1):
+        if cluster_distribution[i] != 0:
+            max_index = i
+            break
+
+    cluster_distribution = cluster_distribution[1:max_index + 1]
+    cluster_distribution /= len(final_lattices)
+
+    fp = open(path.join(folder_path, plot_name + '_cluster_growth_probabilities.txt'), "w")
     output_string = ""
     for size in sizes:
         output_string += f"{size} {growth_probabilities[size - start]}\n"
@@ -71,6 +92,13 @@ def compile_changes(model_name, simulation_indices, plot_name='data'):
     output_string = ""
     for change in changes:
         output_string += f"{change + 1} {changes_histogram[change - min(changes)]}\n"
+    fp.write(output_string)
+    fp.close()
+
+    fp = open(path.join(folder_path, plot_name + '_cluster_distribution.txt'), 'w')
+    output_string = ""
+    for size in range(1, len(cluster_distribution)):
+        output_string += f"{size} {cluster_distribution[size]}\n"
     fp.write(output_string)
     fp.close()
 

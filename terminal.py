@@ -22,10 +22,10 @@ from utils import load_automaton_data
 if __name__ == '__main__': 
     num_simulations = cpu_count() - 8
 
-    for p in arange(0.71, 0.72, 0.01):
-        purge_data()
-        print(f"\n---> Simulating p = {p} <---")
-        file_string = str(p).replace('.', 'p')
-        tricritical(p, 0.0, num_simulations, save_series=False, save_cluster=True)
-        compile_changes("tricritical", range(num_simulations), plot_name=file_string)
-        plot_changes(file_string)
+    p = 0.65
+    purge_data()
+    print(f"\n---> Simulating p = {p} <---")
+    file_string = str(p).replace('.', 'p')
+    tricritical(p, 0.0, num_simulations, save_series=False, save_cluster=True)
+    compile_changes("tricritical", range(num_simulations), plot_name=file_string)
+    plot_changes(file_string)
