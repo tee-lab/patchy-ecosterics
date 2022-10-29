@@ -11,6 +11,7 @@ def compile_changes(model_name, simulation_indices, plot_name='data'):
     decayed_clusters = []
     changes_list = []
     final_lattices = []
+    final_densities = []
 
     print("Analyzing data")
     for i, simulation_index in enumerate(simulation_indices):
@@ -20,6 +21,7 @@ def compile_changes(model_name, simulation_indices, plot_name='data'):
         info = data["info"]
         cluster_data = data["cluster_data"]
         final_lattices.append(data["final_lattice"])
+        final_densities.append(data["density_data"][-1])
 
         for update in cluster_data:
             if update is None:
@@ -99,6 +101,13 @@ def compile_changes(model_name, simulation_indices, plot_name='data'):
     output_string = ""
     for size in range(1, len(cluster_distribution)):
         output_string += f"{size} {cluster_distribution[size]}\n"
+    fp.write(output_string)
+    fp.close()
+
+    fp = open(path.join(folder_path, plot_name + '_densities.txt'), "w")
+    output_string = ""
+    for i, density in enumerate(final_densities):
+        output_string += f"{i} {density}\n"
     fp.write(output_string)
     fp.close()
 
