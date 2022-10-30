@@ -20,10 +20,11 @@ from utils import load_automaton_data
 
 
 if __name__ == '__main__': 
-    num_simulations = cpu_count() - 4
-    p_values = [0.70, 0.71, 0.72]
+    num_simulations = cpu_count() - 8
+    p_values = [0.73, 0.74]
 
     for p in p_values:
+        purge_data()
         print(f"\n---> Simulating p = {p} <---")
         file_string = str(p).replace('.', 'p')
         tricritical(p, 0.0, num_simulations, save_series=False, save_cluster=True)
