@@ -35,6 +35,7 @@ def compile_changes(model_name, simulation_indices, plot_name='data'):
             elif update["type"] == "merge":
                 initial_sizes, final_size = update["initial_sizes"], update["final_size"]
                 grown_clusters.append(min(initial_sizes))
+                changes_list.append(int(final_size - min(initial_sizes)))
             elif update["type"] == "split":
                 initial_size, final_sizes = update["initial_size"], update["final_sizes"]
                 decayed_clusters.append(initial_size)

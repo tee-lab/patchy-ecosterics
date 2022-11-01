@@ -1,5 +1,5 @@
 from matplotlib import pyplot as plt
-from numpy import loadtxt, transpose
+from numpy import loadtxt, log, transpose
 from os import makedirs, path
 
 
@@ -56,6 +56,14 @@ def plot_changes(filename):
     plt.savefig(path.join(output_path, filename + '_changes_abs.png'))
     plt.show()
 
+    plt.figure()
+    plt.title("Cluster Absolute Change Probabilities (log-log scale)")
+    plt.xlabel("|dS|")
+    plt.ylabel("P(|dS|)")
+    plt.loglog(abs_changes, abs_changes_histogram)
+    plt.savefig(path.join(output_path, filename + '_changes_abs_log_log.png'))
+    plt.show()
+
     cluster_distribution_data = transpose(loadtxt(open(path.join(output_path, filename + '_cluster_distribution.txt'), 'r')))
     cluster_sizes, cluster_distribution = cluster_distribution_data[0], cluster_distribution_data[1]
 
@@ -69,4 +77,4 @@ def plot_changes(filename):
 
 
 if __name__ == '__main__':
-    plot_changes("0p72")
+    plot_changes("0p71")
