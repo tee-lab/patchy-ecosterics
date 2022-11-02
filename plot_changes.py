@@ -33,6 +33,17 @@ def plot_changes(filename):
     plt.savefig(path.join(output_path, filename + '_changes.png'))
     plt.show()
 
+    zero_index = list(changes).index(0)
+    offsets = 25
+
+    plt.figure()
+    plt.title("Cluster Chance Probabilities (zoomed in)")
+    plt.xlabel("dS")
+    plt.ylabel("P(dS)")
+    plt.plot(changes[zero_index - offsets:zero_index + offsets], changes_probabilities[zero_index - offsets:zero_index + offsets])
+    plt.savefig(path.join(output_path, filename + '_changes_zoomed.png'))
+    plt.show()
+
     abs_changes = list(range(0, int(max(max(changes), -min(changes)))))
     abs_changes_histogram = [0] * len(abs_changes)
 
@@ -77,4 +88,4 @@ def plot_changes(filename):
 
 
 if __name__ == '__main__':
-    plot_changes("0p71")
+    plot_changes("0p74")
