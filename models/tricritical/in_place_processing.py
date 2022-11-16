@@ -190,6 +190,8 @@ def simulate(data):
         series_data = None
     if cluster_data == []:
         cluster_data = None
+    if simulation_time == 0:
+        new_lattice = None
 
     records = [density_data, cluster_data, series_data, new_lattice]
     return records
@@ -225,11 +227,11 @@ def save_data(record, p, q):
     dump(data, open(save_path, 'wb'))
 
 
-def tricritical(p_ext = 0.5, q_ext = 0.5, num_parallel = 10, save_series = False, save_cluster = True):
+def tricritical(p_ext = 0.5, q_ext = 0.5, num_parallel = 10, save_series = False, save_cluster = False):
     # model parameters
     length = 100
     eq_time = 100
-    simulation_time = 100
+    simulation_time = 0
     p = p_ext
     q = q_ext
 

@@ -145,13 +145,13 @@ def save_automaton_data(time_series):
 def tricritical(p_ext = 0.5, q_ext = 0.5, num_parallel = 10, save = False):
     # model parameters
     global length, time, p, q
-    length = 500
-    time = 250
+    length = 100
+    time = 200
     p = p_ext
     q = q_ext
 
     print(f"Simulating {num_parallel} automata in parallel...")
-    with ThreadPoolExecutor(7) as pool:
+    with ThreadPoolExecutor(num_parallel) as pool:
         time_series_records = list(pool.map(simulate, range(num_parallel)))
 
     if save:
