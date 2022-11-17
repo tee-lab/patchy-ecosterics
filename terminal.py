@@ -51,6 +51,9 @@ if __name__ == '__main__':
     with open("phase_diagram.txt", 'w') as f:
         f.write(output_string)
 
+    plt.title("Phase Diagram of TDP")
+    plt.xlabel("p")
+    plt.ylabel("q")
     plt.imshow(phase_diagram, extent=[0, 1, 0, 1], origin='lower')
     plt.colorbar()
     plt.savefig("phase_diagram.png")
