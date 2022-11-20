@@ -86,6 +86,14 @@ def plot_changes(filename):
     plt.savefig(path.join(output_path, filename + '_cluster_distribution.png'))
     plt.show()
 
+    plt.figure()
+    plt.title("Cluster Size Distribution (log-log scale)")
+    plt.xlabel("Cluster Size")
+    plt.ylabel("P(S)")
+    plt.loglog(cluster_sizes, cluster_distribution)
+    plt.savefig(path.join(output_path, filename + '_cluster_distribution_log_log.png'))
+    plt.show()
+
 
 if __name__ == '__main__':
     plot_changes("0p74")
