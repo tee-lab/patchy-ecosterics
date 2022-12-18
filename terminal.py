@@ -21,14 +21,19 @@ from purge_data import purge_data
 from utils import load_automaton_data
 
 
-if __name__ == '__main__': 
-    num_simulations = cpu_count() - 8
-    p_values = [0.64]
+if __name__ == '__main__':
+    num_simulations = cpu_count()
+    p_range = arange(0, 1, 0.01)
+    densities = zeros(len(p_range), dtype=float)
+    q = 0
 
-    for p in p_values:
-        purge_data()
-        print(f"\n---> Simulating p = {p} <---")
-        file_string = str(p).replace('.', 'p')
-        tricritical(p, 0.25, num_simulations, save_series=False, save_cluster=True)
-        compile_changes("tricritical", range(num_simulations), plot_name=file_string)
-        plot_changes(file_string)
+    for i, p in enumerate(p_range):
+        print(f"Simulating p = {p}...")
+        density = tricritical_fast(p, q, num_simulations, save = False)
+        densities[i] = density
+
+    plt.title(f"Bifurcation diagram of TDP at q = {q}")
+    plt.xlabel("p")
+    plt.ylabel("mean density")
+    plt.plot(p_range, densities)
+    plt.show()
