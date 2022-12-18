@@ -1,9 +1,8 @@
 from concurrent.futures import ThreadPoolExecutor
 from numba import njit
 from numpy import array, copy, sum
-from numpy.random import randint
+from numpy.random import random, randint
 from pickle import dump
-from random import random
 
 import os
 
@@ -74,32 +73,50 @@ def get_pair_neighbour(i1, j1, i2, j2):
     # periodic boundary condition
     if i1 == i2:
         # same row
+        j_left = min(j1, j2)
+        j_right = max(j1, j2)
+        
         if neighbour == 0:
-            return (i1 - 1 + length) % length, j1
+            # above the left cell
+            return (i1 - 1 + length) % length, j_left
         elif neighbour == 1:
-            return (i1 - 1 + length) % length, j2
+            # above the right cell
+            return (i1 - 1 + length) % length, j_right
         elif neighbour == 2:
-            return i1, (j2 + 1) % length
+            # right of the right cell
+            return i1, (j_right + 1) % length
         elif neighbour == 3:
-            return (i1 + 1) % length, j2
+            # below the right cell
+            return (i1 + 1) % length, j_right
         elif neighbour == 4:
-            return (i1 + 1) % length, j1
+            # below the left cell
+            return (i1 + 1) % length, j_left
         elif neighbour == 5:
-            return i1, (j1 - 1 + length) % length
+            # left of the left cell
+            return i1, (j_left - 1 + length) % length
     else:
         # same column
+        i_top = min(i1, i2)
+        i_bottom = max(i1, i2)
+
         if neighbour == 0:
-            return (i1 - 1 + length) % length, j1
+            # above the top cell
+            return (i_top - 1 + length) % length, j1
         elif neighbour == 1:
-            return i1, (j1 + 1) % length
+            # right of the top cell
+            return i_top, (j1 + 1) % length
         elif neighbour == 2:
-            return i2, (j1 + 1) % length
+            # right of the bottom cell
+            return i_bottom, (j1 + 1) % length
         elif neighbour == 3:
-            return (i2 + 1) % length, j1
+            # below the bottom cell
+            return (i_bottom + 1) % length, j1
         elif neighbour == 4:
-            return i2, (j1 - 1 + length) % length
+            # left of the bottom cell
+            return i_bottom, (j1 - 1 + length) % length
         elif neighbour == 5:
-            return i1, (j1 - 1 + length) % length
+            # left of the top cell
+            return i_top, (j1 - 1 + length) % length
 
 
 def simulate(simulation_index):
