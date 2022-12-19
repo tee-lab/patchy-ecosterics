@@ -1,10 +1,23 @@
 from matplotlib import pyplot as plt
-from numpy import loadtxt, log, transpose
+from numpy import loadtxt, log, transpose, zeros
 from os import makedirs, path
 
 
-def plot_changes(filename):
-    output_path = path.join(path.dirname(__file__), "outputs")
+def trim_log_probabilities(y):
+    """ Trims the last few repetitive elements of log_probabilities """
+    last_value = y[-1]
+
+    start_index = -1
+    for i in range(len(y)):
+        if y[i] == last_value:
+            start_index = i
+            break
+
+    return y[:start_index + 1]
+
+
+def plot_changes(filename, base_path = "outputs"):
+    output_path = path.join(path.dirname(__file__), base_path)
     makedirs(output_path, exist_ok=True)
 
     cluster_data = transpose(loadtxt(open(path.join(output_path, filename + '_cluster_growth_probabilities.txt'), 'r')))
@@ -86,14 +99,27 @@ def plot_changes(filename):
     plt.savefig(path.join(output_path, filename + '_cluster_distribution.png'))
     plt.show()
 
+    probability = zeros(len(cluster_distribution))
+    probability[0] = sum(cluster_distribution)
+
+    for i in range(1, len(cluster_distribution)):
+        probability[i] = probability[i - 1] - cluster_distribution[i - 1]
+
+    log_probability = log(probability)
+    log_sizes = log(cluster_sizes)
+
+    log_probability = trim_log_probabilities(log_probability)
+    log_sizes = log_sizes[:len(log_probability)]
+
     plt.figure()
     plt.title("Cluster Size Distribution (log-log scale)")
-    plt.xlabel("Cluster Size")
-    plt.ylabel("P(S)")
-    plt.loglog(cluster_sizes, cluster_distribution)
+    plt.xlabel("Log of Cluster Size")
+    plt.ylabel("Log of Inverse CDF")
+    plt.plot(log_sizes, log_probability)
     plt.savefig(path.join(output_path, filename + '_cluster_distribution_log_log.png'))
     plt.show()
 
 
 if __name__ == '__main__':
-    plot_changes("0p74")
+    modified_base_path = path.join("results", "tricritical", "q0", "0p69")
+    plot_changes("0p69", modified_base_path)
