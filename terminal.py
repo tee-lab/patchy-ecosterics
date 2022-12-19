@@ -23,8 +23,8 @@ from utils import load_automaton_data
 
 
 if __name__ == '__main__':
-    num_simulations = 8
-    p_range = arange(0, 1, 0.01)
+    num_simulations = 100
+    p_range = arange(0, 1, 0.001)
     q = 0.0
     densities = zeros(len(p_range), dtype=float)
 
