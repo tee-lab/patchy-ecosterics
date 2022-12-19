@@ -11,6 +11,7 @@ from models.null.main import null
 from models.scanlon_kalahari.in_place_processing import scanlon_kalahari
 from models.tricritical.in_place_processing import tricritical
 from models.tricritical.dumper import tricritical as tricritical_fast
+from models.tricritical.spanning_cluster import tricritical as tricritical_spanning
 # analysis
 from compile_changes import compile_changes
 from cluster_coefficient import cluster_coefficient
@@ -22,18 +23,32 @@ from utils import load_automaton_data
 
 
 if __name__ == '__main__':
-    num_simulations = cpu_count()
+    num_simulations = 16
     p_range = arange(0, 1, 0.01)
-    densities = zeros(len(p_range), dtype=float)
-    q = 0
+    q = 0.92
+    densities = zeros(len(p_range))
+    probabilities = zeros(len(p_range))
 
     for i, p in enumerate(p_range):
-        print(f"Simulating p = {p}...")
-        density = tricritical_fast(p, q, num_simulations, save = False)
+        print(f'p = {p:.2f}')
+        density, probability = tricritical_spanning(p, q, num_parallel=num_simulations)
         densities[i] = density
+        probabilities[i] = probability
 
-    plt.title(f"Bifurcation diagram of TDP at q = {q}")
+    plt.title(f"Bifurcation diagram of TDP at q = {q:.2f}")
     plt.xlabel("p")
     plt.ylabel("mean density")
     plt.plot(p_range, densities)
+    plt.show()
+
+    plt.title(f"Percolation probability vs birth probability for q = {q:.2f}")
+    plt.xlabel("Birth probability")
+    plt.ylabel("Percolation probability")
+    plt.plot(p_range, probabilities)
+    plt.show()
+
+    plt.title(f"Percolation probability vs density for q = {q:.2f}")
+    plt.xlabel("Density")
+    plt.ylabel("Percolation probability")
+    plt.plot(densities, probabilities, 'o')
     plt.show()
