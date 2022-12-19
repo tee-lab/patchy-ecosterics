@@ -25,7 +25,7 @@ from utils import load_automaton_data
 if __name__ == '__main__':
     num_simulations = 100
     p_range = arange(0, 1, 0.0025)
-    q = 0.50
+    q = 0.75
     densities = zeros(len(p_range), dtype=float)
 
     for i, p in enumerate(p_range):
