@@ -84,7 +84,7 @@ def plot_changes(filename, base_path = "outputs"):
     plt.title("Cluster Absolute Change Probabilities (log-log scale)")
     plt.xlabel("|dS|")
     plt.ylabel("P(|dS|)")
-    plt.loglog(abs_changes, abs_changes_histogram)
+    plt.loglog(abs_changes[3:], abs_changes_histogram[3:])
     plt.savefig(path.join(output_path, filename + '_changes_abs_log_log.png'))
     plt.show()
 
@@ -105,21 +105,22 @@ def plot_changes(filename, base_path = "outputs"):
     for i in range(1, len(cluster_distribution)):
         probability[i] = probability[i - 1] - cluster_distribution[i - 1]
 
-    log_probability = log(probability)
-    log_sizes = log(cluster_sizes)
+    # log_probability = log(probability)
+    # log_sizes = log(cluster_sizes)
 
-    log_probability = trim_log_probabilities(log_probability)
-    log_sizes = log_sizes[:len(log_probability)]
+    # log_probability = trim_log_probabilities(log_probability)
+    # log_sizes = log_sizes[:len(log_probability)]
 
     plt.figure()
     plt.title("Cluster Size Distribution (log-log scale)")
-    plt.xlabel("Log of Cluster Size")
-    plt.ylabel("Log of Inverse CDF")
-    plt.plot(log_sizes, log_probability)
+    plt.xlabel("Cluster Size")
+    plt.ylabel("Inverse CDF")
+    # plt.plot(log_sizes, log_probability)
+    plt.loglog(cluster_sizes, probability)
     plt.savefig(path.join(output_path, filename + '_cluster_distribution_log_log.png'))
     plt.show()
 
 
 if __name__ == '__main__':
-    modified_base_path = path.join("results", "tricritical", "q0", "0p69")
-    plot_changes("0p69", modified_base_path)
+    modified_base_path = path.join("results", "tricritical", "q0", "0p74")
+    plot_changes("0p74", modified_base_path)
