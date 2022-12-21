@@ -23,18 +23,13 @@ from utils import load_automaton_data
 
 
 if __name__ == '__main__':
-    num_simulations = 100
-    p_range = arange(0, 1, 0.0025)
-    q = 0.75
-    densities = zeros(len(p_range), dtype=float)
+    num_simulations = cpu_count() - 1
+    p_values = [0.70, 0.71]
 
-    for i, p in enumerate(p_range):
-        print(f"Simulation p = {p:.4f}")
-        densities[i] = tricritical_fast(p, q, num_parallel=num_simulations, save=False)
-
-    plt.title(f"Bifurcation diagram of TDP model at q = {q:.2f}")
-    plt.xlabel("p")
-    plt.ylabel("Steady State Density")
-    plt.plot(p_range, densities)
-    plt.savefig("bifurcation.png")
-    plt.show()
+    for p in p_values:
+        purge_data()
+        print(f"\n---> Simulating p = {p} <---")
+        file_string = str(p).replace('.', 'p')
+        tricritical(p, 0.0, num_simulations, save_series=False, save_cluster=True)
+        compile_changes("tricritical", range(num_simulations), plot_name=file_string)
+        plot_changes(file_string)
