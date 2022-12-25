@@ -248,7 +248,7 @@ def tricritical(p_ext = 0.5, q_ext = 0.5, num_parallel = 10, save_series = False
     # model parameters
     length = 100
     eq_time = 100
-    simulation_time = 0
+    simulation_time = 0.1
     p = p_ext
     q = q_ext
 
