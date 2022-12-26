@@ -123,4 +123,4 @@ def plot_changes(filename, base_path = "outputs"):
 
 if __name__ == '__main__':
     modified_base_path = path.join("results", "tricritical", "q0", "0p74")
-    plot_changes("0p74", modified_base_path)
+    plot_changes("0p72")
