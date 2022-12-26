@@ -92,11 +92,22 @@ def compile_changes(model_name, simulation_indices, plot_name='data'):
     fp.close()
 
     # duct-taping the multiple changes issue
-    min_positive_value = 1
+    min_positive_value = float("inf")
     for value in changes_histogram:
         if value > 0 and value < min_positive_value:
             min_positive_value = value
-    changes_histogram = changes_histogram / min_positive_value
+    
+    if min_positive_value == float("inf"):
+        min_positive_value = 1
+
+    multiple_true = True
+    for value in changes_histogram:
+        if value % min_positive_value != 0:
+            multiple_true = False
+            break
+
+    if multiple_true:
+        changes_histogram = changes_histogram / min_positive_value
 
     fp = open(path.join(folder_path, plot_name + '_changes.txt'), 'w')
     output_string = ""
