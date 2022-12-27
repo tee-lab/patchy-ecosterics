@@ -8,7 +8,7 @@ Copy <file> from remote:
 scp chandan@10.58.97.44:/home/chandan/code/vegetation-dynamics/phase_diagram.png "C:\Code\Github\vegetation-dynamics"
 
 Copy <folder> from remote:
-scp -r chandan@10.58.97.211:/home/chandan/code/vegetation-dynamics/<folder> "C:\Code\Github\vegetation-dynamics"
+scp -r chandan@10.58.97.211:/home/chandan/code/vegetation-dynamics/outputs "C:\Code\Github\vegetation-dynamics"
 
 Navigate to project root from user root:
 cd code/vegetation-dynamics
