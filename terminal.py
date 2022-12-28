@@ -33,7 +33,7 @@ if __name__ == '__main__':
     for i, q in enumerate(q_range):
         print(f"---> Started q = {q:.4f} <---")
         for j, p in enumerate(p_range):
-            print(f"Simulating p = {p:.3f}")
+            print(f"Simulating p = {p:.4f}")
             densities[i, j] = tricritical_fast(p, q, num_parallel=num_simulations, save=False)
             output_string += f"{p:.4f} {q:.4f} {densities[i, j]:.6f}\n"
 
