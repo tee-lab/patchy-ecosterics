@@ -13,7 +13,7 @@ from cluster_dynamics import get_cluster_dynamics
 
 
 @njit(fastmath=True)
-def landscape_update(lattice):
+def landscape_update(lattice, f_carrying, r_influence, immediacy):
     """ Simulates N^2 Monte Carlo steps of the automaton """
     length = len(lattice)
     
@@ -21,7 +21,7 @@ def landscape_update(lattice):
         f_current = sum(lattice) / (length * length)
         i = int(random() * length)
         j = int(random() * length)
-        rho = get_density(lattice, i, j)
+        rho = get_density(lattice, i, j, r_influence, immediacy)
 
         if lattice[i, j] == 0:
             prob_growth = rho + (f_carrying - f_current) / (1 - f_current)
@@ -36,7 +36,7 @@ def landscape_update(lattice):
 
 
 @njit(fastmath=True)
-def single_update(lattice):
+def single_update(lattice, f_carrying, r_influence, immediacy):
     """ Simulates a single Monte Carlo step of the automaton """
     length = len(lattice)
 
@@ -44,7 +44,7 @@ def single_update(lattice):
     changed_coords = None
     i = int(random() * length)
     j = int(random() * length)
-    rho = get_density(lattice, i, j)
+    rho = get_density(lattice, i, j, r_influence, immediacy)
 
     if lattice[i, j] == 0:
         prob_growth = rho + (f_carrying - f_current) / (1 - f_current)
@@ -61,7 +61,7 @@ def single_update(lattice):
 
 
 @njit(fastmath=True)
-def get_density(lattice, i, j):
+def get_density(lattice, i, j, r_influence, immediacy):
     """ Calculates the vegetation density in the neighbourhood of a given cell (i, j) """
     length = len(lattice)
     normalization = 0
@@ -78,7 +78,7 @@ def get_density(lattice, i, j):
 
 
 def simulate(data):
-    simulation_index, save_series, save_cluster = data
+    simulation_index, save_series, save_cluster, length, eq_time, simulation_time, f_carrying, r_influence, immediacy = data
     lattice = randint(0, 2, (length, length))
 
     density_data = []
@@ -86,7 +86,7 @@ def simulate(data):
     cluster_data = []
 
     for i in range(eq_time): 
-        lattice = landscape_update(lattice)
+        lattice = landscape_update(lattice, f_carrying, r_influence, immediacy)
 
         # save density and series data
         density_data.append(sum(lattice) / (length * length))
@@ -103,7 +103,7 @@ def simulate(data):
     for i in range(int(simulation_time * length * length)):
         # single update
         old_lattice = copy(lattice)
-        new_lattice, changed_coords = single_update(lattice)
+        new_lattice, changed_coords = single_update(lattice, f_carrying, r_influence, immediacy)
 
         # save cluster data
         if save_cluster:
@@ -189,7 +189,7 @@ def scanlon_kalahari(rainfall_ext = 800, num_parallel = 10, save_series = False,
     simulation_time = 100
 
     print(f"Simulating {num_parallel} automata in parallel...")
-    data = [(simulation_index, save_series, save_cluster) for simulation_index in range(num_parallel)]
+    data = [(simulation_index, save_series, save_cluster, length, eq_time, simulation_time, f_carrying, r_influence, immediacy) for simulation_index in range(num_parallel)]
     with ThreadPoolExecutor(num_parallel) as executor:
         records = executor.map(simulate, data)
 
