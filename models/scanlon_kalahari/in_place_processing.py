@@ -12,7 +12,6 @@ import os
 from cluster_dynamics import get_cluster_dynamics
 
 
-@njit(fastmath=True)
 def landscape_update(lattice, f_carrying, r_influence, immediacy):
     """ Simulates N^2 Monte Carlo steps of the automaton """
     length = len(lattice)
@@ -35,7 +34,6 @@ def landscape_update(lattice, f_carrying, r_influence, immediacy):
     return lattice
 
 
-@njit(fastmath=True)
 def single_update(lattice, f_carrying, r_influence, immediacy):
     """ Simulates a single Monte Carlo step of the automaton """
     length = len(lattice)
@@ -60,7 +58,6 @@ def single_update(lattice, f_carrying, r_influence, immediacy):
     return lattice, changed_coords
 
 
-@njit(fastmath=True)
 def get_density(lattice, i, j, r_influence, immediacy):
     """ Calculates the vegetation density in the neighbourhood of a given cell (i, j) """
     length = len(lattice)
@@ -190,8 +187,8 @@ def scanlon_kalahari(rainfall_ext = 800, num_parallel = 10, save_series = False,
 
     print(f"Simulating {num_parallel} automata in parallel...")
     data = [(simulation_index, save_series, save_cluster, length, eq_time, simulation_time, f_carrying, r_influence, immediacy) for simulation_index in range(num_parallel)]
-    with ThreadPoolExecutor(num_parallel) as executor:
-        records = executor.map(simulate, data)
+    with Pool(num_parallel) as pool:
+        records = list(pool.map(simulate, data))
 
     print("Saving data...")
     for record in records:
@@ -199,7 +196,7 @@ def scanlon_kalahari(rainfall_ext = 800, num_parallel = 10, save_series = False,
 
     avg_final_density = 0
     for record in records:
-        final_lattice, _, _ = record
+        _, _, _, final_lattice = record
         avg_final_density += sum(final_lattice) / (length * length)
     avg_final_density /= num_parallel
 
