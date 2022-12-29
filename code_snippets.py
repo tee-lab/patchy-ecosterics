@@ -64,7 +64,6 @@ if __name__ == '__main__':
     ############################################
     # num_simulations = 4
     # rainfall_values = [500]
-    # q = 0.92
 
     # for rainfall in rainfall_values:
     #     purge_data()

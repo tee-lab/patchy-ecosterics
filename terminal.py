@@ -23,9 +23,8 @@ from utils import load_automaton_data
 
 
 if __name__ == '__main__':
-    num_simulations = 4
-    rainfall_values = [500]
-    q = 0.92
+    num_simulations = 24
+    rainfall_values = [500, 700]
 
     for rainfall in rainfall_values:
         purge_data()
