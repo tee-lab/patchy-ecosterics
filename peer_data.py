@@ -93,8 +93,12 @@ def animate(i):
 
 
 if __name__ == "__main__":
-    data_summary("tricritical", 0)
-    plot_density("tricritical", 0)
-    plot_average_density("tricritical", range(0, 4))
-    print_cluster_data("tricritical", 0)
-    visualize_series_data("tricritical", 0)
+    model = "scanlon_kalahari"
+    simulation_index = 0
+    simulation_indices = range(0, 4)
+
+    data_summary(model, simulation_index)
+    plot_density(model, simulation_index)
+    plot_average_density(model, simulation_indices)
+    print_cluster_data(model, simulation_index)
+    visualize_series_data(model, simulation_index)

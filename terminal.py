@@ -23,14 +23,14 @@ from utils import load_automaton_data
 
 
 if __name__ == '__main__':
-    num_simulations = cpu_count() - 8
-    p_values = [0.28, 0.29, 0.3]
+    num_simulations = 4
+    rainfall_values = [500]
     q = 0.92
 
-    for p in p_values:
+    for rainfall in rainfall_values:
         purge_data()
-        print(f"\n---> Simulating p = {p} <---")
-        file_string = str(p).replace('.', 'p')
-        tricritical(p, q, num_simulations, save_series=False, save_cluster=True)
-        compile_changes("tricritical", range(num_simulations), plot_name=file_string)
+        print(f"\n---> Simulating rainfall = {rainfall} <---")
+        file_string = str(rainfall).replace('.', 'p')
+        scanlon_kalahari(rainfall, num_simulations, save_series=False, save_cluster=True)
+        compile_changes("scanlon_kalahari", range(num_simulations), plot_name=file_string)
         plot_changes(file_string)

@@ -32,6 +32,10 @@ def compile_changes(model_name, simulation_indices, plot_name='data'):
             elif update["type"] == "decay":
                 decayed_clusters.append(update["size"])
                 changes_list.append(-1)
+            elif update["type"] == "appearance":
+                changes_list.append(1)
+            elif update["type"] == "disappearance":
+                changes_list.append(-1)
             elif update["type"] == "merge":
                 initial_sizes, final_size = update["initial_sizes"], update["final_size"]
                 for initial_size in initial_sizes:

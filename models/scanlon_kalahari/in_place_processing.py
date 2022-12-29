@@ -1,5 +1,6 @@
 from concurrent.futures import ThreadPoolExecutor
-from math import floor, sqrt
+from math import sqrt
+from multiprocessing import Pool
 from numba import njit
 from numpy import array, copy, sum
 from numpy.random import randint
@@ -11,9 +12,34 @@ import os
 from cluster_dynamics import get_cluster_dynamics
 
 
-@njit(fastmath=True, nogil=False)
-def update(lattice):
+@njit(fastmath=True)
+def landscape_update(lattice):
+    """ Simulates N^2 Monte Carlo steps of the automaton """
+    length = len(lattice)
+    
+    for _ in range(length * length):
+        f_current = sum(lattice) / (length * length)
+        i = int(random() * length)
+        j = int(random() * length)
+        rho = get_density(lattice, i, j)
+
+        if lattice[i, j] == 0:
+            prob_growth = rho + (f_carrying - f_current) / (1 - f_current)
+            if random() < prob_growth:
+                lattice[i, j] = 1
+        else:
+            prob_decay = (1 - rho) + (f_current - f_carrying) / f_current
+            if random() < prob_decay:
+                lattice[i, j] = 0
+
+    return lattice
+
+
+@njit(fastmath=True)
+def single_update(lattice):
     """ Simulates a single Monte Carlo step of the automaton """
+    length = len(lattice)
+
     f_current = sum(lattice) / (length * length)
     changed_coords = None
     i = int(random() * length)
@@ -34,9 +60,10 @@ def update(lattice):
     return lattice, changed_coords
 
 
-@njit(fastmath=True, nogil=False)
+@njit(fastmath=True)
 def get_density(lattice, i, j):
     """ Calculates the vegetation density in the neighbourhood of a given cell (i, j) """
+    length = len(lattice)
     normalization = 0
     density = 0
 
@@ -54,16 +81,31 @@ def simulate(data):
     simulation_index, save_series, save_cluster = data
     lattice = randint(0, 2, (length, length))
 
-    series_data = [copy(lattice)]
+    density_data = []
+    series_data = []
     cluster_data = []
 
+    for i in range(eq_time): 
+        lattice = landscape_update(lattice)
+
+        # save density and series data
+        density_data.append(sum(lattice) / (length * length))
+        if save_series:
+            series_data.append(copy(lattice))
+
+        # show progress
+        if simulation_index == 0:
+            print(f"Equilibriation: {round(i * 100 / eq_time)} %", end="\r")
+
     if simulation_index == 0:
-        print("Compiling functions...")
+        print("Equilibriation: 100 %\n", end="\r")
 
-    for i in range(time):
+    for i in range(int(simulation_time * length * length)):
+        # single update
         old_lattice = copy(lattice)
-        new_lattice, changed_coords = update(lattice)
+        new_lattice, changed_coords = single_update(lattice)
 
+        # save cluster data
         if save_cluster:
             if changed_coords is None:
                 cluster_data.append(None)
@@ -71,18 +113,28 @@ def simulate(data):
                 status = get_cluster_dynamics(old_lattice, new_lattice, changed_coords)
                 cluster_data.append(status)
 
-        if save_series:
-            series_data.append(copy(new_lattice))
+        # periodic saving of series and density data
+        if (i % (length * length)) == 0:
+            density_data.append(sum(lattice) / (length * length))
 
+            if save_series:
+                series_data.append(copy(lattice))
+
+        # show progress
         if simulation_index == 0:
-            print(f"{i * 100 / time} %", end="\r")
+            print(f"Simulation: {round(i * 100 / (simulation_time * length * length), 2)} %", end="\r")
+
+    if simulation_index == 0:
+        print("Simulation: 100.00 %\n", end="\r")
 
     if len(series_data) == 1:
         series_data = None
     if cluster_data == []:
         cluster_data = None
+    if simulation_time == 0:
+        new_lattice = copy(lattice)
 
-    records = [new_lattice, series_data, cluster_data]
+    records = [density_data, cluster_data, series_data, new_lattice]
     return records
 
 
@@ -94,11 +146,11 @@ def get_forest_cover(rainfall):
     return max(slope * rainfall + intercept, 0)
 
 
-def save_data(automaton_data, format_type):
+def save_data(record, rainfall):
     """ Saves the entire simulation data in a pickle file, in the same folder """
     current_path = os.path.dirname(__file__)
     files_list = os.listdir(current_path)
-    precursor_file_name = format_type + "_"
+    precursor_file_name = "simulation" + "_"
 
     num_files = 0
     for file_name in files_list:
@@ -107,39 +159,43 @@ def save_data(automaton_data, format_type):
 
     file_name = f"{precursor_file_name}{num_files}.pkl"
     save_path = os.path.join(current_path, file_name)
-    info_string = f"Scanlon with rainfall = {rainfall} mm\n"
+    info_string = f"Scanlon model with rainfall: {rainfall}\n"
 
+    # save everything available
     data = {}
-    if format_type == "series":
-        data["series_data"] = array(automaton_data, dtype=bool)
-    elif format_type == "cluster":
-        data["cluster_data"] = automaton_data
+    density_data, cluster_data, series_data, final_lattice = record
     data["info"] = info_string
+    data["density_data"] = density_data
+    data["final_lattice"] = final_lattice
+    
+    if cluster_data is not None:
+        data["cluster_data"] = cluster_data
+    if series_data is not None:
+        data["series_data"] = array(series_data, dtype=bool)
+    
     dump(data, open(save_path, 'wb'))
 
 
 def scanlon_kalahari(rainfall_ext = 800, num_parallel = 10, save_series = False, save_cluster = True):
     # model parameters
-    global length, rainfall, f_carrying, r_influence, immediacy, time
+    global length, rainfall, f_carrying, r_influence, immediacy, eq_time, simulation_time
     length = 100
     rainfall = rainfall_ext
     f_carrying = get_forest_cover(rainfall)
     r_influence = 9
     immediacy = 24
-    time = 200
+
+    eq_time = 100
+    simulation_time = 0.1
 
     print(f"Simulating {num_parallel} automata in parallel...")
     data = [(simulation_index, save_series, save_cluster) for simulation_index in range(num_parallel)]
-    with ThreadPoolExecutor(7) as pool:
-        records = list(pool.map(simulate, data))
+    with ThreadPoolExecutor(num_parallel) as executor:
+        records = executor.map(simulate, data)
 
     print("Saving data...")
     for record in records:
-        _, series_data, cluster_data = record
-        if save_series:
-            save_data(series_data, "series")
-        if save_cluster:
-            save_data(cluster_data, "cluster")
+        save_data(record, rainfall)
 
     avg_final_density = 0
     for record in records:
@@ -151,4 +207,4 @@ def scanlon_kalahari(rainfall_ext = 800, num_parallel = 10, save_series = False,
 
 
 if __name__ == '__main__':
-    scanlon_kalahari(700, 1, save_series=True, save_cluster=True)
+    scanlon_kalahari(600, 4, save_series=True, save_cluster=True)

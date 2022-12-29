@@ -44,9 +44,9 @@ if __name__ == '__main__':
     # plt.savefig("bifurcation.png")
     # plt.show()
 
-    ################################
-    # generating P(dS) vs dS plots #
-    ################################
+    ########################################
+    # generating P(dS) vs dS plots for TDP #
+    ########################################
     # num_simulations = cpu_count() - 1
     # p_values = [0.70, 0.71]
     # q = 0.25
@@ -57,6 +57,21 @@ if __name__ == '__main__':
     #     file_string = str(p).replace('.', 'p')
     #     tricritical(p, q, num_simulations, save_series=False, save_cluster=True)
     #     compile_changes("tricritical", range(num_simulations), plot_name=file_string)
+    #     plot_changes(file_string)
+
+    ############################################
+    # generating P(dS) vs dS plots for Scanlon #
+    ############################################
+    # num_simulations = 4
+    # rainfall_values = [500]
+    # q = 0.92
+
+    # for rainfall in rainfall_values:
+    #     purge_data()
+    #     print(f"\n---> Simulating rainfall = {rainfall} <---")
+    #     file_string = str(rainfall).replace('.', 'p')
+    #     scanlon_kalahari(rainfall, num_simulations, save_series=False, save_cluster=True)
+    #     compile_changes("scanlon_kalahari", range(num_simulations), plot_name=file_string)
     #     plot_changes(file_string)
 
     ############################
