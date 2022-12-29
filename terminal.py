@@ -23,27 +23,14 @@ from utils import load_automaton_data
 
 
 if __name__ == '__main__':
-    num_simulations = 16
-    h = 0.0025
-    p_range = arange(0, 1, h)
-    q_range = arange(0, 1, h)
-    densities = zeros((len(q_range), len(p_range)), dtype=float)
-    output_string = ""
+    num_simulations = cpu_count() - 8
+    p_values = [0.28, 0.29, 0.3]
+    q = 0.92
 
-    for i, q in enumerate(q_range):
-        print(f"---> Started q = {q:.4f} <---")
-        for j, p in enumerate(p_range):
-            print(f"Simulating p = {p:.4f}")
-            densities[i, j] = tricritical_fast(p, q, num_parallel=num_simulations, save=False)
-            output_string += f"{p:.4f} {q:.4f} {densities[i, j]:.6f}\n"
-
-    with open("phase_diagram.txt", "w") as f:
-        f.write(output_string)
-
-    plt.title(f"Phase diagram of TDP model")
-    plt.xlabel("p")
-    plt.ylabel("q")
-    plt.imshow(densities, extent=[0, 1, 0, 1], origin="lower")
-    plt.colorbar()
-    plt.savefig("phase_diagram.png")
-    plt.show()
+    for p in p_values:
+        purge_data()
+        print(f"\n---> Simulating p = {p} <---")
+        file_string = str(p).replace('.', 'p')
+        tricritical(p, q, num_simulations, save_series=False, save_cluster=True)
+        compile_changes("tricritical", range(num_simulations), plot_name=file_string)
+        plot_changes(file_string)
