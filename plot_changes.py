@@ -116,11 +116,11 @@ def plot_changes(filename, base_path = "outputs"):
     plt.xlabel("Cluster Size")
     plt.ylabel("Inverse CDF")
     # plt.plot(log_sizes, log_probability)
-    plt.loglog(cluster_sizes, probability)
+    plt.loglog(cluster_sizes, probability, 'o')
     plt.savefig(path.join(output_path, filename + '_cluster_distribution_log_log.png'))
     plt.show()
 
 
 if __name__ == '__main__':
-    modified_base_path = path.join("results", "tricritical", "q0", "0p74")
-    plot_changes("0p72")
+    modified_base_path = path.join("results", "tricritical", "q0p5", "max_regime", "0p55")
+    plot_changes("0p55", modified_base_path)

@@ -24,7 +24,7 @@ from utils import load_automaton_data
 
 if __name__ == '__main__':
     num_simulations = cpu_count() - 8
-    rainfall_values = [500]
+    rainfall_values = [300, 700]
 
     for rainfall in rainfall_values:
         purge_data()
