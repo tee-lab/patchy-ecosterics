@@ -8,7 +8,8 @@ def purge_data(model_name = None):
         purge_data("contact_spatial")
         purge_data("scanlon_kalahari")
         purge_data("tricritical")
-        purge_data("null")
+        purge_data("null_bootstrapped")
+        purge_data("null_ising")
         return
 
     model_path = os.path.join("models", model_name)

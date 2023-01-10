@@ -93,7 +93,7 @@ def animate(i):
 
 
 if __name__ == "__main__":
-    model = "scanlon_kalahari"
+    model = "null_ising"
     simulation_index = 0
     simulation_indices = range(0, 4)
 

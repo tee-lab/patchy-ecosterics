@@ -40,7 +40,7 @@ def generate_automaton(required_occupancy):
     return lattice
 
 
-def null(occupancy, tol, num_parallel=10):
+def null_bootstrapped(occupancy, tol, num_parallel=10):
     global length, tolerance, required_occupancy
     length = 1000
     tolerance = max(tol, 1.0 / (length * length))
@@ -52,4 +52,4 @@ def null(occupancy, tol, num_parallel=10):
 
 
 if __name__ == '__main__':
-    null(0.8, 0.01)
+    null_bootstrapped(0.8, 0.01)
