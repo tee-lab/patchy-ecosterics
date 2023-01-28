@@ -1,6 +1,6 @@
 from math import exp
 from multiprocessing import Pool
-from numpy import array, copy, sum
+from numpy import array, copy, sum, zeros
 from numpy.random import random, randint
 from pickle import dump
 import os
@@ -46,12 +46,22 @@ def single_update(lattice, req_occupancy):
     return lattice, changed_coords
 
 
-def simulate(data):
-    simulation_index, save_cluster, init_lattice, time = data
+def get_init_lattice(length, req_occupancy):
+    lattice = zeros((length, length))
+    
+    for i in range(length):
+        for j in range(length):
+            if random() < req_occupancy:
+                lattice[i, j] = 1
 
-    lattice = init_lattice
-    length = len(init_lattice)
-    req_occupancy = sum(init_lattice) / (length * length)
+    return lattice
+
+
+def simulate(data):
+    simulation_index, save_cluster, fractional_cover, length, time = data
+
+    lattice = get_init_lattice(length, fractional_cover)
+    req_occupancy = fractional_cover
 
     density_data = []
     cluster_data = []
@@ -111,13 +121,13 @@ def save_data(record):
     dump(data, open(save_path, 'wb'))
 
 
-def null_ising(init_lattices, save_cluster = True):
+def null_ising(fractional_cover, num_parallel = 10, save_cluster = True):
     # model parameters
-    num_parallel = len(init_lattices)
+    length = 100
     time = 100
 
     print(f"\nPreparing {num_parallel} automata in parallel...")
-    data = [(simulation_index, save_cluster, init_lattice, time) for simulation_index, init_lattice in zip(range(num_parallel), init_lattices)]
+    data = [(simulation_index, save_cluster, fractional_cover, length, time) for simulation_index in range(num_parallel)]
     with Pool(num_parallel) as pool:
         records = list(pool.map(simulate, data))
 
@@ -127,5 +137,4 @@ def null_ising(init_lattices, save_cluster = True):
 
 
 if __name__ == '__main__':
-    lattice = randint(0, 2, (4, 100, 100))
-    null_ising(lattice, save_cluster=False)
+    null_ising(0.5, num_parallel=4, save_cluster=False)

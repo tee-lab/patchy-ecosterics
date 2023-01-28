@@ -7,7 +7,7 @@ from numpy import abs, arange, array, zeros
 from skimage.measure import label
 # models
 from models.contact_spatial.in_place_processing import contact_spatial
-from models.null.main import null
+from models.null_ising.in_place_processing import null_ising
 from models.scanlon_kalahari.in_place_processing import scanlon_kalahari
 from models.tricritical.in_place_processing import tricritical
 from models.tricritical.dumper import tricritical as tricritical_fast
@@ -24,12 +24,12 @@ from utils import load_automaton_data
 
 if __name__ == '__main__':
     num_simulations = cpu_count() - 8
-    rainfall_values = [300, 700]
+    f_values = [0.48, 0.54, 0.6]
 
-    for rainfall in rainfall_values:
+    for f_value in f_values:
         purge_data()
-        print(f"\n---> Simulating rainfall = {rainfall} <---")
-        file_string = str(rainfall).replace('.', 'p')
-        scanlon_kalahari(rainfall, num_simulations, save_series=False, save_cluster=True)
-        compile_changes("scanlon_kalahari", range(num_simulations), plot_name=file_string)
+        print(f"\n---> Simulating f = {f_value} <---")
+        file_string = str(f_value).replace('.', 'p')
+        null_ising(f_value, num_simulations, save_cluster=True)
+        compile_changes("null_ising", range(num_simulations), plot_name=file_string)
         plot_changes(file_string)

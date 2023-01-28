@@ -7,7 +7,6 @@ from numpy import abs, arange, array, zeros
 from skimage.measure import label
 # models
 from models.contact_spatial.in_place_processing import contact_spatial
-from models.null.main import null
 from models.scanlon_kalahari.in_place_processing import scanlon_kalahari
 from models.tricritical.in_place_processing import tricritical
 from models.tricritical.dumper import tricritical as tricritical_fast
