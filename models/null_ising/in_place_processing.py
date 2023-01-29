@@ -126,7 +126,7 @@ def save_data(record):
 def null_ising(fractional_cover, num_parallel = 10, save_cluster = True):
     # model parameters
     length = 100
-    time = 50
+    time = 20
 
     print(f"\nPreparing {num_parallel} automata in parallel...")
     data = [(simulation_index, save_cluster, fractional_cover, length, time) for simulation_index in range(num_parallel)]
