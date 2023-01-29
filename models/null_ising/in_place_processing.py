@@ -48,6 +48,41 @@ def single_update(lattice, req_occupancy):
     return lattice, changed_coords
 
 
+def landscape_update(lattice, req_occupancy):
+    length = len(lattice)
+
+    for _ in range(length * length):
+        init_occupancy = sum(lattice) / (length * length)
+        init_diff = abs(init_occupancy - req_occupancy)
+
+        final_occupancy = 0
+        i = randint(0, length)
+        j = randint(0, length)
+        if lattice[i, j] == 0:
+            lattice[i, j] = 1
+            final_occupancy = init_occupancy + 1.0 / (length * length)
+        else:
+            lattice[i, j] = 0
+            final_occupancy = init_occupancy - 1.0 / (length * length)
+
+        final_diff = abs(final_occupancy - req_occupancy)
+
+        if final_diff < init_diff:
+            pass
+        else:
+            energy = abs(final_occupancy - req_occupancy)
+            acceptance_probability = exp(-energy)
+            if random() < acceptance_probability:
+                pass
+            else:
+                if lattice[i, j] == 0:
+                    lattice[i, j] = 1
+                else:
+                    lattice[i, j] = 0
+
+    return lattice
+
+
 def get_init_lattice(length, req_occupancy):
     lattice = zeros((length, length))
     
@@ -60,7 +95,7 @@ def get_init_lattice(length, req_occupancy):
 
 
 def simulate(data):
-    simulation_index, save_cluster, fractional_cover, length, time = data
+    simulation_index, save_cluster, fractional_cover, length, eq_time, simul_time = data
 
     lattice = get_init_lattice(length, fractional_cover)
     req_occupancy = fractional_cover
@@ -68,7 +103,17 @@ def simulate(data):
     density_data = []
     cluster_data = []
 
-    for i in range(int(time * length * length)):
+    for i in range(eq_time):
+        lattice = landscape_update(lattice, req_occupancy)
+        density_data.append(sum(lattice) / (length * length))
+
+        if simulation_index == 0:
+            print(f"Equilibration: {round(i * 100 / eq_time, 2)} %", end="\r")
+
+    if simulation_index == 0:
+        print("Equilibration: 100.00 %\n", end="\r")
+
+    for i in range(int(simul_time * length * length)):
         # single update
         old_lattice = copy(lattice)
         new_lattice, changed_coords = single_update(lattice, req_occupancy)
@@ -87,7 +132,7 @@ def simulate(data):
 
         # show progress
         if simulation_index == 0:
-            print(f"Simulation: {round(i * 100 / (time * length * length), 2)} %", end="\r")
+            print(f"Simulation: {round(i * 100 / (simul_time * length * length), 2)} %", end="\r")
 
     if simulation_index == 0:
         print("Simulation: 100.00 %\n", end="\r")
@@ -126,10 +171,11 @@ def save_data(record):
 def null_ising(fractional_cover, num_parallel = 10, save_cluster = True):
     # model parameters
     length = 100
-    time = 20
+    eq_time = 100
+    simul_time = 20
 
     print(f"\nPreparing {num_parallel} automata in parallel...")
-    data = [(simulation_index, save_cluster, fractional_cover, length, time) for simulation_index in range(num_parallel)]
+    data = [(simulation_index, save_cluster, fractional_cover, length, eq_time, simul_time) for simulation_index in range(num_parallel)]
     with Pool(num_parallel) as pool:
         records = list(pool.map(simulate, data))
 
@@ -139,4 +185,4 @@ def null_ising(fractional_cover, num_parallel = 10, save_cluster = True):
 
 
 if __name__ == '__main__':
-    null_ising(0.5, num_parallel=4, save_cluster=False)
+    null_ising(0.5, num_parallel=4, save_cluster=True)
