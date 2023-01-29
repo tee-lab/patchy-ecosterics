@@ -14,15 +14,17 @@ def single_update(lattice, req_occupancy):
     init_occupancy = sum(lattice) / (length * length)
     init_diff = abs(init_occupancy - req_occupancy)
 
+    final_occupancy = 0
     # flip a random cell
     i = randint(0, length)
     j = randint(0, length)
     if lattice[i, j] == 0:
         lattice[i, j] = 1
+        final_occupancy = init_occupancy + 1.0 / (length * length)
     else:
         lattice[i, j] = 0
+        final_occupancy = init_occupancy - 1.0 / (length * length)
 
-    final_occupancy = sum(lattice) / (length * length)
     final_diff = abs(final_occupancy - req_occupancy)
 
     if final_diff < init_diff:
@@ -124,7 +126,7 @@ def save_data(record):
 def null_ising(fractional_cover, num_parallel = 10, save_cluster = True):
     # model parameters
     length = 100
-    time = 100
+    time = 50
 
     print(f"\nPreparing {num_parallel} automata in parallel...")
     data = [(simulation_index, save_cluster, fractional_cover, length, time) for simulation_index in range(num_parallel)]

@@ -23,7 +23,7 @@ from utils import load_automaton_data
 
 
 if __name__ == '__main__':
-    num_simulations = 48
+    num_simulations = cpu_count() - 1
     f_values = [0.48, 0.54, 0.60]
 
     for f_value in f_values:
