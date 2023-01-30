@@ -49,11 +49,11 @@ if __name__ == '__main__':
     exp_model = "tricritical"
     q = "0"
     regime = "max"
-    p = "0.71"
+    p = "0.73"
 
     # null
     null_model = "null_ising"
-    x = "0.51"
+    x = "0.57"
 
     # processing
     regime = regime + "_regime"
