@@ -1,5 +1,5 @@
 from matplotlib import pyplot as plt
-from numpy import loadtxt, transpose
+from numpy import loadtxt, transpose, zeros
 from os import makedirs, path
 
 
@@ -41,6 +41,26 @@ def superimpose_graphs(experiment_path, exp_data, null_path, null_data, output_n
     plt.loglog(null_changes, null_changes_histogram, label="Null")
     plt.legend()
     plt.savefig(path.join(output_path, output_name + ".png"))
+    plt.show()
+
+    prob_exp = zeros(len(exp_changes))
+    prob_exp[0] = sum(exp_changes_histogram)
+    for i in range(1, len(exp_changes)):
+        prob_exp[i] = prob_exp[i - 1] - exp_changes_histogram[i]
+    
+    prob_null = zeros(len(null_changes))
+    prob_null[0] = sum(null_changes_histogram)
+    for i in range(1, len(null_changes)):
+        prob_null[i] = prob_null[i - 1] - null_changes_histogram[i]
+
+    plt.figure()
+    plt.title("Cluster Absolute Change Probabilities")
+    plt.xlabel("|dS|")
+    plt.ylabel("Inverse CDF")
+    plt.loglog(exp_changes, prob_exp, label="Experiment")
+    plt.loglog(null_changes, prob_null, label="Null")
+    plt.legend()
+    plt.savefig(path.join(output_path, output_name + "_cdf.png"))
     plt.show()
 
 

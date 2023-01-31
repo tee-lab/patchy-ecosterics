@@ -88,6 +88,20 @@ def plot_changes(filename, base_path = "outputs"):
     plt.savefig(path.join(output_path, filename + '_changes_abs_log_log.png'))
     plt.show()
 
+    probability = zeros(len(abs_changes_histogram))
+    probability[0] = sum(abs_changes_histogram)
+
+    for i in range(1, len(abs_changes_histogram)):
+        probability[i] = probability[i - 1] - abs_changes_histogram[i - 1]
+
+    plt.figure()
+    plt.title("Cluster Absolute Change Probabilities (log-log scale)")
+    plt.xlabel("|dS|")
+    plt.ylabel("Inverse CDF")
+    plt.loglog(abs_changes[3:], probability[3:])
+    plt.savefig(path.join(output_path, filename + '_changes_abs_log_log_inverse_cdf.png'))
+    plt.show()
+
     cluster_distribution_data = transpose(loadtxt(open(path.join(output_path, filename + '_cluster_distribution.txt'), 'r')))
     cluster_sizes, cluster_distribution = cluster_distribution_data[0], cluster_distribution_data[1]
 
