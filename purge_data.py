@@ -10,6 +10,7 @@ def purge_data(model_name = None):
         purge_data("tricritical")
         purge_data("null_bootstrapped")
         purge_data("null_ising")
+        purge_data("null_stochastic")
         return
 
     model_path = os.path.join("models", model_name)
