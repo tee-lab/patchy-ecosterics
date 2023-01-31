@@ -8,6 +8,9 @@ from skimage.measure import label
 # models
 from models.contact_spatial.in_place_processing import contact_spatial
 from models.scanlon_kalahari.in_place_processing import scanlon_kalahari
+from models.null_ising.in_place_processing import null_ising
+from models.null_stochastic.in_place_processing import null_stochastic
+from models.null_stochastic.spanning_cluster import null_stochastic as null_stochastic_spanning
 from models.tricritical.in_place_processing import tricritical
 from models.tricritical.dumper import tricritical as tricritical_fast
 from models.tricritical.spanning_cluster import tricritical as tricritical_spanning
@@ -72,6 +75,20 @@ if __name__ == '__main__':
     #     compile_changes("scanlon_kalahari", range(num_simulations), plot_name=file_string)
     #     plot_changes(file_string)
 
+    ###############################################
+    # generating P(dS) vs dS plots for Null Ising #
+    ###############################################
+    # num_simulations = cpu_count() - 1
+    # f_values = [0.48, 0.54, 0.60]
+
+    # for f_value in f_values:
+    #     purge_data()
+    #     print(f"\n---> Simulating f = {f_value} <---")
+    #     file_string = str(f_value).replace('.', 'p')
+    #     null_ising(f_value, num_simulations, save_cluster=True)
+    #     compile_changes("null_ising", range(num_simulations), plot_name=file_string)
+    #     plot_changes(file_string)
+
     ############################
     # generating phase diagram #
     ############################
@@ -98,4 +115,23 @@ if __name__ == '__main__':
     # plt.imshow(densities, extent=[0, 1, 0, 1], origin="lower")
     # plt.colorbar()
     # plt.savefig("phase_diagram.png")
+    # plt.show()
+
+    ######################################
+    # generating percolation probability #
+    ######################################
+    # num_simulations = cpu_count() - 4
+    # f_values = arange(0, 1, 0.01)
+    # percolation_probablities = zeros(len(f_values), dtype=float)
+
+    # for i, f in enumerate(f_values):
+    #     print(f"\n---> Simulating f = {f} <---")
+    #     file_string = str(f).replace('.', 'p')
+    #     _, percolation_probablities[i] = null_stochastic_spanning(f, num_simulations)
+
+    # plt.title(f"Percolation probability vs f (in null stochastic model)")
+    # plt.xlabel("f")
+    # plt.ylabel("Percolation Probability")
+    # plt.plot(f_values, percolation_probablities)
+    # plt.savefig("percolation_probability.png")
     # plt.show()
