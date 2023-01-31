@@ -26,17 +26,12 @@ from utils import load_automaton_data
 
 if __name__ == '__main__':
     num_simulations = cpu_count() - 4
-    f_values = arange(0, 1, 0.01)
-    percolation_probablities = zeros(len(f_values), dtype=float)
+    f_values = [0.48, 0.51]
 
-    for i, f in enumerate(f_values):
-        print(f"\n---> Simulating f = {f} <---")
-        file_string = str(f).replace('.', 'p')
-        _, percolation_probablities[i] = null_stochastic_spanning(f, num_simulations)
-
-    plt.title(f"Percolation probability vs occupancy (in null stochastic model)")
-    plt.xlabel("occupancy")
-    plt.ylabel("Percolation Probability")
-    plt.plot(f_values, percolation_probablities)
-    plt.savefig("percolation_probability.png")
-    plt.show()
+    for f_value in f_values:
+        purge_data()
+        print(f"\n---> Simulating f = {f_value} <---")
+        file_string = str(f_value).replace('.', 'p')
+        null_stochastic(f_value, num_simulations, save_cluster=True)
+        compile_changes("null_stochastic", range(num_simulations), plot_name=file_string)
+        plot_changes(file_string)
