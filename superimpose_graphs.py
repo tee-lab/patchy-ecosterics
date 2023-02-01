@@ -69,7 +69,7 @@ if __name__ == '__main__':
     exp_model = "tricritical"
     q = "0"
     regime = "max"
-    p = "0.74"
+    p = "0.7"
 
     # null
     null_model = "null_ising"
