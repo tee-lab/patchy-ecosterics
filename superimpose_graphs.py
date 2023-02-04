@@ -40,18 +40,18 @@ def superimpose_graphs(experiment_path, exp_data, null_path, null_data, output_n
     plt.loglog(exp_changes, exp_changes_histogram, label="Experiment")
     plt.loglog(null_changes, null_changes_histogram, label="Null")
     plt.legend()
-    plt.savefig(path.join(output_path, output_name + ".png"))
+    plt.savefig(path.join(output_path, "pdf.png"))
     plt.show()
 
     prob_exp = zeros(len(exp_changes))
     prob_exp[0] = sum(exp_changes_histogram)
     for i in range(1, len(exp_changes)):
-        prob_exp[i] = prob_exp[i - 1] - exp_changes_histogram[i]
+        prob_exp[i] = prob_exp[i - 1] - exp_changes_histogram[i - 1]
     
     prob_null = zeros(len(null_changes))
     prob_null[0] = sum(null_changes_histogram)
     for i in range(1, len(null_changes)):
-        prob_null[i] = prob_null[i - 1] - null_changes_histogram[i]
+        prob_null[i] = prob_null[i - 1] - null_changes_histogram[i - 1]
 
     plt.figure()
     plt.title("Cluster Absolute Change Probabilities")
@@ -60,7 +60,7 @@ def superimpose_graphs(experiment_path, exp_data, null_path, null_data, output_n
     plt.loglog(exp_changes, prob_exp, label="Experiment")
     plt.loglog(null_changes, prob_null, label="Null")
     plt.legend()
-    plt.savefig(path.join(output_path, output_name + "_cdf.png"))
+    plt.savefig(path.join(output_path, "cdf.png"))
     plt.show()
 
 
@@ -69,11 +69,11 @@ if __name__ == '__main__':
     exp_model = "tricritical"
     q = "0"
     regime = "max"
-    p = "0.7"
+    p = "0.73"
 
     # null
-    null_model = "null_ising"
-    x = "0.6"
+    null_model = "null_stochastic"
+    x = "0.57"
 
     # processing
     regime = regime + "_regime"
