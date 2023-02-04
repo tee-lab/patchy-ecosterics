@@ -34,6 +34,45 @@ def plot_changes(filename, base_path = "outputs"):
     plt.savefig(path.join(output_path, filename + '_cluster_growth_probabilities.png'))
     plt.show()
 
+    cluster_analyze_limit = 100
+    mean_ds_values, abs_ds_values, num_changes = zeros(cluster_analyze_limit), zeros(cluster_analyze_limit), zeros(cluster_analyze_limit)
+    cluster_ds_data = open(path.join(output_path, filename + '_cluster_ds.txt'), 'r').readlines()
+
+    for i, line in enumerate(cluster_ds_data):
+        cluster_size, ds_values = line.split(":")
+
+        if int(cluster_size) == cluster_analyze_limit:
+            break
+
+        ds_values = [int(ds) for ds in ds_values.strip().split(" ")]
+        mean_ds_values[i] = sum(ds_values) / len(ds_values)
+        abs_ds_values[i] = sum([abs(ds) for ds in ds_values]) / len(ds_values)
+        num_changes[i] = len(ds_values)
+
+    plt.figure()
+    plt.title("Mean Cluster Change")
+    plt.xlabel("Cluster Size")
+    plt.ylabel("Mean dS")
+    plt.plot(range(cluster_analyze_limit), mean_ds_values)
+    plt.savefig(path.join(output_path, filename + '_cluster_mean_ds.png'))
+    plt.show()
+
+    plt.figure()
+    plt.title("Mean Absolute Cluster Change")
+    plt.xlabel("Cluster Size")
+    plt.ylabel("Mean |dS|")
+    plt.plot(range(cluster_analyze_limit), abs_ds_values)
+    plt.savefig(path.join(output_path, filename + '_cluster_mean_abs_ds.png'))
+    plt.show()
+
+    plt.figure()
+    plt.title("Number of Cluster Changes")
+    plt.xlabel("Cluster Size")
+    plt.ylabel("Number of Changes")
+    plt.plot(range(cluster_analyze_limit), num_changes)
+    plt.savefig(path.join(output_path, filename + '_cluster_num_changes.png'))
+    plt.show()
+
     changes_data = transpose(loadtxt(open(path.join(output_path, filename + '_changes.txt'), 'r')))
     changes, changes_histogram = list(changes_data[0]), changes_data[1]
     changes_probabilities = changes_histogram / sum(changes_histogram)

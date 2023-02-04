@@ -1,15 +1,17 @@
 from matplotlib import pyplot as plt
 from numpy import histogram, zeros
 from os import makedirs, path
-from utils import load_automaton_data
 
 from depth_first_clustering import depth_first_clustering
+from utils import load_automaton_data
 
 
 def compile_changes(model_name, simulation_indices, plot_name='data'):
     grown_clusters = []
     decayed_clusters = []
     changes_list = []
+    cluster_ds = [[] for _ in range(10000)]
+
     final_lattices = []
     final_densities = []
 
@@ -25,26 +27,49 @@ def compile_changes(model_name, simulation_indices, plot_name='data'):
 
         for update in cluster_data:
             if update is None:
-                changes_list.append(0)
+                change = 0
+                changes_list.append(change)
+
             elif update["type"] == "growth":
+                change = 1
+                changes_list.append(change)
+                cluster_ds[update["size"]].append(change)
                 grown_clusters.append(update["size"])
-                changes_list.append(1)
+
             elif update["type"] == "decay":
+                change = -1
+                changes_list.append(change)
+                cluster_ds[update["size"]].append(change)
                 decayed_clusters.append(update["size"])
-                changes_list.append(-1)
+
             elif update["type"] == "appearance":
-                changes_list.append(1)
+                change = 1
+                changes_list.append(change)
+                cluster_ds[0].append(change)
+                grown_clusters.append(0)
+
             elif update["type"] == "disappearance":
-                changes_list.append(-1)
+                change = -1
+                changes_list.append(change)
+                cluster_ds[1].append(change)
+                decayed_clusters.append(1)
+
             elif update["type"] == "merge":
                 initial_sizes, final_size = update["initial_sizes"], update["final_size"]
+                change = int(final_size - max(initial_sizes))
+                changes_list.append(change)
+
                 for initial_size in initial_sizes:
+                    cluster_ds[initial_size].append(final_size - initial_size)
                     grown_clusters.append(initial_size)
-                changes_list.append(int(final_size - max(initial_sizes)))
+
             elif update["type"] == "split":
                 initial_size, final_sizes = update["initial_size"], update["final_sizes"]
+                change = int(max(final_sizes) - int(initial_size))
+                changes_list.append(change)
+
+                cluster_ds[initial_size].append(change)
                 decayed_clusters.append(initial_size)
-                changes_list.append(int(max(final_sizes)) - int(initial_size))
 
     print("Computing histogram")
     start = 2
@@ -89,6 +114,7 @@ def compile_changes(model_name, simulation_indices, plot_name='data'):
     cluster_distribution = cluster_distribution[1:max_index + 1]
     cluster_distribution /= len(final_lattices)
 
+    print("Saving cluster growth probabilities ...")
     fp = open(path.join(folder_path, plot_name + '_cluster_growth_probabilities.txt'), "w")
     output_string = ""
     for size in sizes:
@@ -114,6 +140,18 @@ def compile_changes(model_name, simulation_indices, plot_name='data'):
     if multiple_true:
         changes_histogram = changes_histogram / min_positive_value
 
+    print("Saving dS values undergone by each cluster ...")
+    fp = open(path.join(folder_path, plot_name + '_cluster_ds.txt'), "w")
+    output_string = ""
+    for i in range(len(cluster_ds)):
+        output_string += f"{i}: "
+        for value in cluster_ds[i]:
+            output_string += f" {value}"
+        output_string += "\n"
+    fp.write(output_string)
+    fp.close()
+
+    print("Saving cluster change values ...")
     fp = open(path.join(folder_path, plot_name + '_changes.txt'), 'w')
     output_string = ""
     for change in changes:
@@ -121,6 +159,7 @@ def compile_changes(model_name, simulation_indices, plot_name='data'):
     fp.write(output_string)
     fp.close()
 
+    print("Saving cluster distribution ...")
     fp = open(path.join(folder_path, plot_name + '_cluster_distribution.txt'), 'w')
     output_string = ""
     for size in range(1, len(cluster_distribution)):
@@ -128,6 +167,7 @@ def compile_changes(model_name, simulation_indices, plot_name='data'):
     fp.write(output_string)
     fp.close()
 
+    print("Saving final densities ...")
     fp = open(path.join(folder_path, plot_name + '_densities.txt'), "w")
     output_string = ""
     for i, density in enumerate(final_densities):

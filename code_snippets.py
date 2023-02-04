@@ -117,9 +117,9 @@ if __name__ == '__main__':
     # plt.savefig("phase_diagram.png")
     # plt.show()
 
-    ######################################
-    # generating percolation probability #
-    ######################################
+    ################################################################
+    # generating percolation probability for null stochastic model #
+    ################################################################
     # num_simulations = cpu_count() - 4
     # f_values = arange(0, 1, 0.01)
     # percolation_probablities = zeros(len(f_values), dtype=float)
@@ -133,5 +133,24 @@ if __name__ == '__main__':
     # plt.xlabel("f")
     # plt.ylabel("Percolation Probability")
     # plt.plot(f_values, percolation_probablities)
+    # plt.savefig("percolation_probability.png")
+    # plt.show()
+
+    ####################################################
+    # generating percolation probability for tdp model #
+    ####################################################
+    # num_simulations = cpu_count() - 1
+    # p_values = arange(0, 1, 0.01)
+    # q = 0.8
+    # percolation_probablities = zeros(len(p_values), dtype=float)
+
+    # for i, p in enumerate(p_values):
+    #     print(f"\n---> Simulating p = {p} <---")
+    #     _, percolation_probablities[i] = tricritical_spanning(p, q, num_simulations)
+
+    # plt.title(f"Percolation probability vs birth probability for q = {q:.2f}")
+    # plt.xlabel("Birth probability")
+    # plt.ylabel("Percolation probability")
+    # plt.plot(p_values, percolation_probablities)
     # plt.savefig("percolation_probability.png")
     # plt.show()
