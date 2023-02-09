@@ -175,13 +175,6 @@ def simulate(data):
         if save_series:
             series_data.append(copy(lattice))
 
-        # show progress
-        # if simulation_index == 0:
-        #     print(f"Equilibriation: {round(i * 100 / eq_time)} %", end="\r")
-
-    # if simulation_index == 0:
-    #     print("Equilibriation: 100 %\n", end="\r")
-
     if simulation_index == 0:
         iterator = tqdm(range(int(simulation_time * length * length)))
     else:
@@ -206,13 +199,6 @@ def simulate(data):
 
             if save_series:
                 series_data.append(copy(lattice))
-
-        # show progress
-        # if simulation_index == 0:
-        #     print(f"Simulation: {round(i * 100 / (simulation_time * length * length), 2)} %", end="\r")
-
-    # if simulation_index == 0:
-    #     print("Simulation: 100.00 %\n", end="\r")
 
     if len(series_data) == 1:
         series_data = None
