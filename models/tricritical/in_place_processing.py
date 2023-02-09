@@ -2,6 +2,7 @@ from multiprocessing import Pool
 from numpy import array, copy, sum
 from numpy.random import random, randint
 from pickle import dump
+from tqdm import tqdm
 import os
 
 from cluster_dynamics import get_cluster_dynamics
@@ -161,7 +162,12 @@ def simulate(data):
     series_data = []
     cluster_data = []
 
-    for i in range(eq_time): 
+    if simulation_index == 0:
+        iterator = tqdm(range(eq_time))
+    else:
+        iterator = range(eq_time)
+
+    for i in iterator: 
         lattice = landscape_update(lattice, p, q)
 
         # save density and series data
@@ -170,13 +176,18 @@ def simulate(data):
             series_data.append(copy(lattice))
 
         # show progress
-        if simulation_index == 0:
-            print(f"Equilibriation: {round(i * 100 / eq_time)} %", end="\r")
+        # if simulation_index == 0:
+        #     print(f"Equilibriation: {round(i * 100 / eq_time)} %", end="\r")
+
+    # if simulation_index == 0:
+    #     print("Equilibriation: 100 %\n", end="\r")
 
     if simulation_index == 0:
-        print("Equilibriation: 100 %\n", end="\r")
+        iterator = tqdm(range(int(simulation_time * length * length)))
+    else:
+        iterator = range(int(simulation_time * length * length))
 
-    for i in range(int(simulation_time * length * length)):
+    for i in iterator:
         # single update
         old_lattice = copy(lattice)
         new_lattice, changed_coords = single_update(lattice, p, q)
@@ -197,11 +208,11 @@ def simulate(data):
                 series_data.append(copy(lattice))
 
         # show progress
-        if simulation_index == 0:
-            print(f"Simulation: {round(i * 100 / (simulation_time * length * length), 2)} %", end="\r")
+        # if simulation_index == 0:
+        #     print(f"Simulation: {round(i * 100 / (simulation_time * length * length), 2)} %", end="\r")
 
-    if simulation_index == 0:
-        print("Simulation: 100.00 %\n", end="\r")
+    # if simulation_index == 0:
+    #     print("Simulation: 100.00 %\n", end="\r")
 
     if len(series_data) == 1:
         series_data = None

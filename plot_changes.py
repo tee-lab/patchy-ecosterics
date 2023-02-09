@@ -34,19 +34,18 @@ def plot_changes(filename, base_path = "outputs"):
     plt.savefig(path.join(output_path, filename + '_cluster_growth_probabilities.png'))
     plt.show()
 
-    cluster_analyze_limit = 100
-    mean_ds_values, abs_ds_values, num_changes = zeros(cluster_analyze_limit), zeros(cluster_analyze_limit), zeros(cluster_analyze_limit)
     cluster_ds_data = open(path.join(output_path, filename + '_cluster_ds.txt'), 'r').readlines()
+    cluster_analyze_limit = 500
+    mean_ds_values, num_changes = zeros(cluster_analyze_limit), zeros(cluster_analyze_limit)
 
     for i, line in enumerate(cluster_ds_data):
         cluster_size, ds_values = line.split(":")
 
-        if int(cluster_size) == cluster_analyze_limit:
+        if int(cluster_size) == cluster_analyze_limit or ds_values == " \n":
             break
 
         ds_values = [int(ds) for ds in ds_values.strip().split(" ")]
         mean_ds_values[i] = sum(ds_values) / len(ds_values)
-        abs_ds_values[i] = sum([abs(ds) for ds in ds_values]) / len(ds_values)
         num_changes[i] = len(ds_values)
 
     plt.figure()
@@ -55,14 +54,6 @@ def plot_changes(filename, base_path = "outputs"):
     plt.ylabel("Mean dS")
     plt.plot(range(cluster_analyze_limit), mean_ds_values)
     plt.savefig(path.join(output_path, filename + '_cluster_mean_ds.png'))
-    plt.show()
-
-    plt.figure()
-    plt.title("Mean Absolute Cluster Change")
-    plt.xlabel("Cluster Size")
-    plt.ylabel("Mean |dS|")
-    plt.plot(range(cluster_analyze_limit), abs_ds_values)
-    plt.savefig(path.join(output_path, filename + '_cluster_mean_abs_ds.png'))
     plt.show()
 
     plt.figure()
@@ -85,17 +76,6 @@ def plot_changes(filename, base_path = "outputs"):
     plt.savefig(path.join(output_path, filename + '_changes.png'))
     plt.show()
 
-    zero_index = list(changes).index(0)
-    offsets = 25
-
-    plt.figure()
-    plt.title("Cluster Chance Probabilities (zoomed in)")
-    plt.xlabel("dS")
-    plt.ylabel("P(dS)")
-    plt.plot(changes[zero_index - offsets:zero_index + offsets], changes_probabilities[zero_index - offsets:zero_index + offsets])
-    plt.savefig(path.join(output_path, filename + '_changes_zoomed.png'))
-    plt.show()
-
     abs_changes = list(range(0, int(max(max(changes), -min(changes)))))
     abs_changes_histogram = [0] * len(abs_changes)
 
@@ -110,14 +90,6 @@ def plot_changes(filename, base_path = "outputs"):
         abs_changes_histogram[abs_change] = value
 
     abs_changes_histogram[0] = abs_changes_histogram[0] / 2
-
-    plt.figure()
-    plt.title("Cluster Absolute Change Probabilities")
-    plt.xlabel("|dS|")
-    plt.ylabel("P(|dS|)")
-    plt.plot(abs_changes, abs_changes_histogram)
-    plt.savefig(path.join(output_path, filename + '_changes_abs.png'))
-    plt.show()
 
     plt.figure()
     plt.title("Cluster Absolute Change Probabilities (log-log scale)")
@@ -144,36 +116,21 @@ def plot_changes(filename, base_path = "outputs"):
     cluster_distribution_data = transpose(loadtxt(open(path.join(output_path, filename + '_cluster_distribution.txt'), 'r')))
     cluster_sizes, cluster_distribution = cluster_distribution_data[0], cluster_distribution_data[1]
 
-    plt.figure()
-    plt.title("Cluster Size Distribution")
-    plt.xlabel("Cluster Size")
-    plt.ylabel("P(S)")
-    plt.plot(cluster_sizes, cluster_distribution)
-    plt.savefig(path.join(output_path, filename + '_cluster_distribution.png'))
-    plt.show()
-
     probability = zeros(len(cluster_distribution))
     probability[0] = sum(cluster_distribution)
 
     for i in range(1, len(cluster_distribution)):
         probability[i] = probability[i - 1] - cluster_distribution[i - 1]
 
-    # log_probability = log(probability)
-    # log_sizes = log(cluster_sizes)
-
-    # log_probability = trim_log_probabilities(log_probability)
-    # log_sizes = log_sizes[:len(log_probability)]
-
     plt.figure()
     plt.title("Cluster Size Distribution (log-log scale)")
     plt.xlabel("Cluster Size")
     plt.ylabel("Inverse CDF")
-    # plt.plot(log_sizes, log_probability)
     plt.loglog(cluster_sizes, probability, 'o')
     plt.savefig(path.join(output_path, filename + '_cluster_distribution_log_log.png'))
     plt.show()
 
 
 if __name__ == '__main__':
-    modified_base_path = path.join("results", "tricritical", "q0p5", "max_regime", "0p55")
-    plot_changes("0p55", modified_base_path)
+    modified_base_path = path.join("results", "tricritical", "q0p2", "0p63")
+    plot_changes("0p63", modified_base_path)

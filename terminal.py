@@ -26,8 +26,8 @@ from utils import load_automaton_data
 
 if __name__ == '__main__':
     num_simulations = cpu_count() - 1
-    p_values = [0.65, 0.66, 0.67]
-    q = 0.2
+    p_values = [0.7, 0.71]
+    q = 0
 
     for p in p_values:
         purge_data()

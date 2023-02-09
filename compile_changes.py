@@ -58,9 +58,9 @@ def compile_changes(model_name, simulation_indices, plot_name='data'):
                 initial_sizes, final_size = update["initial_sizes"], update["final_size"]
                 change = int(final_size - max(initial_sizes))
                 changes_list.append(change)
+                cluster_ds[int(max(initial_sizes))].append(change)
 
                 for initial_size in initial_sizes:
-                    cluster_ds[initial_size].append(final_size - initial_size)
                     grown_clusters.append(initial_size)
 
             elif update["type"] == "split":
