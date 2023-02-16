@@ -26,12 +26,12 @@ from utils import load_automaton_data
 
 if __name__ == '__main__':
     num_simulations = cpu_count() - 1
-    f_values = [0.54, 0.57, 0.6]
+    rainfall_values = [300, 400]
 
-    for f_value in f_values:
+    for rainfall in rainfall_values:
         purge_data()
-        print(f"\n---> Simulating f = {f_value} <---")
-        file_string = str(f_value).replace('.', 'p')
-        null_stochastic(f_value, num_simulations, save_cluster=True)
-        compile_changes("null_stochastic", range(num_simulations), plot_name=file_string)
+        print(f"\n---> Simulating rainfall = {rainfall} <---")
+        file_string = str(rainfall).replace('.', 'p')
+        scanlon_kalahari(rainfall, num_simulations, save_series=False, save_cluster=True)
+        compile_changes("scanlon_kalahari", range(num_simulations), plot_name=file_string)
         plot_changes(file_string)
