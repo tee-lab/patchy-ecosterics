@@ -35,8 +35,8 @@ def plot_changes(filename, base_path = "outputs"):
     plt.show()
 
     cluster_ds_data = open(path.join(output_path, filename + '_cluster_ds.txt'), 'r').readlines()
-    cluster_analyze_limit = 500
-    mean_ds_values, num_changes = zeros(cluster_analyze_limit), zeros(cluster_analyze_limit)
+    cluster_analyze_limit = 200
+    mean_ds_values, mean_ds_sq_values, num_changes = zeros(cluster_analyze_limit), zeros(cluster_analyze_limit), zeros(cluster_analyze_limit)
 
     for i, line in enumerate(cluster_ds_data):
         cluster_size, ds_values = line.split(":")
@@ -45,7 +45,9 @@ def plot_changes(filename, base_path = "outputs"):
             break
 
         ds_values = [int(ds) for ds in ds_values.strip().split(" ")]
+        ds_sq_values = [ds ** 2 for ds in ds_values]
         mean_ds_values[i] = sum(ds_values) / len(ds_values)
+        mean_ds_sq_values[i] = sum(ds_sq_values) / len(ds_sq_values)
         num_changes[i] = len(ds_values)
 
     plt.figure()
@@ -54,6 +56,14 @@ def plot_changes(filename, base_path = "outputs"):
     plt.ylabel("Mean dS")
     plt.plot(range(cluster_analyze_limit), mean_ds_values)
     plt.savefig(path.join(output_path, filename + '_cluster_mean_ds.png'))
+    plt.show()
+
+    plt.figure()
+    plt.title("Mean Cluster Change Squared")
+    plt.xlabel("Cluster Size")
+    plt.ylabel("Mean dS^2")
+    plt.plot(range(cluster_analyze_limit), mean_ds_sq_values)
+    plt.savefig(path.join(output_path, filename + '_cluster_mean_ds_sq.png'))
     plt.show()
 
     plt.figure()
@@ -132,5 +142,5 @@ def plot_changes(filename, base_path = "outputs"):
 
 
 if __name__ == '__main__':
-    modified_base_path = path.join("results", "tricritical", "q0p2", "0p63")
-    plot_changes("0p63", modified_base_path)
+    modified_base_path = path.join("results", "tricritical", "q0", "alternate", "0p74")
+    plot_changes("0p74", modified_base_path)
