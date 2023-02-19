@@ -142,5 +142,6 @@ def plot_changes(filename, base_path = "outputs"):
 
 
 if __name__ == '__main__':
-    modified_base_path = path.join("results", "tricritical", "q0", "alternate", "0p74")
-    plot_changes("0p74", modified_base_path)
+    # modified_base_path = path.join("results", "tricritical", "q0", "alternate", "0p74")
+    modified_base_path = path.join("results", "null_stochastic", "0p6")
+    plot_changes("0p6", modified_base_path)
