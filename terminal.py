@@ -11,6 +11,7 @@ from models.null_ising.in_place_processing import null_ising
 from models.null_stochastic.in_place_processing import null_stochastic
 from models.null_stochastic.spanning_cluster import null_stochastic as null_stochastic_spanning
 from models.scanlon_kalahari.in_place_processing import scanlon_kalahari
+from models.scanlon_kalahari.spanning_cluster import scanlon_kalahari as scanlon_kalahari_spanning
 from models.tricritical.in_place_processing import tricritical
 from models.tricritical.dumper import tricritical as tricritical_fast
 from models.tricritical.spanning_cluster import tricritical as tricritical_spanning
@@ -25,13 +26,20 @@ from utils import load_automaton_data
 
 
 if __name__ == '__main__':
-    num_simulations = cpu_count() - 1
-    rainfall_values = [500, 600, 700]
+    num_simulations = 10
+    rainfall_values = arange(300, 1000, 100)
+    percolation_probablities = zeros(len(rainfall_values), dtype=float)
 
-    for rainfall in rainfall_values:
-        purge_data()
+    for i, rainfall in enumerate(rainfall_values):
         print(f"\n---> Simulating rainfall = {rainfall} <---")
-        file_string = str(rainfall).replace('.', 'p')
-        scanlon_kalahari(rainfall, num_simulations, save_series=False, save_cluster=True)
-        compile_changes("scanlon_kalahari", range(num_simulations), plot_name=file_string)
-        plot_changes(file_string)
+        d, p = scanlon_kalahari_spanning(rainfall, num_simulations)
+        
+        print(d, p)
+        percolation_probablities[i] = p
+
+    plt.title(f"Percolation probability vs birth probability for Scanlon Kalahari model")
+    plt.xlabel("Rainfall")
+    plt.ylabel("Percolation probability")
+    plt.plot(rainfall_values, percolation_probablities)
+    plt.savefig("percolation_probability.png")
+    plt.show()

@@ -154,3 +154,21 @@ if __name__ == '__main__':
     # plt.plot(p_values, percolation_probablities)
     # plt.savefig("percolation_probability.png")
     # plt.show()
+
+    ########################################################
+    # generating percolation probability for scanlon model #
+    ########################################################
+    # num_simulations = cpu_count() - 1
+    # rainfall_values = arange(0, 1000, 100)
+    # percolation_probablities = zeros(len(rainfall_values), dtype=float)
+
+    # for i, rainfall in enumerate(rainfall_values):
+    #     print(f"\n---> Simulating rainfall = {rainfall} <---")
+    #     _, percolation_probablities[i] = scanlon_kalahari_spanning(rainfall, num_simulations)
+
+    # plt.title(f"Percolation probability vs birth probability for Scanlon Kalahari model")
+    # plt.xlabel("Birth probability")
+    # plt.ylabel("Percolation probability")
+    # plt.plot(rainfall_values, percolation_probablities)
+    # plt.savefig("percolation_probability.png")
+    # plt.show()
