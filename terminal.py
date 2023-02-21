@@ -27,7 +27,7 @@ from utils import load_automaton_data
 
 if __name__ == '__main__':
     num_simulations = cpu_count() - 1
-    p_values = [0.7, 0.71]
+    p_values = [0.72, 0.73, 0.74]
     q = 0
 
     for p in p_values:
