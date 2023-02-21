@@ -26,20 +26,14 @@ from utils import load_automaton_data
 
 
 if __name__ == '__main__':
-    num_simulations = 10
-    rainfall_values = arange(300, 1000, 100)
-    percolation_probablities = zeros(len(rainfall_values), dtype=float)
+    num_simulations = cpu_count() - 1
+    p_values = [0.70, 0.71]
+    q = 0
 
-    for i, rainfall in enumerate(rainfall_values):
-        print(f"\n---> Simulating rainfall = {rainfall} <---")
-        d, p = scanlon_kalahari_spanning(rainfall, num_simulations)
-        
-        print(d, p)
-        percolation_probablities[i] = p
-
-    plt.title(f"Percolation probability vs birth probability for Scanlon Kalahari model")
-    plt.xlabel("Rainfall")
-    plt.ylabel("Percolation probability")
-    plt.plot(rainfall_values, percolation_probablities)
-    plt.savefig("percolation_probability.png")
-    plt.show()
+    for p in p_values:
+        purge_data()
+        print(f"\n---> Simulating p = {p} <---")
+        file_string = str(p).replace('.', 'p')
+        tricritical(p, q, num_simulations, save_series=False, save_cluster=True)
+        compile_changes("tricritical", range(num_simulations), plot_name=file_string)
+        plot_changes(file_string)
