@@ -101,9 +101,7 @@ def compile_changes(model_name, simulation_indices, plot_name='data'):
     cluster_distribution = zeros((lattice_length * lattice_length + 1))
 
     for lattice in final_lattices:
-        distribution = depth_first_clustering(lattice, False)
-        probabilities = distribution / sum(distribution[1:])
-        cluster_distribution += probabilities
+        cluster_distribution += depth_first_clustering(lattice, False)
 
     max_index = -1
     for i in range(len(cluster_distribution) - 1, -1, -1):
@@ -111,8 +109,7 @@ def compile_changes(model_name, simulation_indices, plot_name='data'):
             max_index = i
             break
 
-    cluster_distribution = cluster_distribution[1:max_index + 1]
-    cluster_distribution /= len(final_lattices)
+    cluster_distribution = cluster_distribution[:max_index + 1]
 
     print("Saving cluster growth probabilities ...")
     fp = open(path.join(folder_path, plot_name + '_cluster_growth_probabilities.txt'), "w")
@@ -144,10 +141,11 @@ def compile_changes(model_name, simulation_indices, plot_name='data'):
     fp = open(path.join(folder_path, plot_name + '_cluster_ds.txt'), "w")
     output_string = ""
     for i in range(len(cluster_ds)):
-        output_string += f"{i}: "
-        for value in cluster_ds[i]:
-            output_string += f" {value}"
-        output_string += "\n"
+        if len(cluster_ds[i]) == 0:
+            continue
+        mean = sum(cluster_ds[i]) / len(cluster_ds[i])
+        mean_sq = sum([value ** 2 for value in cluster_ds[i]]) / len(cluster_ds[i])
+        output_string += f"{i} {mean} {mean_sq} {len(cluster_ds[i])}\n"
     fp.write(output_string)
     fp.close()
 
@@ -162,8 +160,8 @@ def compile_changes(model_name, simulation_indices, plot_name='data'):
     print("Saving cluster distribution ...")
     fp = open(path.join(folder_path, plot_name + '_cluster_distribution.txt'), 'w')
     output_string = ""
-    for size in range(1, len(cluster_distribution)):
-        output_string += f"{size} {cluster_distribution[size]}\n"
+    for i, num in enumerate(cluster_distribution):
+        output_string += f"{i} {num}\n"
     fp.write(output_string)
     fp.close()
 
