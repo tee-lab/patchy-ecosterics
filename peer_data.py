@@ -57,6 +57,20 @@ def plot_average_density(model_name, simulation_indices):
     plt.show()
 
 
+def plot_final_lattice(model_name, simulation_index):
+    data = load_automaton_data(model_name, simulation_index)
+    series_data = data["series_data"]
+    final_lattice = series_data[-1]
+
+    plt.title(f"Final lattice for {model_name}")
+    plt.imshow(final_lattice)
+    plt.show()
+
+    for i in range(len(final_lattice)):
+        for j in range(len(final_lattice[0])):
+            print(int(final_lattice[i][j]), end=" ")
+        print()
+
 
 def print_cluster_data(model_name, simulation_index):
     data = load_automaton_data(model_name, simulation_index)
@@ -93,12 +107,13 @@ def animate(i):
 
 
 if __name__ == "__main__":
-    model = "null_stochastic"
+    model = "tricritical"
     simulation_index = 0
     simulation_indices = range(0, 4)
 
     data_summary(model, simulation_index)
     plot_density(model, simulation_index)
     plot_average_density(model, simulation_indices)
+    plot_final_lattice(model, simulation_index)
     print_cluster_data(model, simulation_index)
     visualize_series_data(model, simulation_index)

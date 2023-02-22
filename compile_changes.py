@@ -175,4 +175,4 @@ def compile_changes(model_name, simulation_indices, plot_name='data'):
 
 
 if __name__ == '__main__':
-    compile_changes("tricritical", range(4), plot_name="0p72")
+    compile_changes("tricritical", [0], plot_name="0p73")

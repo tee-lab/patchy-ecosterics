@@ -121,7 +121,7 @@ def plot_changes(filename, base_path = "outputs"):
 
 
 if __name__ == '__main__':
-    # modified_base_path = path.join("results", "tricritical", "q0", "alternate", "0p74")
+    modified_base_path = path.join("results", "tricritical", "q0", "alternate", "0p73")
     # modified_base_path = path.join("results", "null_stochastic", "0p6")
-    modified_base_path = path.join("results", "scanlon_kalahari", "700")
-    plot_changes("700", modified_base_path)
+    # modified_base_path = path.join("results", "scanlon_kalahari", "700")
+    plot_changes("0p73")

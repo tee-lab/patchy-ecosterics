@@ -268,4 +268,4 @@ def tricritical(p_ext = 0.5, q_ext = 0.5, num_parallel = 10, save_series = False
 
 
 if __name__ == '__main__':
-    print(tricritical(0.72, 0.0, 4, save_series=True, save_cluster=True))
+    print(tricritical(0.73, 0.0, 1, save_series=True, save_cluster=True))
