@@ -33,8 +33,8 @@ def compile_changes(model_name, simulation_indices, plot_name='data'):
             elif update["type"] == "growth":
                 change = 1
                 changes_list.append(change)
-                cluster_ds[update["size"]].append(change)
-                grown_clusters.append(update["size"])
+                cluster_ds[update["size"] - 1].append(change)
+                grown_clusters.append(update["size"] - 1)
 
             elif update["type"] == "decay":
                 change = -1

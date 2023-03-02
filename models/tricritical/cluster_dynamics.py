@@ -1,10 +1,46 @@
 from matplotlib import pyplot as plt
-from numpy import uint64, zeros
+from numpy import uint64, unique, zeros
 from skimage.measure import label
 
 
-def get_cluster_sizes(labelled_lattice):
-    num_clusters = labelled_lattice.max()
+def get_changed_lattice(old_labels, changed_coords):
+    new_labels = old_labels.copy()
+
+    if old_labels[changed_coords] == 0:
+        # a point changed from 0 to 1
+        num_neighbours = get_num_neighbours(old_labels, changed_coords)
+        clusters_around = get_clusters_around(old_labels, changed_coords)
+
+        if num_neighbours == 0:
+            # appearance
+            new_labels[changed_coords] = old_labels.max() + 1
+        elif num_neighbours == 1:
+            # growth
+            new_labels[changed_coords] = list(clusters_around)[0]
+        else:
+            new_labels[new_labels > 0] = 1
+            new_labels[changed_coords] = 1
+            new_labels = label(new_labels, background=0, connectivity=1)
+    else:
+        # a point changed from 1 to 0
+        num_neighbours = get_num_neighbours(old_labels, changed_coords)
+        clusters_around = get_clusters_around(old_labels, changed_coords)
+
+        if num_neighbours == 0:
+            # disappearance
+            new_labels[changed_coords] = 0
+        elif num_neighbours == 1:
+            # decay
+            new_labels[changed_coords] = 0
+        else:
+            new_labels[new_labels > 0] = 1
+            new_labels[changed_coords] = 0
+            new_labels = label(new_labels, background=0, connectivity=1)
+
+    return new_labels
+
+
+def get_cluster_sizes(labelled_lattice, num_clusters):
     cluster_sizes = zeros(num_clusters + 1, dtype=uint64)
 
     for i in range(labelled_lattice.shape[0]):
@@ -30,33 +66,46 @@ def get_clusters_around(labelled_lattice, coords):
     return clusters
 
 
-def get_cluster_dynamics(old_lattice, new_lattice, changed_coords):
-    old_labels = label(old_lattice, background=0, connectivity=1)
-    new_labels = label(new_lattice, background=0, connectivity=1)
+def get_num_neighbours(labelled_lattice, coords):
+    i, j = coords
+    num_neighbours = 0
 
-    num_old_clusters = old_labels.max()
-    num_new_clusters = new_labels.max()
+    if i > 0 and labelled_lattice[i - 1, j]:
+        num_neighbours += 1
+    if i < labelled_lattice.shape[0] - 1 and labelled_lattice[i + 1, j]:
+        num_neighbours += 1
+    if j > 0 and labelled_lattice[i, j - 1]:
+        num_neighbours += 1
+    if j < labelled_lattice.shape[1] - 1 and labelled_lattice[i, j + 1]:
+        num_neighbours += 1
 
-    old_cluster_sizes = get_cluster_sizes(old_labels)
-    new_cluster_sizes = get_cluster_sizes(new_labels)
+    return num_neighbours
+
+
+def get_cluster_dynamics(old_labels, new_labels, changed_coords):
+    num_old_clusters = unique(old_labels).size - 1
+    num_new_clusters = unique(new_labels).size - 1
+
+    # old_cluster_sizes = get_cluster_sizes(old_labels, num_old_clusters)
+    # new_cluster_sizes = get_cluster_sizes(new_labels, num_new_clusters)
 
     status = {}
 
     if num_old_clusters == num_new_clusters:
-        if old_lattice[changed_coords] == 1:
+        if old_labels[changed_coords] > 0:
             status['type'] = 'decay'
-            status['size'] = old_cluster_sizes[old_labels[changed_coords]]
-        elif new_lattice[changed_coords] == 1:
+            status['size'] = len(old_labels[old_labels == old_labels[changed_coords]])
+        elif new_labels[changed_coords] > 0:
             status['type'] = 'growth'
-            status['size'] = old_cluster_sizes[new_labels[changed_coords]]
+            status['size'] = len(new_labels[new_labels == new_labels[changed_coords]])
     elif num_old_clusters < num_new_clusters:
         split_clusters = get_clusters_around(new_labels, changed_coords)
 
         if len(split_clusters) > 1:
             status['type'] = 'split'
             parent_cluster = old_labels[changed_coords]
-            status['initial_size'] = old_cluster_sizes[parent_cluster]
-            status['final_sizes'] = [new_cluster_sizes[cluster] for cluster in split_clusters]
+            status['initial_size'] = len(old_labels[old_labels == parent_cluster])
+            status['final_sizes'] = [len(new_labels[new_labels == cluster]) for cluster in split_clusters]
         else:
             status['type'] = 'appearance'
     else:
@@ -65,8 +114,8 @@ def get_cluster_dynamics(old_lattice, new_lattice, changed_coords):
         if len(merging_clusters) > 1:
             status['type'] = 'merge'
             merged_cluster = new_labels[changed_coords]
-            status['initial_sizes'] = [old_cluster_sizes[cluster] for cluster in merging_clusters]
-            status['final_size'] = new_cluster_sizes[merged_cluster]
+            status['initial_sizes'] = [len(old_labels[old_labels == cluster]) for cluster in merging_clusters]
+            status['final_size'] = len(new_labels[new_labels == merged_cluster])
         else:
             status['type'] = 'disappearance'
 
@@ -79,10 +128,16 @@ def test_growth():
 
     old_lattice[1:3, 1:3] = 1
     new_lattice[1:3, 1:3] = 1
-
     new_lattice[2, 3] = 1
+
+    old_labels = label(old_lattice, background=0, connectivity=1)
+    new_labels = label(new_lattice, background=0, connectivity=1)
+
+    num_old_clusters = old_labels.max()
+    num_new_clusters = new_labels.max()
+
     changed_coords = (2, 3)
-    status = get_cluster_dynamics(old_lattice, new_lattice, changed_coords)
+    status = get_cluster_dynamics(old_labels, new_labels, changed_coords)
     print(status)
 
     plt.subplot(121)
@@ -100,10 +155,16 @@ def test_decay():
 
     old_lattice[1:3, 1:3] = 1
     new_lattice[1:3, 1:3] = 1
-
     new_lattice[2, 2] = 0
+
+    old_labels = label(old_lattice, background=0, connectivity=1)
+    new_labels = label(new_lattice, background=0, connectivity=1)
+
+    num_old_clusters = old_labels.max()
+    num_new_clusters = new_labels.max()
+
     changed_coords = (2, 2)
-    status = get_cluster_dynamics(old_lattice, new_lattice, changed_coords)
+    status = get_cluster_dynamics(old_labels, new_labels, changed_coords)
     print(status)
 
     plt.subplot(121)
@@ -124,10 +185,16 @@ def test_merge():
     old_lattice[2:, 1] = 1
     old_lattice[2:, 3] = 1
     new_lattice = old_lattice.copy()
-
     new_lattice[2, 2] = 1
+
+    old_labels = label(old_lattice, background=0, connectivity=1)
+    new_labels = label(new_lattice, background=0, connectivity=1)
+
+    num_old_clusters = old_labels.max()
+    num_new_clusters = new_labels.max()
+
     changed_coords = (2, 2)
-    status = get_cluster_dynamics(old_lattice, new_lattice, changed_coords)
+    status = get_cluster_dynamics(old_labels, new_labels, changed_coords)
     print(status)
 
     plt.subplot(121)
@@ -148,10 +215,16 @@ def test_split():
     old_lattice[2:, 1] = 1
     old_lattice[2:, 3] = 1
     new_lattice = old_lattice.copy()
-
     new_lattice[2, 2] = 0
+
+    old_labels = label(old_lattice, background=0, connectivity=1)
+    new_labels = label(new_lattice, background=0, connectivity=1)
+
+    num_old_clusters = old_labels.max()
+    num_new_clusters = new_labels.max()
+
     changed_coords = (2, 2)
-    status = get_cluster_dynamics(old_lattice, new_lattice, changed_coords)
+    status = get_cluster_dynamics(old_labels, new_labels, changed_coords)
     print(status)
 
     plt.subplot(121)
@@ -168,10 +241,16 @@ def test_appearance():
 
     old_lattice[1:3, 1:3] = 1
     new_lattice[1:3, 1:3] = 1
-
     new_lattice[0, 0] = 1
+
+    old_labels = label(old_lattice, background=0, connectivity=1)
+    new_labels = label(new_lattice, background=0, connectivity=1)
+
+    num_old_clusters = old_labels.max()
+    num_new_clusters = new_labels.max()
+
     changed_coords = (0, 0)
-    status = get_cluster_dynamics(old_lattice, new_lattice, changed_coords)
+    status = get_cluster_dynamics(old_labels, new_labels, changed_coords)
     print(status)
 
     plt.subplot(121)
@@ -191,8 +270,14 @@ def test_disappearance():
     old_lattice[0, 0] = 1
     new_lattice[1:3, 1:3] = 1
 
+    old_labels = label(old_lattice, background=0, connectivity=1)
+    new_labels = label(new_lattice, background=0, connectivity=1)
+
+    num_old_clusters = old_labels.max()
+    num_new_clusters = new_labels.max()
+
     changed_coords = (0, 0)
-    status = get_cluster_dynamics(old_lattice, new_lattice, changed_coords)
+    status = get_cluster_dynamics(old_labels, new_labels, changed_coords)
     print(status)
 
     plt.subplot(121)

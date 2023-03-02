@@ -2,10 +2,11 @@ from multiprocessing import Pool
 from numpy import array, copy, sum
 from numpy.random import random, randint
 from pickle import dump
+from skimage.measure import label
 from tqdm import tqdm
 import os
 
-from cluster_dynamics import get_cluster_dynamics
+from cluster_dynamics import get_cluster_dynamics, get_changed_lattice
 
 
 def landscape_update(lattice, p, q):
@@ -180,18 +181,23 @@ def simulate(data):
     else:
         iterator = range(int(simulation_time * length * length))
 
+    old_labels = label(lattice, background=0, connectivity=1)
+    new_labels = None
+
     for i in iterator:
         # single update
         old_lattice = copy(lattice)
-        new_lattice, changed_coords = single_update(lattice, p, q)
+        new_lattice, changed_coords = single_update(old_lattice, p, q)
 
         # save cluster data
         if save_cluster:
             if changed_coords is None:
                 cluster_data.append(None)
             else:
-                status = get_cluster_dynamics(old_lattice, new_lattice, changed_coords)
+                new_labels = get_changed_lattice(old_labels, changed_coords)
+                status = get_cluster_dynamics(old_labels, new_labels, changed_coords)
                 cluster_data.append(status)
+                old_labels = new_labels.copy()
 
         # periodic saving of series and density data
         if (i % (length * length)) == 0:
@@ -245,7 +251,7 @@ def tricritical(p_ext = 0.5, q_ext = 0.5, num_parallel = 10, save_series = False
     # model parameters
     length = 100
     eq_time = 100
-    simulation_time = 1000
+    simulation_time = 100
     p = p_ext
     q = q_ext
 
@@ -268,4 +274,4 @@ def tricritical(p_ext = 0.5, q_ext = 0.5, num_parallel = 10, save_series = False
 
 
 if __name__ == '__main__':
-    print(tricritical(0.73, 0.0, 1, save_series=True, save_cluster=True))
+    print(tricritical(0.72, 0.0, 5, save_series=True, save_cluster=True))
