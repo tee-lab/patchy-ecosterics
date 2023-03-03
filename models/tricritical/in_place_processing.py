@@ -1,3 +1,4 @@
+from concurrent.futures import ThreadPoolExecutor
 from multiprocessing import Pool
 from numpy import array, copy, sum
 from numpy.random import random, randint
@@ -217,18 +218,12 @@ def simulate(data):
     return records
 
 
-def save_data(record, p, q):
+def save_data(data):
+    record, p, q, simulation_index = data
     """ Saves the entire simulation data in a pickle file, in the same folder """
     current_path = os.path.dirname(__file__)
-    files_list = os.listdir(current_path)
-    precursor_file_name = "simulation" + "_"
 
-    num_files = 0
-    for file_name in files_list:
-        if file_name.startswith(precursor_file_name) and file_name.endswith(".pkl"):
-            num_files += 1
-
-    file_name = f"{precursor_file_name}{num_files}.pkl"
+    file_name = f"simulation_{simulation_index}.pkl"
     save_path = os.path.join(current_path, file_name)
     info_string = f"TDP with p: {p}, q: {q}\n"
 
@@ -260,9 +255,10 @@ def tricritical(p_ext = 0.5, q_ext = 0.5, num_parallel = 10, save_series = False
     with Pool(num_parallel) as pool:
         records = list(pool.map(simulate, data))
 
-    print("Saving data...")
-    for record in records:
-        save_data(record, p, q)
+    print("Saving data ...")
+    data = [(record, p, q, simulation_index) for simulation_index, record in enumerate(records)]
+    with ThreadPoolExecutor(num_parallel) as executor:
+        executor.map(save_data, data)
 
     avg_final_density = 0
     for record in records:
@@ -274,4 +270,4 @@ def tricritical(p_ext = 0.5, q_ext = 0.5, num_parallel = 10, save_series = False
 
 
 if __name__ == '__main__':
-    print(tricritical(0.72, 0.0, 5, save_series=True, save_cluster=True))
+    print(tricritical(0.72, 0.0, 7, save_series=True, save_cluster=True))
