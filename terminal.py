@@ -31,6 +31,18 @@ if __name__ == '__main__':
         purge_data()
         print(f"\n---> Simulating p = {p} <---")
         file_string = str(p).replace('.', 'p')
-        tricritical(p, q, num_simulations, save_series=True, save_cluster=True)
+        tricritical(p, q, num_simulations, save_series=False, save_cluster=True)
         compile_changes("tricritical", range(num_simulations), plot_name=file_string)
         plot_changes(file_string)
+
+    # num_simulations = cpu_count() - 1
+    # f_values = [0.54]
+    # # f_values = [0.48, 0.51, 0.54, 0.57, 0.6]
+
+    # for f_value in f_values:
+    #     purge_data()
+    #     print(f"\n---> Simulating f = {f_value} <---")
+    #     file_string = str(f_value).replace('.', 'p')
+    #     null_stochastic(f_value, num_simulations, save_series=True, save_cluster=True)
+    #     compile_changes("null_stochastic", range(num_simulations), plot_name=file_string)
+    #     plot_changes(file_string)

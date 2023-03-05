@@ -16,9 +16,6 @@ from models.tricritical.dumper import tricritical as tricritical_fast
 from models.tricritical.spanning_cluster import tricritical as tricritical_spanning
 # analysis
 from compile_changes import compile_changes
-from cluster_coefficient import cluster_coefficient
-from cluster_equivalences import establish_equivalences
-from cluster_tracking import track_clusters
 from plot_changes import plot_changes
 from purge_data import purge_data
 from utils import load_automaton_data
