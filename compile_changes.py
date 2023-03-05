@@ -64,15 +64,12 @@ def analyze_data(model_name, simulation_index):
             change = int(final_size - max(initial_sizes))
             changes_list.append(change)
             cluster_ds[int(max(initial_sizes))].append(change)
-
-            for initial_size in initial_sizes:
-                grown_clusters.append(initial_size)
+            grown_clusters.append(int(max(initial_sizes)))
 
         elif update["type"] == "split":
             initial_size, final_sizes = update["initial_size"], update["final_sizes"]
             change = int(max(final_sizes) - int(initial_size))
             changes_list.append(change)
-
             cluster_ds[initial_size].append(change)
             decayed_clusters.append(initial_size)
 
