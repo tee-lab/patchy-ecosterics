@@ -3,9 +3,11 @@ from multiprocessing import Pool
 from numpy import array, copy, sum, zeros
 from numpy.random import random, randint
 from pickle import dump
+from skimage.measure import label
+from tqdm import tqdm
 import os
 
-from cluster_dynamics import get_cluster_dynamics
+from cluster_dynamics import get_cluster_dynamics, get_changed_lattice
 
 
 def single_update(lattice, r, m):
@@ -75,7 +77,12 @@ def simulate(data):
     density_data = []
     cluster_data = []
 
-    for i in range(eq_time):
+    if simulation_index == 0:
+        iterator = tqdm(range(eq_time))
+    else:
+        iterator = range(eq_time)
+
+    for i in iterator:
         lattice = landscape_update(lattice, r, m)
         density_data.append(sum(lattice) / (length * length))
 
@@ -83,33 +90,37 @@ def simulate(data):
             print(f"Equilibration: {round(i * 100 / eq_time, 2)} %", end="\r")
 
     if simulation_index == 0:
-        print("Equilibration: 100.00 %\n", end="\r")
+        iterator = tqdm(range(int(simul_time * length * length)))
+    else:
+        iterator = range(int(simul_time * length * length))
+
+    old_labels = label(lattice, background=0, connectivity=1)
+    new_labels = None
 
     for i in range(int(simul_time * length * length)):
         # single update
-        old_lattice = copy(lattice)
-        new_lattice, changed_coords = single_update(lattice, r, m)
+        lattice, changed_coords = single_update(lattice, r, m)
 
         # save cluster data
         if save_cluster:
             if changed_coords is None:
                 cluster_data.append(None)
             else:
-                status = get_cluster_dynamics(old_lattice, new_lattice, changed_coords)
+                new_labels = get_changed_lattice(old_labels, changed_coords)
+                status = get_cluster_dynamics(old_labels, new_labels, changed_coords)
                 cluster_data.append(status)
+                old_labels = new_labels.copy()
 
         # periodic saving of density data
         if (i % (length * length)) == 0:
             density_data.append(sum(lattice) / (length * length))
 
-        # show progress
-        if simulation_index == 0:
-            print(f"Simulation: {round(i * 100 / (simul_time * length * length), 2)} %", end="\r")
+    if len(series_data) == 1:
+        series_data = None
+    if cluster_data == []:
+        cluster_data = None
 
-    if simulation_index == 0:
-        print("Simulation: 100.00 %\n", end="\r")
-
-    records = [density_data, cluster_data, new_lattice]
+    records = [density_data, cluster_data, lattice]
     return records
 
 

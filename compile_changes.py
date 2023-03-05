@@ -25,6 +25,7 @@ def analyze_data(model_name, simulation_index):
     final_densities.append(data["density_data"][-1])
 
     if simulation_index == 0:
+        print("Analyzing data ...")
         iterator = tqdm(cluster_data)
     else:
         iterator = cluster_data
@@ -37,8 +38,8 @@ def analyze_data(model_name, simulation_index):
         elif update["type"] == "growth":
             change = 1
             changes_list.append(change)
-            cluster_ds[update["size"] - 1].append(change)
-            grown_clusters.append(update["size"] - 1)
+            cluster_ds[update["size"]].append(change)
+            grown_clusters.append(update["size"])
 
         elif update["type"] == "decay":
             change = -1
@@ -89,7 +90,6 @@ def compile_changes(model_name, simulation_indices, plot_name='data'):
     final_lattices = []
     final_densities = []
 
-    print("Analyzing data ...")
     with Pool(len(simulation_indices)) as pool:
         data = pool.starmap(analyze_data, [(model_name, simulation_index) for simulation_index in simulation_indices])
 

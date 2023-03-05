@@ -165,6 +165,7 @@ def simulate(data):
     cluster_data = []
 
     if simulation_index == 0:
+        print("Equilibriating system ...")
         iterator = tqdm(range(eq_time))
     else:
         iterator = range(eq_time)
@@ -178,6 +179,7 @@ def simulate(data):
             series_data.append(copy(lattice))
 
     if simulation_index == 0:
+        print("Simulating cluster dynamics ...")
         iterator = tqdm(range(int(simulation_time * length * length)))
     else:
         iterator = range(int(simulation_time * length * length))
@@ -187,8 +189,7 @@ def simulate(data):
 
     for i in iterator:
         # single update
-        old_lattice = copy(lattice)
-        new_lattice, changed_coords = single_update(old_lattice, p, q)
+        lattice, changed_coords = single_update(lattice, p, q)
 
         # save cluster data
         if save_cluster:
@@ -211,10 +212,8 @@ def simulate(data):
         series_data = None
     if cluster_data == []:
         cluster_data = None
-    if simulation_time == 0:
-        new_lattice = copy(lattice)
 
-    records = [density_data, cluster_data, series_data, new_lattice]
+    records = [density_data, cluster_data, series_data, lattice]
     return records
 
 

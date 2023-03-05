@@ -60,7 +60,7 @@ def plot_average_density(model_name, simulation_indices):
 def plot_final_lattice(model_name, simulation_index):
     data = load_automaton_data(model_name, simulation_index)
     series_data = data["series_data"]
-    final_lattice = series_data[-1]
+    final_lattice = data["final_lattice"]
 
     plt.title(f"Final lattice for {model_name}")
     plt.imshow(final_lattice)
@@ -109,7 +109,7 @@ def animate(i):
 if __name__ == "__main__":
     model = "tricritical"
     simulation_index = 0
-    simulation_indices = range(0, 4)
+    simulation_indices = range(0, 7)
 
     data_summary(model, simulation_index)
     plot_density(model, simulation_index)
