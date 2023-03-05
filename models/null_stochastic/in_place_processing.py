@@ -157,7 +157,7 @@ def null_stochastic(fractional_cover, num_parallel = 10, save_series = False, sa
     # model parameters
     length = 100
     eq_time = 100
-    simul_time = 10
+    simul_time = 1000
 
     print(f"\nPreparing {num_parallel} automata in parallel...")
     data = [(simulation_index, save_series, save_cluster, fractional_cover, length, eq_time, simul_time) for simulation_index in range(num_parallel)]
