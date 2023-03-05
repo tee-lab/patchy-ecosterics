@@ -43,6 +43,7 @@ def plot_changes(filename, base_path = "outputs"):
     plt.xlabel("Cluster Size")
     plt.ylabel("Mean dS")
     plt.plot(range(cluster_analyze_limit), cluster_ds_data[1])
+    plt.plot(range(cluster_analyze_limit), [0 for _ in range(cluster_analyze_limit)])
     plt.savefig(path.join(output_path, filename + '_cluster_mean_ds.png'))
     plt.show()
 
