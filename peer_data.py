@@ -107,7 +107,7 @@ def animate(i):
 
 
 if __name__ == "__main__":
-    model = "tricritical"
+    model = "null_stochastic"
     simulation_index = 0
     simulation_indices = range(0, 7)
 

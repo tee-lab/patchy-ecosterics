@@ -136,6 +136,7 @@ def test_growth():
     status = get_cluster_dynamics(old_labels, new_labels, changed_coords)
     print(status)
 
+    plt.figure(figsize=(8, 4))
     plt.subplot(121)
     plt.title("Initial lattice")
     plt.imshow(old_labels)
@@ -160,6 +161,7 @@ def test_decay():
     status = get_cluster_dynamics(old_labels, new_labels, changed_coords)
     print(status)
 
+    plt.figure(figsize=(8, 4))
     plt.subplot(121)
     plt.title("Initial lattice")
     plt.imshow(old_labels)
@@ -187,6 +189,7 @@ def test_merge():
     status = get_cluster_dynamics(old_labels, new_labels, changed_coords)
     print(status)
 
+    plt.figure(figsize=(8, 4))
     plt.subplot(121)
     plt.title("Initial lattice")
     plt.imshow(old_labels)
@@ -214,6 +217,7 @@ def test_split():
     status = get_cluster_dynamics(old_labels, new_labels, changed_coords)
     print(status)
 
+    plt.figure(figsize=(8, 4))
     plt.subplot(121)
     plt.title("Initial lattice")
     plt.imshow(old_labels)
@@ -237,6 +241,7 @@ def test_appearance():
     status = get_cluster_dynamics(old_labels, new_labels, changed_coords)
     print(status)
 
+    plt.figure(figsize=(8, 4))
     plt.subplot(121)
     plt.title("Initial lattice")
     plt.imshow(old_labels)
@@ -261,6 +266,7 @@ def test_disappearance():
     status = get_cluster_dynamics(old_labels, new_labels, changed_coords)
     print(status)
 
+    plt.figure(figsize=(8, 4))
     plt.subplot(121)
     plt.title("Initial lattice")
     plt.imshow(old_labels)
