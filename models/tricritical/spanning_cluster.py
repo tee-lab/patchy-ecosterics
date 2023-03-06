@@ -3,6 +3,7 @@ from numba import njit
 from numpy import array, copy, sum
 from numpy.random import random, randint
 from skimage.measure import label
+from tqdm import tqdm
 
 import os
 
@@ -123,14 +124,9 @@ def simulate(simulation_index):
     lattice = randint(0, 2, (length, length))
     time_series = [copy(lattice)]
 
-    if simulation_index == 0:
-        print("Compiling functions...")
-
-    for i in range(time):
+    for _ in range(time):
         update(lattice, p, q)
         time_series.append(copy(lattice))
-        if simulation_index == 0:
-            print(f"{i * 100 / time} %", end="\r")
 
     return time_series
 
@@ -169,7 +165,6 @@ def tricritical(p_ext = 0.5, q_ext = 0.5, num_parallel = 10):
     p = p_ext
     q = q_ext
 
-    print(f"Simulating {num_parallel} automata in parallel...")
     with ThreadPoolExecutor(num_parallel) as pool:
         time_series_records = list(pool.map(simulate, range(num_parallel)))
 

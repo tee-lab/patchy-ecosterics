@@ -4,7 +4,9 @@ from matplotlib import pyplot as plt
 from math import floor
 from multiprocessing import cpu_count, Pool
 from numpy import abs, arange, array, zeros
+from os import makedirs, path
 from skimage.measure import label
+from tqdm import tqdm
 # models
 from models.contact_spatial.in_place_processing import contact_spatial
 from models.null_ising.in_place_processing import null_ising
@@ -23,14 +25,45 @@ from utils import load_automaton_data
 
 
 if __name__ == '__main__':
+    output_path = path.join(path.dirname(__file__), "outputs")
+    makedirs(output_path, exist_ok=True)
     num_simulations = cpu_count() - 1
-    # f_values = [0.48, 0.51, 0.54, 0.57, 0.6]
-    f_values = [0.48]
 
-    for f_value in f_values:
-        purge_data()
-        print(f"\n---> Simulating f = {f_value} <---")
-        file_string = str(f_value).replace('.', 'p')
-        null_stochastic(f_value, num_simulations, save_series=False, save_cluster=True)
-        compile_changes("null_stochastic", range(num_simulations), plot_name=file_string)
-        plot_changes(file_string)
+    q_values = [0, 0.2, 0.4, 0.6, 0.8, 0.92]
+
+    for q in q_values:
+        print(f"q = {q:.2f}")
+
+        p_values = arange(0, 1, 0.001)
+        avg_densities = zeros(len(p_values), dtype=float)
+        percolation_probablities = zeros(len(p_values), dtype=float)
+
+        for i, p in tqdm(enumerate(p_values)):
+            avg_densities[i], percolation_probablities[i] = tricritical_spanning(p, q, num_simulations)
+
+        output_string = ""
+
+        for i in range(len(p_values)):
+            output_string += f"{p_values[i]:.6f}\t{avg_densities[i]:.6f}\t{percolation_probablities[i]:.6f}\n"
+
+        file_prefix = "q" + str(q).replace('.', 'p') + "_"
+        file_name = file_prefix + "percolation.txt"
+        file_path = path.join(output_path, file_name)
+        with open(file_path, 'w') as f:
+            f.write(output_string)
+
+        plt.figure()
+        plt.title(f"Percolation probability vs birth probability for q = {q:.2f}")
+        plt.xlabel("Birth probability")
+        plt.ylabel("Percolation probability")
+        plt.plot(p_values, percolation_probablities)
+        plt.savefig(path.join(output_path, file_prefix + "percolation_threshold.png"))
+        plt.show()
+
+        plt.figure()
+        plt.title(f"Percolation probability vs average density for q = {q:.2f}")
+        plt.xlabel("Average density")
+        plt.ylabel("Percolation probability")
+        plt.plot(avg_densities, percolation_probablities)
+        plt.savefig(path.join(output_path, file_prefix + "percolation_density.png"))
+        plt.show()
