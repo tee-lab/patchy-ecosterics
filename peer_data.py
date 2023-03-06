@@ -9,7 +9,7 @@ def data_summary(model_name, simulation_index):
     info_string = data["info"]
     density_data = data["density_data"]
     cluster_data = data["cluster_data"]
-    series_data = data["series_data"]
+    series_data = array(data["series_data"])
 
     print(f"Info string: {info_string}")
     print(f"Density data length: {len(density_data)}")
