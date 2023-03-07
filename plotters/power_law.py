@@ -26,10 +26,9 @@ def get_cluster_distribution(folder, file_name):
     cluster_sizes, num = cluster_distribution_data[0][1:], cluster_distribution_data[1][1:]
 
     inverse_cdf = zeros(len(num))
-    normalization = sum(num)
-
     for i in range(len(num)):
-        inverse_cdf[i] = sum(num[i:]) / normalization
+        inverse_cdf[i] = sum(num[i:])
+    inverse_cdf = inverse_cdf / sum(num)
 
     remove_indices = []
     for i in range(len(cluster_sizes) - 1):
@@ -63,7 +62,18 @@ def get_cluster_dynamics(folder, file_name):
 
     abs_changes_histogram[0] = abs_changes_histogram[0] / 2
 
-    return abs_changes[3:], abs_changes_histogram[3:]
+    inverse_cdf = zeros(len(abs_changes_histogram))
+    for i in range(len(abs_changes_histogram)):
+        inverse_cdf[i] = sum(abs_changes_histogram[i:])
+    inverse_cdf = inverse_cdf / sum(abs_changes_histogram)
+
+    probability = zeros(len(abs_changes_histogram))
+    probability[0] = sum(abs_changes_histogram)
+
+    for i in range(1, len(abs_changes_histogram)):
+        probability[i] = probability[i - 1] - abs_changes_histogram[i - 1]
+
+    return abs_changes[3:], inverse_cdf[3:]
 
 
 if __name__ == '__main__':
@@ -104,11 +114,11 @@ if __name__ == '__main__':
 
         row = 2
         file_name = f"{folder_name}_changes.txt"
-        changes, changes_histogram = get_cluster_dynamics(folder_name, file_name)
+        changes, inverse_cdf = get_cluster_dynamics(folder_name, file_name)
         plt.subplot(3, len(p_values), row * num_cols + col)
-        plt.xlabel("|dS|")
-        plt.ylabel("P(|dS|)")
-        plt.loglog(changes, changes_histogram)
+        plt.xlabel("|ds|")
+        plt.ylabel("P(|dS| > |ds|)")
+        plt.loglog(changes, inverse_cdf, 'o')
 
     plt.savefig("power_law.png")
     plt.show()
