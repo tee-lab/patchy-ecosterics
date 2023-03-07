@@ -169,3 +169,49 @@ if __name__ == '__main__':
     # plt.plot(rainfall_values, percolation_probablities)
     # plt.savefig("percolation_probability.png")
     # plt.show()
+
+    ########################################
+    # generating percolation plots for TDP #
+    ########################################
+    # output_path = path.join(path.dirname(__file__), "outputs")
+    # makedirs(output_path, exist_ok=True)
+    # num_simulations = cpu_count() - 1
+
+    # q_values = [0, 0.2, 0.4, 0.6, 0.8, 0.92]
+
+    # for q in q_values:
+    #     print(f"q = {q:.2f}")
+
+    #     p_values = arange(0, 1, 0.01)
+    #     avg_densities = zeros(len(p_values), dtype=float)
+    #     percolation_probablities = zeros(len(p_values), dtype=float)
+
+    #     for i, p in tqdm(enumerate(p_values)):
+    #         avg_densities[i], percolation_probablities[i] = tricritical_spanning(p, q, num_simulations)
+
+    #     output_string = ""
+
+    #     for i in range(len(p_values)):
+    #         output_string += f"{p_values[i]:.6f}\t{avg_densities[i]:.6f}\t{percolation_probablities[i]:.6f}\n"
+
+    #     file_prefix = "q" + str(q).replace('.', 'p') + "_"
+    #     file_name = file_prefix + "percolation.txt"
+    #     file_path = path.join(output_path, file_name)
+    #     with open(file_path, 'w') as f:
+    #         f.write(output_string)
+
+    #     plt.figure()
+    #     plt.title(f"Percolation probability vs birth probability for q = {q:.2f}")
+    #     plt.xlabel("Birth probability")
+    #     plt.ylabel("Percolation probability")
+    #     plt.plot(p_values, percolation_probablities)
+    #     plt.savefig(path.join(output_path, file_prefix + "percolation_threshold.png"))
+    #     plt.show()
+
+    #     plt.figure()
+    #     plt.title(f"Percolation probability vs average density for q = {q:.2f}")
+    #     plt.xlabel("Average density")
+    #     plt.ylabel("Percolation probability")
+    #     plt.plot(avg_densities, percolation_probablities, 'o')
+    #     plt.savefig(path.join(output_path, file_prefix + "percolation_density.png"))
+    #     plt.show()

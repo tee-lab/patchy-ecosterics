@@ -4,14 +4,14 @@ from os import path
 
 
 if __name__ == '__main__':
-    base_path = "C:\\Code\\Github\\vegetation-dynamics\\results\\tricritical\\q0\\longer"
+    base_path = "C:\\Code\\Github\\vegetation-dynamics\\results\\tricritical\\q0\\optimzed_fixed\\0p7"
     p_value = 0.7
     file_prefix = str(p_value).replace('.', 'p')
     folder_path = path.join(base_path, file_prefix)
     output_path = path.dirname(__file__)
 
     cluster_ds_data = transpose(loadtxt(open(path.join(folder_path, file_prefix + '_cluster_ds.txt'), 'r')))
-    cluster_analyze_limit = min(200, len(cluster_ds_data[0]))
+    cluster_analyze_limit = min(500, len(cluster_ds_data[0]))
     cluster_ds_data = cluster_ds_data[:, :cluster_analyze_limit]
 
     mean_ds_values = cluster_ds_data[1]

@@ -149,12 +149,18 @@ def has_spanning_cluster(lattice):
     labelled_lattice = label(lattice, connectivity=1, background=0)
     num_labels = labelled_lattice.max()
 
-    for i in range(1, num_labels + 1):
-        if row_has_cluster(labelled_lattice, 0, i) and row_has_cluster(labelled_lattice, length - 1, i):
-            if col_has_cluster(labelled_lattice, 0, i) and col_has_cluster(labelled_lattice, length - 1, i):
-                return True
+    if num_labels == 0:
+        return False
+    
+    sizes = [sum(labelled_lattice == i) for i in range(1, num_labels + 1)]
+    biggest_cluster = sizes.index(max(sizes)) + 1
 
-    return False
+    if row_has_cluster(labelled_lattice, 0, biggest_cluster) and row_has_cluster(labelled_lattice, length - 1, biggest_cluster):
+        return True
+    elif col_has_cluster(labelled_lattice, 0, biggest_cluster) and col_has_cluster(labelled_lattice, length - 1, biggest_cluster):
+        return True
+    else:
+        return False
 
 
 def tricritical(p_ext = 0.5, q_ext = 0.5, num_parallel = 10):
