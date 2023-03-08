@@ -14,15 +14,12 @@ def analyze_data(model_name, simulation_index):
 
     changes_list = []
     cluster_ds = [[] for _ in range(10000)]
-    
-    final_lattices = []
-    final_densities = []
 
     data = load_automaton_data(model_name, simulation_index) 
     info = data["info"]
     cluster_data = data["cluster_data"]
-    final_lattices.append(data["final_lattice"])
-    final_densities.append(data["density_data"][-1])
+    final_lattice = data["final_lattice"]
+    final_density = data["density_data"][-1]
 
     if simulation_index == 0:
         print("Analyzing data ...")
@@ -73,7 +70,7 @@ def analyze_data(model_name, simulation_index):
             cluster_ds[initial_size].append(change)
             decayed_clusters.append(initial_size)
 
-    analysed_data = [grown_clusters, decayed_clusters, changes_list, cluster_ds, final_lattices, final_densities]
+    analysed_data = [grown_clusters, decayed_clusters, changes_list, cluster_ds, final_lattice, final_density]
     return analysed_data
 
 
@@ -95,8 +92,8 @@ def compile_changes(model_name, simulation_indices, plot_name='data'):
         decayed_clusters += analysed_data[1]
         changes_list += analysed_data[2]
         cluster_ds = [cluster_ds[i] + analysed_data[3][i] for i in range(len(cluster_ds))]
-        final_lattices += analysed_data[4]
-        final_densities += analysed_data[5]
+        final_lattices.append(analysed_data[4])
+        final_densities.append(analysed_data[5])
 
     print("Computing histogram")
     start = 2

@@ -1,5 +1,7 @@
 from itertools import product
-from numpy import zeros
+from matplotlib import pyplot as plt
+from numpy import random, zeros
+from skimage.measure import label
 
 
 def depth_first_clustering(lattice, trim=False):
@@ -42,3 +44,14 @@ def depth_first_clustering(lattice, trim=False):
         return cluster_sizes[:max_cluster_size + 1]
     else:
         return cluster_sizes
+    
+
+if __name__ == '__main__':
+    random_lattice = random.randint(0, 2, (10, 10))
+    cluster_distribution = depth_first_clustering(random_lattice, True)
+
+    for i in range(len(cluster_distribution)):
+        print(f"Cluster size {i}: {cluster_distribution[i]} clusters")
+
+    plt.imshow(label(random_lattice, background=0, connectivity=1))
+    plt.show()
