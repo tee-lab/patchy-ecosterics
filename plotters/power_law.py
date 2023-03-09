@@ -79,13 +79,13 @@ def get_cluster_dynamics(folder, file_name):
 if __name__ == '__main__':
     results_path = path.join(path.dirname(path.dirname(__file__)), 'results')
     model = "tricritical"
-    subfolder = "q0"
+    subfolder = "q0p5"
     dataset = "max_regime"
 
     phase_diagram_path = path.join(results_path, model)
     data_path = path.join(phase_diagram_path, subfolder, dataset)
-    p_values = [0.65, 0.7, 0.72, 0.74]
-    q = 0
+    p_values = [0.5, 0.53, 0.55, 0.57]
+    q = 0.5
     num_cols = len(p_values)
 
     plt.subplots(4, num_cols, figsize=(20, 20))
@@ -102,7 +102,7 @@ if __name__ == '__main__':
         plt.xlabel("p")
         plt.ylabel("density")
         plt.plot(birth_prob, densities)
-        plt.plot(0.72, 0.54, 'x')
+        plt.plot(0.55, 0.53, 'x')
         plt.plot(p, densities[birth_prob.index(p)], 'o')
 
         row = 1
