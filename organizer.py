@@ -4,8 +4,8 @@ from shutil import move
 
 if __name__ == '__main__':
     output_path = path.join(path.dirname(__file__), "outputs")
-    # prefixes = ['0p7', '0p71', '0p72', '0p73', '0p74']
-    prefixes = ['0p48', '0p51', '0p54', '0p57', '0p6']
+    prefixes = ['0p65', '0p7', '0p72', '0p74']
+    # prefixes = ['0p48', '0p51', '0p54', '0p57', '0p6']
 
     for prefix in prefixes:
         makedirs(path.join(output_path, prefix), exist_ok=True)

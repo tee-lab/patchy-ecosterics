@@ -17,6 +17,7 @@ def analyze_data(model_name, simulation_index):
 
     data = load_automaton_data(model_name, simulation_index) 
     info = data["info"]
+    
     cluster_data = data["cluster_data"]
     final_lattice = data["final_lattice"]
     final_density = data["density_data"][-1]
@@ -85,14 +86,14 @@ def compile_changes(model_name, simulation_indices, plot_name='data'):
     final_densities = []
 
     with Pool(len(simulation_indices)) as pool:
-        data = pool.starmap(analyze_data, [(model_name, simulation_index) for simulation_index in simulation_indices])
+        data = list(pool.starmap(analyze_data, [(model_name, simulation_index) for simulation_index in simulation_indices]))
 
     for analysed_data in data:
         grown_clusters += analysed_data[0]
         decayed_clusters += analysed_data[1]
         changes_list += analysed_data[2]
         cluster_ds = [cluster_ds[i] + analysed_data[3][i] for i in range(len(cluster_ds))]
-        final_lattices.append(analysed_data[4])
+        final_lattices.append(analysed_data[4].copy())
         final_densities.append(analysed_data[5])
 
     print("Computing histogram")

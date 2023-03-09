@@ -88,7 +88,7 @@ if __name__ == '__main__':
     q = 0
     num_cols = len(p_values)
 
-    plt.subplots(3, num_cols, figsize=(20, 15))
+    plt.subplots(4, num_cols, figsize=(20, 20))
 
     for i in tqdm(range(len(p_values))):
         col = i + 1
@@ -97,17 +97,19 @@ if __name__ == '__main__':
 
         row = 0
         birth_prob, densities = get_phase_diagram(q)
-        plt.subplot(3, len(p_values), row * num_cols + col)
-        plt.title(f"p = {p}")
+        plt.subplot(4, len(p_values), row * num_cols + col)
+        plt.title(f"Phase diagram for p = {p}")
         plt.xlabel("p")
         plt.ylabel("density")
         plt.plot(birth_prob, densities)
+        plt.plot(0.72, 0.54, 'x')
         plt.plot(p, densities[birth_prob.index(p)], 'o')
 
         row = 1
         file_name = f"{folder_name}_cluster_distribution.txt"
         cluster_sizes, inverse_cdf = get_cluster_distribution(folder_name, file_name)
-        plt.subplot(3, len(p_values), row * num_cols + col)
+        plt.subplot(4, len(p_values), row * num_cols + col)
+        plt.title("Cluster size distribution (log-log)")
         plt.xlabel("s")
         plt.ylabel("P(S > s)")
         plt.loglog(cluster_sizes, inverse_cdf, 'o')
@@ -115,10 +117,18 @@ if __name__ == '__main__':
         row = 2
         file_name = f"{folder_name}_changes.txt"
         changes, inverse_cdf = get_cluster_dynamics(folder_name, file_name)
-        plt.subplot(3, len(p_values), row * num_cols + col)
+        plt.subplot(4, len(p_values), row * num_cols + col)
+        plt.title("Cluster dynamics (log-log)")
         plt.xlabel("|ds|")
         plt.ylabel("P(|dS| > |ds|)")
         plt.loglog(changes, inverse_cdf, 'o')
+
+        row = 3
+        plt.subplot(4, len(p_values), row * num_cols + col)
+        plt.title("Cluster dynamics (semilogy)")
+        plt.xlabel("|ds|")
+        plt.ylabel("P(|dS| > |ds|)")
+        plt.semilogy(changes, inverse_cdf, 'o')
 
     plt.savefig("power_law.png")
     plt.show()
