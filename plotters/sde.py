@@ -26,11 +26,11 @@ if __name__ == '__main__':
     results_path = path.join(path.dirname(path.dirname(__file__)), 'results')
     model = "tricritical"
     subfolder = "q0"
-    dataset = "optimized_fixed"
+    dataset = "max_regime"
 
     data_path = path.join(results_path, model, subfolder, dataset)
     p_values = [0.65, 0.7, 0.72, 0.74]
-    cluster_limits = [100, 500, 500, 500]
+    cluster_limits = [100, 500, 4000, 6000]
     q = 0
     num_cols = len(p_values)
 

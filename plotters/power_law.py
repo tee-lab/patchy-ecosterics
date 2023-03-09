@@ -80,7 +80,7 @@ if __name__ == '__main__':
     results_path = path.join(path.dirname(path.dirname(__file__)), 'results')
     model = "tricritical"
     subfolder = "q0"
-    dataset = "optimized_fixed"
+    dataset = "max_regime"
 
     phase_diagram_path = path.join(results_path, model)
     data_path = path.join(phase_diagram_path, subfolder, dataset)
