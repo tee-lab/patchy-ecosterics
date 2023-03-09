@@ -2,7 +2,7 @@
 from concurrent.futures import ThreadPoolExecutor
 from matplotlib import pyplot as plt
 from math import floor
-from multiprocessing import cpu_count, Pool
+from multiprocessing import cpu_count, Pool, set_start_method
 from numpy import abs, arange, array, zeros
 from os import makedirs, path
 from skimage.measure import label
@@ -25,6 +25,7 @@ from utils import load_automaton_data
 
 
 if __name__ == '__main__':
+    set_start_method("spawn")
     num_simulations = cpu_count() - 1
     p_values = [0.72]
     q = 0

@@ -27,6 +27,7 @@ if __name__ == '__main__':
     ##################################
     # generating bifurcation diagram #
     ##################################
+    # set_start_method("spawn")
     # num_simulations = 8
     # p_range = arange(0, 1, 0.01)
     # q = 0.0
@@ -46,6 +47,7 @@ if __name__ == '__main__':
     ########################################
     # generating P(dS) vs dS plots for TDP #
     ########################################
+    # set_start_method("spawn")
     # num_simulations = cpu_count() - 1
     # p_values = [0.70, 0.71]
     # q = 0.25
@@ -61,6 +63,7 @@ if __name__ == '__main__':
     ############################################
     # generating P(dS) vs dS plots for Scanlon #
     ############################################
+    # set_start_method("spawn")
     # num_simulations = 4
     # rainfall_values = [500]
 
@@ -75,6 +78,7 @@ if __name__ == '__main__':
     ###############################################
     # generating P(dS) vs dS plots for Null Ising #
     ###############################################
+    # set_start_method("spawn")
     # num_simulations = cpu_count() - 1
     # f_values = [0.48, 0.54, 0.60]
 
@@ -89,6 +93,7 @@ if __name__ == '__main__':
     ############################
     # generating phase diagram #
     ############################
+    # set_start_method("spawn")
     # num_simulations = 16
     # h = 0.005
     # p_range = arange(0, 1, h)
@@ -117,6 +122,7 @@ if __name__ == '__main__':
     ################################################################
     # generating percolation probability for null stochastic model #
     ################################################################
+    # set_start_method("spawn")
     # num_simulations = cpu_count() - 4
     # f_values = arange(0, 1, 0.01)
     # percolation_probablities = zeros(len(f_values), dtype=float)
@@ -136,6 +142,7 @@ if __name__ == '__main__':
     ####################################################
     # generating percolation probability for tdp model #
     ####################################################
+    # set_start_method("spawn")
     # num_simulations = cpu_count() - 1
     # p_values = arange(0, 1, 0.01)
     # q = 0.8
@@ -155,6 +162,7 @@ if __name__ == '__main__':
     ########################################################
     # generating percolation probability for scanlon model #
     ########################################################
+    # set_start_method("spawn")
     # num_simulations = cpu_count() - 1
     # rainfall_values = arange(0, 1000, 100)
     # percolation_probablities = zeros(len(rainfall_values), dtype=float)
@@ -173,6 +181,7 @@ if __name__ == '__main__':
     ########################################
     # generating percolation plots for TDP #
     ########################################
+    # set_start_method("spawn")
     # output_path = path.join(path.dirname(__file__), "outputs")
     # makedirs(output_path, exist_ok=True)
     # num_simulations = cpu_count() - 1

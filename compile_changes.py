@@ -1,5 +1,5 @@
 from matplotlib import pyplot as plt
-from multiprocessing import Pool
+from multiprocessing import Pool, set_start_method
 from numpy import histogram, zeros
 from os import makedirs, path
 from tqdm import tqdm
@@ -62,7 +62,9 @@ def analyze_data(model_name, simulation_index):
             change = int(final_size - max(initial_sizes))
             changes_list.append(change)
             cluster_ds[int(max(initial_sizes))].append(change)
-            grown_clusters.append(int(max(initial_sizes)))
+
+            for initial_size in initial_sizes:
+                grown_clusters.append(int(initial_size))
 
         elif update["type"] == "split":
             initial_size, final_sizes = update["initial_size"], update["final_sizes"]

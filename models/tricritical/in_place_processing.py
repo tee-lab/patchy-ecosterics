@@ -245,12 +245,11 @@ def tricritical(p_ext = 0.5, q_ext = 0.5, num_parallel = 10, save_series = False
     # model parameters
     length = 100
     eq_time = 100
-    simulation_time = 1
+    simulation_time = 10
     p = p_ext
     q = q_ext
 
     print(f"\nPreparing {num_parallel} automata in parallel...")
-    set_start_method('spawn')
     data = [(simulation_index, save_series, save_cluster, length, eq_time, simulation_time, p, q) for simulation_index in range(num_parallel)]
     with Pool(num_parallel) as pool:
         records = list(pool.map(simulate, data))
