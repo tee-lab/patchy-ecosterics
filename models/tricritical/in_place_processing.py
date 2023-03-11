@@ -159,6 +159,7 @@ def get_pair_neighbour(i1, j1, i2, j2, length):
 def simulate(data):
     simulation_index, save_series, save_cluster, length, eq_time, simulation_time, p, q = data
     lattice = randint(0, 2, (length, length))
+    lattice = (lattice == 1).astype(int)
 
     density_data = []
     series_data = []
@@ -243,7 +244,7 @@ def save_data(data):
 
 def tricritical(p_ext = 0.5, q_ext = 0.5, num_parallel = 10, save_series = False, save_cluster = False):
     # model parameters
-    length = 512
+    length = 256
     eq_time = 200
     simulation_time = 500
     p = p_ext

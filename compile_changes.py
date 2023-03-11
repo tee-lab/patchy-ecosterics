@@ -100,7 +100,7 @@ def compile_changes(model_name, simulation_indices, plot_name='data'):
 
     print("Computing histogram")
     start = 2
-    sizes = list(range(start, 200))
+    sizes = list(range(start, min(500, min(len(grown_clusters), len(decayed_clusters)) - 10)))
     changes = list(range(int(min(changes_list)), int(max(changes_list)) + 1))
     growth_sizes_histogram = histogram(grown_clusters, bins=sizes)[0]
     decay_sizes_histogram = histogram(decayed_clusters, bins=sizes)[0]

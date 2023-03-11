@@ -35,7 +35,7 @@ def plot_changes(filename, base_path = "outputs"):
     plt.show()
 
     cluster_ds_data = transpose(loadtxt(open(path.join(output_path, filename + '_cluster_ds.txt'), 'r')))
-    cluster_analyze_limit = min(500, len(cluster_ds_data[0]))
+    cluster_analyze_limit = min(1000, len(cluster_ds_data[0]))
     cluster_ds_data = cluster_ds_data[:, :cluster_analyze_limit]
 
     plt.figure()
