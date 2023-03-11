@@ -243,9 +243,9 @@ def save_data(data):
 
 def tricritical(p_ext = 0.5, q_ext = 0.5, num_parallel = 10, save_series = False, save_cluster = False):
     # model parameters
-    length = 1024
+    length = 512
     eq_time = 200
-    simulation_time = 1000
+    simulation_time = 500
     p = p_ext
     q = q_ext
 
