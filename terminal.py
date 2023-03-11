@@ -26,9 +26,9 @@ from utils import load_automaton_data
 
 if __name__ == '__main__':
     set_start_method("spawn")
-    num_simulations = cpu_count() - 1
-    p_values = [0.5, 0.53, 0.55, 0.57]
-    q = 0.5
+    num_simulations = floor(cpu_count() / 2)
+    p_values = [0.65, 0.7, 0.72, 0.74]
+    q = 0
 
     for p in p_values:
         purge_data()
