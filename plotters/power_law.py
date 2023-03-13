@@ -85,9 +85,14 @@ if __name__ == '__main__':
     subfolder = "q" + str(q).replace('.', 'p')
     phase_diagram_path = path.join(results_path, model)
     data_path = path.join(phase_diagram_path, subfolder, dataset)
-    p_values = [0.5, 0.53, 0.55, 0.57]
-    num_cols = len(p_values)
 
+    # q = 0
+    # p_values = [0.65, 0.7, 0.72, 0.74]
+
+    # q = 0.5
+    p_values = [0.5, 0.53, 0.55, 0.57]
+
+    num_cols = len(p_values)
     plt.subplots(4, num_cols, figsize=(20, 20))
 
     for i in tqdm(range(len(p_values))):
@@ -130,5 +135,5 @@ if __name__ == '__main__':
         plt.ylabel("P(|dS| > |ds|)")
         plt.semilogy(changes, inverse_cdf, 'o')
 
-    plt.savefig("power_law.png")
+    plt.savefig(subfolder + "_power_law.png")
     plt.show()
