@@ -6,7 +6,7 @@ library(poweRlaw)
 results_path = "C://Code//Github//vegetation-dynamics//results"
 model = "tricritical"
 q_value = "q0"
-dataset = "max_regime"
+dataset = "100x100"
 folders = c("0p65", "0p7", "0p72", "0p74")
 
 root_path = file.path(results_path, model, q_value, dataset)
