@@ -11,9 +11,8 @@ folders = c("0p65", "0p7", "0p72", "0p74")
 
 root_path = file.path(results_path, model, q_value, dataset)
 
-for (i in 1:length(folders)) {
+for (folder in folders) {
   # construct path
-  folder = folders[i]
   file_name = paste(folder, "_cluster_distribution.txt", sep="")
   file_path = file.path(root_path, folder, file_name)
   print(paste("<---","Analyzing p =", folder, "--->"))
