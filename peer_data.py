@@ -1,6 +1,6 @@
 from matplotlib import pyplot as plt
 from matplotlib.animation import FuncAnimation
-from numpy import array, zeros
+from numpy import array, sum, zeros
 from pickle import load
 from utils import load_automaton_data
 from os import path
@@ -109,26 +109,28 @@ def animate(i):
 
 
 def see_tricritical_lattices(p, q):
-    folder_path = path.join(path.dirname(__file__), "models", "tricritical")
+    folder_path = path.join(path.dirname(__file__), "outputs")
     file_name = f"lattices_{p:.2f}_{q:.2f}.pkl"
     file_path = path.join(folder_path, file_name)
     lattices = load(open(file_path, "rb"))
 
-    for lattice in lattices:
+    for i, lattice in enumerate(lattices):
+        density = sum(lattice) / (len(lattice) * len(lattice[0]))
+        plt.title(f"Lattice {i}, density: {density:.2f}")
         plt.imshow(lattice)
         plt.show()
 
 
 if __name__ == "__main__":
-    model = "tricritical"
-    simulation_index = 0
-    simulation_indices = range(0, 7)
+    # model = "tricritical"
+    # simulation_index = 0
+    # simulation_indices = range(0, 7)
 
-    data_summary(model, simulation_index)
-    plot_density(model, simulation_index)
-    plot_average_density(model, simulation_indices)
-    plot_final_lattice(model, simulation_index)
-    print_cluster_data(model, simulation_index)
-    visualize_series_data(model, simulation_index)
+    # data_summary(model, simulation_index)
+    # plot_density(model, simulation_index)
+    # plot_average_density(model, simulation_indices)
+    # plot_final_lattice(model, simulation_index)
+    # print_cluster_data(model, simulation_index)
+    # visualize_series_data(model, simulation_index)
 
-    # see_tricritical_lattices(0.72, 0)
+    see_tricritical_lattices(0.7, 0)

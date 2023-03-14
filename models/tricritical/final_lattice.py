@@ -140,15 +140,19 @@ def simulate(data):
 def save_lattices(lattices, p, q):
     """ Saves the entire simulation data in a pickle file, in the same folder """
     current_path = os.path.dirname(__file__)
+    outputs_path = os.path.join(current_path, "..", "..", "outputs")
+
+    os.makedirs(outputs_path, exist_ok = True)
+
     file_name = f"lattices_{p:.2f}_{q:.2f}.pkl"
-    save_path = os.path.join(current_path, file_name)
+    save_path = os.path.join(outputs_path, file_name)
     dump(lattices, open(save_path, "wb"))
 
 
 def tricritical(p_ext = 0.5, q_ext = 0.5, num_parallel = 10):
     # model parameters
     length = 100
-    time = 100
+    time = 500
     p = p_ext
     q = q_ext
 
@@ -157,7 +161,7 @@ def tricritical(p_ext = 0.5, q_ext = 0.5, num_parallel = 10):
     with Pool(num_parallel) as pool:
         lattices = list(pool.map(simulate, data))
 
-    print("Saving final lattices")
+    print("Saving final lattices ...")
     save_lattices(lattices, p, q)
 
 

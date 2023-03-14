@@ -224,3 +224,16 @@ if __name__ == '__main__':
     #     plt.plot(avg_densities, percolation_probablities, 'o')
     #     plt.savefig(path.join(output_path, file_prefix + "percolation_density.png"))
     #     plt.show()
+
+    ######################################
+    # generating final lattices for TDP #
+    ######################################
+
+    # set_start_method("spawn")
+    # num_simulations = cpu_count() - 1
+    # p_values = [0.65, 0.7, 0.72, 0.74]
+    # q = 0
+
+    # for p in p_values:
+    #     print(f"\n---> Simulating p = {p} <---")
+    #     tricritical_final(p, q, num_simulations)
