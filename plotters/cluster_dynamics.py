@@ -43,7 +43,7 @@ if __name__ == '__main__':
     results_path = path.join(path.dirname(path.dirname(__file__)), 'results')
     model = "tricritical"
     q = 0
-    dataset = "100x100"
+    dataset = "256x256"
 
     subfolder = "q" + str(q).replace('.', 'p')
     phase_diagram_path = path.join(results_path, model)

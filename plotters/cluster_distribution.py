@@ -45,7 +45,7 @@ if __name__ == '__main__':
     results_path = path.join(path.dirname(path.dirname(__file__)), 'results')
     model = "tricritical"
     q = 0
-    dataset = "100x100"
+    dataset = "256x256"
 
     subfolder = "q" + str(q).replace('.', 'p')
     phase_diagram_path = path.join(results_path, model)
@@ -86,7 +86,9 @@ if __name__ == '__main__':
         plt.subplot(2, len(p_values), row * num_cols + col)
         plt.title("Cluster size distribution (log-log)")
         plt.xlabel("s")
-        plt.ylabel("P(S > s)")
+
+        if col == 1:
+            plt.ylabel("P(S > s)")
         plt.loglog(cluster_sizes, inverse_cdf, 'o')
 
     plt.savefig(subfolder + "_CSD.png")

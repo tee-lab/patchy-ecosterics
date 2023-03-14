@@ -26,14 +26,14 @@ if __name__ == '__main__':
     results_path = path.join(path.dirname(path.dirname(__file__)), 'results')
     model = "tricritical"
     q = 0
-    dataset = "100x100"
+    dataset = "256x256"
 
     subfolder = "q" + str(q).replace('.', 'p')
     data_path = path.join(results_path, model, subfolder, dataset)
 
     # q = 0
     p_values = [0.65, 0.7, 0.72, 0.74]
-    cluster_limits = [100, 500, 4000, 6000]
+    cluster_limits = [100, 500, 3000, 4000]
 
     # q = 0.5
     # p_values = [0.5, 0.53, 0.55, 0.57]
@@ -53,7 +53,9 @@ if __name__ == '__main__':
         plt.subplot(2, num_cols, row * num_cols + col)
         plt.title(f"p = {p}")
         plt.xlabel("Cluster Size")
-        plt.ylabel("Mean dS")
+
+        if col == 1:
+            plt.ylabel("Mean dS")
         plt.plot(cluster_sizes, mean_ds)
         plt.plot([0, limit], [0, 0], 'k--')
 
@@ -61,7 +63,9 @@ if __name__ == '__main__':
         cluster_sizes, mean_ds_sq = get_mean_ds_sq(name, limit)
         plt.subplot(2, num_cols, row * num_cols + col)
         plt.xlabel("Cluster Size")
-        plt.ylabel("Mean (dS^2)")
+
+        if col == 1:
+            plt.ylabel("Mean (dS^2)")
         plt.plot(cluster_sizes, mean_ds_sq)
     
     plt.savefig(subfolder + "_cluster_sde.png")
