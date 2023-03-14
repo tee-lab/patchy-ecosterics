@@ -84,13 +84,15 @@ def compile_changes(model_name, simulation_indices, plot_name='data'):
     decayed_clusters = []
 
     changes_list = []
-    cluster_ds = [[] for _ in range(10000)]
 
     final_lattices = []
     final_densities = []
 
     with Pool(len(simulation_indices)) as pool:
         data = list(pool.starmap(analyze_data, [(model_name, simulation_index) for simulation_index in simulation_indices]))
+
+    length = len(data[0][4])
+    cluster_ds = [[] for _ in range(length * length)]
 
     for analysed_data in data:
         grown_clusters += analysed_data[0]
