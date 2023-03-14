@@ -1,3 +1,7 @@
+[1] "<--- Analyzing 0p63 --->"
+[1] "Power-law: 1 out of 111 ensembles"
+[1] "Truncated Power-law: 109 out of 111 ensembles"
+[1] "Exponential: 1 out of 111 ensembles"
 [1] "<--- Analyzing 0p65 --->"
 [1] "Power-law: 2 out of 111 ensembles"
 [1] "Truncated Power-law: 109 out of 111 ensembles"
