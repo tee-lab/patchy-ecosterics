@@ -23,25 +23,35 @@ q_folder = "q0"
 dataset = "100x100"
 
 q_value = "0"
-p_values = c("0p72")
-# p_values = c("0p65", "0p7", "0p72", "0p74")
+p_values = c("0p65", "0p7", "0p72", "0p74")
 
 root_path = file.path(results_path, model, q_folder, dataset)
 
 for (p in p_values) {
-  file_name = paste("lattices_", p, "_", q_value, ".pkl", sep="")
+  print(paste("<--- Analyzing", p, "--->"))
+  
+  file_name = paste("tricritical_", p, "_", q_value, ".pkl", sep="")
   file_path = file.path(root_path, file_name)
   source_python("lattice_parser.py")
   lattices = load_lattices(file_path)
   
-  logical_lattices = lapply(lattices, convert_logical)
-
-  # logical_lattices = list()
-  # 
-  # for (i in 1:length(lattices)) {
-  #   logical_lattice = convert_logical(lattices[[i]])
-  #   logical_lattices = append(logical_lattices, logical_lattice)
-  # }
+  outputs = indicator_psdtype(lattices, wrap=TRUE)
   
-  indicator_psdtype(logical_lattices)
+  pl_best = 0
+  tpl_best = 0
+  exp_best = 0
+  
+  for (output in outputs) {
+    if (output$best[1]) {
+      pl_best = pl_best + 1
+    } else if (output$best[2]) {
+      tpl_best = tpl_best + 1
+    } else {
+      exp_best = exp_best + 1
+    }
+  }
+  
+  print(paste("Power-law:", pl_best, "out of", length(lattices), "ensembles"))
+  print(paste("Truncated Power-law:", tpl_best, "out of", length(lattices), "ensembles"))
+  print(paste("Exponential:", exp_best, "out of", length(lattices), "ensembles"))
 }
