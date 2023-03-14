@@ -1,7 +1,9 @@
 from matplotlib import pyplot as plt
 from matplotlib.animation import FuncAnimation
 from numpy import array, zeros
+from pickle import load
 from utils import load_automaton_data
+from os import path
 
 
 def data_summary(model_name, simulation_index):
@@ -106,6 +108,17 @@ def animate(i):
     return [im]
 
 
+def see_tricritical_lattices(p, q):
+    folder_path = path.join(path.dirname(__file__), "models", "tricritical")
+    file_name = f"lattices_{p:.2f}_{q:.2f}.pkl"
+    file_path = path.join(folder_path, file_name)
+    lattices = load(open(file_path, "rb"))
+
+    for lattice in lattices:
+        plt.imshow(lattice)
+        plt.show()
+
+
 if __name__ == "__main__":
     model = "tricritical"
     simulation_index = 0
@@ -117,3 +130,5 @@ if __name__ == "__main__":
     plot_final_lattice(model, simulation_index)
     print_cluster_data(model, simulation_index)
     visualize_series_data(model, simulation_index)
+
+    # see_tricritical_lattices(0.72, 0)

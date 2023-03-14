@@ -98,9 +98,12 @@ def compile_changes(model_name, simulation_indices, plot_name='data'):
         grown_clusters += analysed_data[0]
         decayed_clusters += analysed_data[1]
         changes_list += analysed_data[2]
-        cluster_ds = [cluster_ds[i] + analysed_data[3][i] for i in range(len(cluster_ds))]
         final_lattices.append(analysed_data[4].copy())
         final_densities.append(analysed_data[5])
+
+    for i in range(len(cluster_ds)):
+        for analysed_data in data:
+            cluster_ds[i] += analysed_data[3][i]
 
     print("Computing histogram")
     start = 2
