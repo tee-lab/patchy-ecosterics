@@ -144,7 +144,9 @@ def save_lattices(lattices, p, q):
 
     os.makedirs(outputs_path, exist_ok = True)
 
-    file_name = f"lattices_{p:.2f}_{q:.2f}.pkl"
+    p_string = str(p).replace(".", "p")
+    q_string = str(q).replace(".", "p")
+    file_name = f"tricritical_{p_string}_{q_string}.pkl"
     save_path = os.path.join(outputs_path, file_name)
     dump(lattices, open(save_path, "wb"))
 
@@ -152,7 +154,7 @@ def save_lattices(lattices, p, q):
 def tricritical(p_ext = 0.5, q_ext = 0.5, num_parallel = 10):
     # model parameters
     length = 100
-    time = 500
+    time = 100
     p = p_ext
     q = q_ext
 
