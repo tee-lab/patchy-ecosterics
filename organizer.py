@@ -4,8 +4,8 @@ from shutil import move
 
 if __name__ == '__main__':
     output_path = path.join(path.dirname(__file__), "outputs")
-    prefixes = ['0p5', '0p53', '0p55', '0p57']
-    # prefixes = [0.5, 0.53, 0.55, 0.57]
+    prefixes = ['0p65', '0p7', '0p72', '0p74']
+    # prefixes = ['0p5', '0p53', '0p55', '0p57']
     # prefixes = ['0p48', '0p51', '0p54', '0p57', '0p6']
 
     for prefix in prefixes:

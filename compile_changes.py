@@ -13,7 +13,6 @@ def analyze_data(model_name, simulation_index):
     decayed_clusters = []
 
     changes_list = []
-    cluster_ds = [[] for _ in range(10000)]
 
     data = load_automaton_data(model_name, simulation_index) 
     info = data["info"]
@@ -21,6 +20,9 @@ def analyze_data(model_name, simulation_index):
     cluster_data = data["cluster_data"]
     final_lattice = data["final_lattice"]
     final_density = data["density_data"][-1]
+
+    length = len(final_lattice)
+    cluster_ds = [[] for _ in range(length * length)]
 
     if simulation_index == 0:
         print("Analyzing data ...")
