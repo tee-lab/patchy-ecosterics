@@ -1,26 +1,10 @@
-convert_logical <- function(lattice) {
-  logical_lattice = matrix(list(), nrow=100, ncol=100)
-  
-  for (i in 1:100) {
-    for (j in 1:100) {
-      if (lattice[i,j] == 0) {
-        logical_lattice[i,j] = FALSE
-      } else {
-        logical_lattice[i,j] = TRUE
-      }
-    }
-  }
-  return(logical_lattice)
-}
-
-
 library(reticulate)
 library(spatialwarnings)
 
 results_path = "C://Code//Github//vegetation-dynamics//results"
 model = "tricritical"
 q_folder = "q0"
-dataset = "100x100"
+dataset = "256x256"
 
 q_value = "0"
 p_values = c("0p63", "0p65", "0p7", "0p72", "0p74")

@@ -1,0 +1,38 @@
+Comparison of distributions:
+[1] "<--- Analyzing 0p63 --->"
+[1] "Power-law: 0 out of 111 ensembles"
+[1] "Truncated Power-law: 109 out of 111 ensembles"
+[1] "Exponential: 2 out of 111 ensembles"
+[1] "<--- Analyzing 0p65 --->"
+[1] "Power-law: 1 out of 111 ensembles"
+[1] "Truncated Power-law: 110 out of 111 ensembles"
+[1] "Exponential: 0 out of 111 ensembles"
+[1] "<--- Analyzing 0p7 --->"
+[1] "Power-law: 36 out of 111 ensembles"
+[1] "Truncated Power-law: 75 out of 111 ensembles"
+[1] "Exponential: 0 out of 111 ensembles"
+[1] "<--- Analyzing 0p72 --->"
+[1] "Power-law: 108 out of 111 ensembles"
+[1] "Truncated Power-law: 3 out of 111 ensembles"
+[1] "Exponential: 0 out of 111 ensembles"
+[1] "<--- Analyzing 0p74 --->"
+[1] "Power-law: 111 out of 111 ensembles"
+[1] "Truncated Power-law: 0 out of 111 ensembles"
+[1] "Exponential: 0 out of 111 ensembles"
+
+Power law range:
+[1] "<--- Analyzing 0p63 --->"
+[1] 0.3575282
+[1] 0.01367023
+[1] "<--- Analyzing 0p65 --->"
+[1] 0.3561612
+[1] 0.01009751
+[1] "<--- Analyzing 0p7 --->"
+[1] 0.9024146
+[1] 0.02284781
+[1] "<--- Analyzing 0p72 --->"
+[1] 0.9400048
+[1] 0.008249874
+[1] "<--- Analyzing 0p74 --->"
+[1] 0.9850448
+[1] 0.001982883
