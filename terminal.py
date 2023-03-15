@@ -28,9 +28,13 @@ from utils import load_automaton_data
 if __name__ == '__main__':
     set_start_method("spawn")
     num_simulations = cpu_count() - 1
-    p_values = [0.63, 0.65, 0.7, 0.72, 0.74]
-    q = 0
+    p_values = [0.28, 0.285, 0.29, 0.31]
+    q = 0.92
 
     for p in p_values:
+        purge_data()
         print(f"\n---> Simulating p = {p} <---")
-        tricritical_final(p, q, num_simulations)
+        file_string = str(p).replace('.', 'p')
+        tricritical(p, q, num_simulations, save_series=False, save_cluster=True)
+        compile_changes("tricritical", range(num_simulations), plot_name=file_string)
+        plot_changes(file_string)
