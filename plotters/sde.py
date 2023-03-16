@@ -25,19 +25,22 @@ def get_mean_ds_sq(name, limit):
 if __name__ == '__main__':
     results_path = path.join(path.dirname(path.dirname(__file__)), 'results')
     model = "tricritical"
-    q = 0
-    dataset = "256x256"
-
-    subfolder = "q" + str(q).replace('.', 'p')
-    data_path = path.join(results_path, model, subfolder, dataset)
+    dataset = "100x100"
 
     # q = 0
-    p_values = [0.65, 0.7, 0.72, 0.74]
-    cluster_limits = [100, 500, 30000, 30000]
+    # p_values = [0.65, 0.7, 0.72, 0.74]
+    # cluster_limits = [100, 500, 30000, 30000]
 
     # q = 0.5
     # p_values = [0.5, 0.53, 0.55, 0.57]
     # cluster_limits = [100, 1000, 4000, 5000]
+
+    q = 0.92
+    p_values = [0.28, 0.285, 0.29, 0.31]
+    cluster_limits = [1000, 1000, 1000, 1000]
+
+    subfolder = "q" + str(q).replace('.', 'p')
+    data_path = path.join(results_path, model, subfolder, dataset)
 
     num_cols = len(p_values)
     plt.subplots(2, num_cols, figsize=(20, 10))
