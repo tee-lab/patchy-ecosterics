@@ -6,10 +6,11 @@ from numpy import array, copy, sum
 from numpy.random import randint
 from pickle import dump
 from random import random
-
+from skimage.measure import label
+from tqdm import tqdm
 import os
 
-from cluster_dynamics import get_cluster_dynamics
+from cluster_dynamics import get_cluster_dynamics, get_changed_lattice
 
 
 def landscape_update(lattice, f_carrying, r_influence, immediacy):
@@ -82,7 +83,12 @@ def simulate(data):
     series_data = []
     cluster_data = []
 
-    for i in range(eq_time): 
+    if simulation_index == 0:
+        iterator = tqdm(range(eq_time), desc="Equilibriation")
+    else:
+        iterator = range(eq_time)
+
+    for i in iterator: 
         lattice = landscape_update(lattice, f_carrying, r_influence, immediacy)
 
         # save density and series data
@@ -90,25 +96,27 @@ def simulate(data):
         if save_series:
             series_data.append(copy(lattice))
 
-        # show progress
-        if simulation_index == 0:
-            print(f"Equilibriation: {round(i * 100 / eq_time)} %", end="\r")
-
     if simulation_index == 0:
-        print("Equilibriation: 100 %\n", end="\r")
+        iterator = tqdm(range(int(simulation_time * length * length)), desc="Simulation")
+    else:
+        iterator = range(int(simulation_time * length * length))
 
-    for i in range(int(simulation_time * length * length)):
+    old_labels = label(lattice, background=0, connectivity=1)
+    new_labels = None
+
+    for i in iterator:
         # single update
-        old_lattice = copy(lattice)
-        new_lattice, changed_coords = single_update(lattice, f_carrying, r_influence, immediacy)
+        lattice, changed_coords = single_update(lattice, f_carrying, r_influence, immediacy)
 
         # save cluster data
         if save_cluster:
             if changed_coords is None:
                 cluster_data.append(None)
             else:
-                status = get_cluster_dynamics(old_lattice, new_lattice, changed_coords)
+                new_labels = get_changed_lattice(old_labels, changed_coords)
+                status = get_cluster_dynamics(old_labels, new_labels, changed_coords)
                 cluster_data.append(status)
+                old_labels = new_labels.copy()
 
         # periodic saving of series and density data
         if (i % (length * length)) == 0:
@@ -117,13 +125,6 @@ def simulate(data):
             if save_series:
                 series_data.append(copy(lattice))
 
-        # show progress
-        if simulation_index == 0:
-            print(f"Simulation: {round(i * 100 / (simulation_time * length * length), 2)} %", end="\r")
-
-    if simulation_index == 0:
-        print("Simulation: 100.00 %\n", end="\r")
-
     if len(series_data) == 1:
         series_data = None
     if cluster_data == []:
@@ -131,7 +132,7 @@ def simulate(data):
     if simulation_time == 0:
         new_lattice = copy(lattice)
 
-    records = [density_data, cluster_data, series_data, new_lattice]
+    records = [density_data, cluster_data, series_data, lattice]
     return records
 
 
@@ -182,8 +183,8 @@ def scanlon_kalahari(rainfall_ext = 800, num_parallel = 10, save_series = False,
     r_influence = 6
     immediacy = 10
 
-    eq_time = 100
-    simulation_time = 100
+    eq_time = 200
+    simulation_time = 1000
 
     print(f"Simulating {num_parallel} automata in parallel...")
     data = [(simulation_index, save_series, save_cluster, length, eq_time, simulation_time, f_carrying, r_influence, immediacy) for simulation_index in range(num_parallel)]
