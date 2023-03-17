@@ -6,6 +6,7 @@ if __name__ == '__main__':
     output_path = path.join(path.dirname(__file__), "outputs")
     # prefixes = ['0p28', '0p285', '0p29', '0p31']
     prefixes = ['0p65', '0p7', '0p72', '0p74']
+    prefixes = ['300', '500', '700', '900']
     # prefixes = ['0p5', '0p53', '0p55', '0p57']
     # prefixes = ['0p48', '0p51', '0p54', '0p57', '0p6']
 
