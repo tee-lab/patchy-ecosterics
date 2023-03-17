@@ -95,7 +95,7 @@ if __name__ == '__main__':
         col = i + 1
         rainfall = rainfall_values[i]
         limit = cluster_limits[i]
-        name = str(rainfall).replace('.', 'p')
+        name = str(rainfall)
 
         row = 0
         cluster_sizes, mean_ds = get_mean_ds(name, limit)
