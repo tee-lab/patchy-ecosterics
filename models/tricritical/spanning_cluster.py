@@ -1,5 +1,5 @@
 from concurrent.futures import ThreadPoolExecutor
-from numba import njit
+from multiprocessing import Pool
 from numpy import array, copy, sum
 from numpy.random import random, randint
 from skimage.measure import label
@@ -8,14 +8,15 @@ from tqdm import tqdm
 import os
 
 
-@njit(nogil=True, fastmath=True)
-def update(lattice, p, q):
+def landscape_update(lattice, p, q):
+    length = len(lattice)
+
     for _ in range(length * length):
         focal_i = randint(0, length)
         focal_j = randint(0, length)
 
         if lattice[focal_i, focal_j]:
-            neigh_i, neigh_j = get_random_neighbour(focal_i, focal_j)
+            neigh_i, neigh_j = get_random_neighbour(focal_i, focal_j, length)
 
             if lattice[neigh_i, neigh_j] == 0:
                 if random() < p:
@@ -27,15 +28,17 @@ def update(lattice, p, q):
             else:
                 if random() < q:
                     # positive feedback birth with probability q
-                    third_i, third_j = get_pair_neighbour(focal_i, focal_j, neigh_i, neigh_j)
+                    third_i, third_j = get_pair_neighbour(focal_i, focal_j, neigh_i, neigh_j, length)
                     lattice[third_i, third_j] = 1
                 elif random() < 1 - p:
                     # pair death with probability with probability (1 - p) (1 - q)
                     lattice[focal_i, focal_j] = 0
 
+    return lattice
 
-@njit(nogil=True, fastmath=True)
+
 def get_random_site(lattice):
+    length = len(lattice)
     num_active = sum(lattice)
 
     if num_active == 0:
@@ -53,8 +56,7 @@ def get_random_site(lattice):
                 return i, j
 
 
-@njit(nogil=True, fastmath=True)
-def get_random_neighbour(i, j):
+def get_random_neighbour(i, j, length):
     neighbour = randint(0, 4)
     # periodic boundary conditon
     if neighbour == 0:
@@ -67,8 +69,7 @@ def get_random_neighbour(i, j):
         return i, (j - 1 + length) % length
 
 
-@njit(nogil=True, fastmath=True)
-def get_pair_neighbour(i1, j1, i2, j2):
+def get_pair_neighbour(i1, j1, i2, j2, length):
     neighbour = randint(0, 6)
 
     # periodic boundary condition
@@ -120,15 +121,21 @@ def get_pair_neighbour(i1, j1, i2, j2):
             return i_top, (j1 - 1 + length) % length
 
 
-def simulate(simulation_index):
+def simulate(data):
+    simulation_index, length, time, p, q = data
     lattice = randint(0, 2, (length, length))
-    time_series = [copy(lattice)]
+    lattice = (lattice == 1).astype(int)
 
-    for _ in range(time):
-        update(lattice, p, q)
-        time_series.append(copy(lattice))
+    if simulation_index == 0:
+        print(f"Simulating ({p:.3f}, {q:.2f})")
+        iterator = tqdm(range(time))
+    else:
+        iterator = range(time)
 
-    return time_series
+    for _ in iterator: 
+        lattice = landscape_update(lattice, p, q)
+
+    return lattice
 
 
 def row_has_cluster(labelled_lattice, row, cluster):
@@ -167,23 +174,23 @@ def tricritical(p_ext = 0.5, q_ext = 0.5, num_parallel = 10):
     # model parameters
     global length, time, p, q
     length = 100
-    time = 500
+    time = 200
     p = p_ext
     q = q_ext
 
-    with ThreadPoolExecutor(num_parallel) as pool:
-        time_series_records = list(pool.map(simulate, range(num_parallel)))
+    with Pool(num_parallel) as pool:
+        lattices = pool.map(simulate, [(i, length, time, p, q) for i in range(num_parallel)])
 
     # calculate final density
     avg_final_density = 0
-    for time_series in time_series_records:
-        avg_final_density += sum(time_series[-1]) / (length * length)
+    for lattice in lattices:
+        avg_final_density += sum(lattice) / (length * length)
     avg_final_density /= num_parallel
 
     # calculate percolation probability
     num_spanning_clusters = 0
-    for time_series in time_series_records:
-        if has_spanning_cluster(time_series[-1]):
+    for lattice in lattices:
+        if has_spanning_cluster(lattice):
             num_spanning_clusters += 1
     percolation_probability = num_spanning_clusters / num_parallel
 
