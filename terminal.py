@@ -49,9 +49,9 @@ if __name__ == '__main__':
         for i in range(len(p_values)):
             avg_densities[i], percolation_probablities[i] = tricritical_spanning(p_values[i], q, num_simulations)
 
-    output_string = ""
-    for i in range(len(p_values)):
-        output_string += f"{p_values[i]:.3f} {avg_densities[i]:.4f} {percolation_probablities[i]:.4f}\n"
-    
-    with open(f"{q:.2f}.txt", "w") as f:
-        f.write(output_string)
+        output_string = ""
+        for i in range(len(p_values)):
+            output_string += f"{p_values[i]:.3f} {avg_densities[i]:.4f} {percolation_probablities[i]:.4f}\n"
+
+        with open(f"{q:.2f}.txt", "w") as f:
+            f.write(output_string)

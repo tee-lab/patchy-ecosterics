@@ -140,17 +140,24 @@ def simulate(data):
     for _ in iterator: 
         lattice = landscape_update(lattice, p, q)
 
-    return lattice
+    density = sum(lattice) / (length * length)
+    percolation = has_spanning_cluster(lattice)
+
+    return density, percolation
 
 
+@njit
 def row_has_cluster(labelled_lattice, row, cluster):
+    length = len(labelled_lattice)
     for j in range(length):
         if labelled_lattice[row, j] == cluster:
             return True
     return False
 
 
+@njit
 def col_has_cluster(labelled_lattice, col, cluster):
+    length = len(labelled_lattice)
     for i in range(length):
         if labelled_lattice[i, col] == cluster:
             return True
@@ -158,6 +165,7 @@ def col_has_cluster(labelled_lattice, col, cluster):
 
 
 def has_spanning_cluster(lattice):
+    length = len(lattice)
     labelled_lattice = label(lattice, connectivity=1, background=0)
     num_labels = labelled_lattice.max()
 
@@ -184,20 +192,10 @@ def tricritical(p_ext = 0.5, q_ext = 0.5, num_parallel = 10):
     q = q_ext
 
     with Pool(num_parallel) as pool:
-        lattices = pool.map(simulate, [(i, length, time, p, q) for i in range(num_parallel)])
+        data = pool.map(simulate, [(i, length, time, p, q) for i in range(num_parallel)])
 
-    # calculate final density
-    avg_final_density = 0
-    for lattice in lattices:
-        avg_final_density += sum(lattice) / (length * length)
-    avg_final_density /= num_parallel
-
-    # calculate percolation probability
-    num_spanning_clusters = 0
-    for lattice in lattices:
-        if has_spanning_cluster(lattice):
-            num_spanning_clusters += 1
-    percolation_probability = num_spanning_clusters / num_parallel
+    avg_final_density = sum([d[0] for d in data]) / num_parallel
+    percolation_probability = sum([d[1] for d in data]) / num_parallel
 
     return avg_final_density, percolation_probability
 
