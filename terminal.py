@@ -39,7 +39,7 @@ if __name__ == '__main__':
         elif q == 0.5:
             p_values = concatenate([arange(0, 0.53, 0.01), arange(0.53, 0.58, 0.002), arange(0.58, 1, 0.01)])
         elif q == 0.75:
-            p_values = concatenate([arange(0, 0.4, 0.01), arange(0.5, 0.44, 0.002), arange(0.44, 1, 0.01)])
+            p_values = concatenate([arange(0, 0.4, 0.01), arange(0.4, 0.44, 0.002), arange(0.44, 1, 0.01)])
         elif q == 0.92:
             p_values = concatenate([arange(0, 0.27, 0.01), arange(0.27, 0.3, 0.002), arange(0.3, 1, 0.01)])
 
