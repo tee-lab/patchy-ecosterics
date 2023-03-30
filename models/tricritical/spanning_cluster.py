@@ -178,7 +178,7 @@ def has_spanning_cluster(lattice):
 def tricritical(p_ext = 0.5, q_ext = 0.5, num_parallel = 10):
     # model parameters
     global length, time, p, q
-    length = 100
+    length = 250
     time = 1000
     p = p_ext
     q = q_ext
