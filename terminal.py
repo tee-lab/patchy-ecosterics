@@ -3,7 +3,7 @@ from concurrent.futures import ThreadPoolExecutor
 from matplotlib import pyplot as plt
 from math import floor
 from multiprocessing import cpu_count, Pool, set_start_method
-from numpy import abs, arange, array, zeros
+from numpy import abs, arange, array, concatenate, zeros
 from os import makedirs, path
 from skimage.measure import label
 from tqdm import tqdm
@@ -33,15 +33,15 @@ if __name__ == '__main__':
 
     for q in q_values:
         if q == 0.0:
-            p_values = arange(0, 0.7, 0.01) + arange(0.7, 0.75, 0.002) + arange(0.75, 1, 0.01)
+            p_values = concatenate([arange(0, 0.7, 0.01), arange(0.7, 0.75, 0.002), arange(0.75, 1, 0.01)])
         elif q == 0.25:
-            p_values = arange(0, 0.62, 0.01) + arange(0.62, 0.67, 0.002) + arange(0.67, 1, 0.01)
+            p_values = concatenate([arange(0, 0.62, 0.01), arange(0.62, 0.67, 0.002), arange(0.67, 1, 0.01)])
         elif q == 0.5:
-            p_values = arange(0, 0.53, 0.01) + arange(0.53, 0.58, 0.002) + arange(0.58, 1, 0.01)
+            p_values = concatenate([arange(0, 0.53, 0.01), arange(0.53, 0.58, 0.002), arange(0.58, 1, 0.01)])
         elif q == 0.75:
-            p_values = arange(0, 0.4, 0.01) + arange(0.5, 0.44, 0.002) + arange(0.44, 1, 0.01)
+            p_values = concatenate([arange(0, 0.4, 0.01), arange(0.5, 0.44, 0.002), arange(0.44, 1, 0.01)])
         elif q == 0.92:
-            p_values = arange(0, 0.27, 0.01) + arange(0.27, 0.3, 0.002) + arange(0.3, 1, 0.01)
+            p_values = concatenate([arange(0, 0.27, 0.01), arange(0.27, 0.3, 0.002), arange(0.3, 1, 0.01)])
 
         percolation_probablities = zeros(len(p_values), dtype=float)
         avg_densities = zeros(len(p_values), dtype=float)
