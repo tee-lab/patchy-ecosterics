@@ -28,20 +28,13 @@ from utils import load_automaton_data
 if __name__ == '__main__':
     set_start_method("spawn")
     num_simulations = cpu_count() - 1
+    p_values = [0.72]
+    q = 0
 
-    q_values = [0.0, 0.25, 0.5, 0.75, 0.92]
-
-    for q in q_values:
-        p_values = arange(0, 1, 0.001)
-        percolation_probablities = zeros(len(p_values), dtype=float)
-        avg_densities = zeros(len(p_values), dtype=float)
-
-        for i in range(len(p_values)):
-            avg_densities[i], percolation_probablities[i] = tricritical_spanning(p_values[i], q, num_simulations)
-
-        output_string = ""
-        for i in range(len(p_values)):
-            output_string += f"{p_values[i]:.3f} {avg_densities[i]:.4f} {percolation_probablities[i]:.4f}\n"
-        
-        with open(f"{q:.2f}.txt", "w") as f:
-            f.write(output_string)
+    for p in p_values:
+        purge_data()
+        print(f"\n---> Simulating p = {p} <---")
+        file_string = str(p).replace('.', 'p')
+        tricritical(p, q, num_simulations, save_series=False, save_cluster=True)
+        compile_changes("tricritical", range(num_simulations), plot_name=file_string)
+        plot_changes(file_string)

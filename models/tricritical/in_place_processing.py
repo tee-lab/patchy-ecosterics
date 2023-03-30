@@ -1,5 +1,6 @@
 from concurrent.futures import ThreadPoolExecutor
 from multiprocessing import Pool, set_start_method
+from numba import njit
 from numpy import array, copy, sum
 from numpy.random import random, randint
 from pickle import dump
@@ -10,6 +11,7 @@ import os
 from cluster_dynamics import get_cluster_dynamics, get_changed_lattice
 
 
+@njit
 def landscape_update(lattice, p, q):
     length = len(lattice)
 
@@ -39,6 +41,7 @@ def landscape_update(lattice, p, q):
     return lattice
 
 
+@njit
 def single_update(lattice, p, q):
     changed_coords = None
     length = len(lattice)
@@ -72,6 +75,7 @@ def single_update(lattice, p, q):
     return lattice, changed_coords
 
 
+@njit
 def get_random_site(lattice):
     length = len(lattice)
     num_active = sum(lattice)
@@ -91,6 +95,7 @@ def get_random_site(lattice):
                 return i, j
 
 
+@njit
 def get_random_neighbour(i, j, length):
     neighbour = randint(0, 4)
     # periodic boundary conditon
@@ -104,6 +109,7 @@ def get_random_neighbour(i, j, length):
         return i, (j - 1 + length) % length
 
 
+@njit
 def get_pair_neighbour(i1, j1, i2, j2, length):
     neighbour = randint(0, 6)
 
