@@ -140,9 +140,12 @@ def test_growth():
     plt.subplot(121)
     plt.title("Initial lattice")
     plt.imshow(old_labels)
+    plt.axis("off")
     plt.subplot(122)
     plt.title("Grown cluster")
     plt.imshow(new_labels)
+    plt.axis("off")
+    # plt.savefig("growth.png", bbox_inches="tight")
     plt.show()
 
 
@@ -165,9 +168,12 @@ def test_decay():
     plt.subplot(121)
     plt.title("Initial lattice")
     plt.imshow(old_labels)
+    plt.axis("off")
     plt.subplot(122)
     plt.title("Decayed cluster")
     plt.imshow(new_labels)
+    plt.axis("off")
+    # plt.savefig("decay.png", bbox_inches="tight")
     plt.show()
 
 
@@ -193,9 +199,12 @@ def test_merge():
     plt.subplot(121)
     plt.title("Initial lattice")
     plt.imshow(old_labels)
+    plt.axis("off")
     plt.subplot(122)
     plt.title("Merged cluster")
     plt.imshow(new_labels)
+    plt.axis("off")
+    # plt.savefig("merge.png", bbox_inches="tight")
     plt.show()
 
 
@@ -220,10 +229,13 @@ def test_split():
     plt.figure(figsize=(8, 4))
     plt.subplot(121)
     plt.title("Initial lattice")
+    plt.axis("off")
     plt.imshow(old_labels)
     plt.subplot(122)
     plt.title("Split cluster")
+    plt.axis("off")
     plt.imshow(new_labels)
+    # plt.savefig("split.png", bbox_inches="tight")
     plt.show()
 
 def test_appearance():
@@ -244,10 +256,13 @@ def test_appearance():
     plt.figure(figsize=(8, 4))
     plt.subplot(121)
     plt.title("Initial lattice")
+    plt.axis("off")
     plt.imshow(old_labels)
     plt.subplot(122)
     plt.title("Appeared cluster")
+    plt.axis("off")
     plt.imshow(new_labels)
+    # plt.savefig("appearance.png", bbox_inches="tight")
     plt.show()
 
 
@@ -270,9 +285,12 @@ def test_disappearance():
     plt.subplot(121)
     plt.title("Initial lattice")
     plt.imshow(old_labels)
+    plt.axis('off')
     plt.subplot(122)
     plt.title("Disappeared cluster")
     plt.imshow(new_labels)
+    plt.axis('off')
+    # plt.savefig("disappearance.png", bbox_inches="tight")
     plt.show()
 
 
