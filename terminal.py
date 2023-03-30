@@ -28,8 +28,8 @@ from utils import load_automaton_data
 if __name__ == '__main__':
     set_start_method("spawn")
     num_simulations = cpu_count() - 1
-    p_values = [0.72]
-    q = 0
+    p_values = [0.6, 0.62, 0.65, 0.67]
+    q = 0.25
 
     for p in p_values:
         purge_data()
