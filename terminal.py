@@ -33,15 +33,15 @@ if __name__ == '__main__':
 
     for q in q_values:
         if q == 0.0:
-            p_values = concatenate([arange(0, 0.71, 0.01), arange(0.71, 0.74, 0.0002), arange(0.74, 1, 0.01)])
+            p_values = concatenate([arange(0, 0.71, 0.01), arange(0.71, 0.74, 0.0001), arange(0.74, 1, 0.01)])
         elif q == 0.25:
-            p_values = concatenate([arange(0, 0.64, 0.01), arange(0.64, 0.67, 0.0002), arange(0.67, 1, 0.01)])
+            p_values = concatenate([arange(0, 0.64, 0.01), arange(0.64, 0.67, 0.0001), arange(0.67, 1, 0.01)])
         elif q == 0.5:
-            p_values = concatenate([arange(0, 0.54, 0.01), arange(0.54, 0.57, 0.0002), arange(0.57, 1, 0.01)])
+            p_values = concatenate([arange(0, 0.54, 0.01), arange(0.54, 0.57, 0.0001), arange(0.57, 1, 0.01)])
         elif q == 0.75:
-            p_values = concatenate([arange(0, 0.41, 0.01), arange(0.41, 0.43, 0.0002), arange(0.43, 1, 0.01)])
+            p_values = concatenate([arange(0, 0.41, 0.01), arange(0.41, 0.43, 0.0001), arange(0.43, 1, 0.01)])
         elif q == 0.92:
-            p_values = concatenate([arange(0, 0.28, 0.01), arange(0.28, 0.29, 0.0002), arange(0.29, 1, 0.01)])
+            p_values = concatenate([arange(0, 0.28, 0.01), arange(0.28, 0.29, 0.0001), arange(0.29, 1, 0.01)])
 
         percolation_probablities = zeros(len(p_values), dtype=float)
         avg_densities = zeros(len(p_values), dtype=float)
@@ -51,7 +51,7 @@ if __name__ == '__main__':
 
         output_string = ""
         for i in range(len(p_values)):
-            output_string += f"{p_values[i]:.3f} {avg_densities[i]:.4f} {percolation_probablities[i]:.4f}\n"
+            output_string += f"{p_values[i]:.6f} {avg_densities[i]:.6f} {percolation_probablities[i]:.6f}\n"
 
         with open(f"{q:.2f}.txt", "w") as f:
             f.write(output_string)
