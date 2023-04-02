@@ -33,15 +33,15 @@ if __name__ == '__main__':
 
     for q in q_values:
         if q == 0.0:
-            p_values = concatenate([arange(0, 0.7, 0.01), arange(0.7, 0.75, 0.0001), arange(0.75, 1, 0.01)])
+            p_values = concatenate([arange(0, 0.71, 0.01), arange(0.71, 0.74, 0.0002), arange(0.74, 1, 0.01)])
         elif q == 0.25:
-            p_values = concatenate([arange(0, 0.62, 0.01), arange(0.62, 0.67, 0.0001), arange(0.67, 1, 0.01)])
+            p_values = concatenate([arange(0, 0.64, 0.01), arange(0.64, 0.67, 0.0002), arange(0.67, 1, 0.01)])
         elif q == 0.5:
-            p_values = concatenate([arange(0, 0.53, 0.01), arange(0.53, 0.58, 0.0001), arange(0.58, 1, 0.01)])
+            p_values = concatenate([arange(0, 0.54, 0.01), arange(0.54, 0.57, 0.0002), arange(0.57, 1, 0.01)])
         elif q == 0.75:
-            p_values = concatenate([arange(0, 0.4, 0.01), arange(0.4, 0.44, 0.0001), arange(0.44, 1, 0.01)])
+            p_values = concatenate([arange(0, 0.41, 0.01), arange(0.41, 0.43, 0.0002), arange(0.43, 1, 0.01)])
         elif q == 0.92:
-            p_values = concatenate([arange(0, 0.27, 0.01), arange(0.27, 0.3, 0.0001), arange(0.3, 1, 0.01)])
+            p_values = concatenate([arange(0, 0.28, 0.01), arange(0.28, 0.29, 0.0002), arange(0.29, 1, 0.01)])
 
         percolation_probablities = zeros(len(p_values), dtype=float)
         avg_densities = zeros(len(p_values), dtype=float)

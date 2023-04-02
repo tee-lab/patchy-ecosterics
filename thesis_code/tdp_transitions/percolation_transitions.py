@@ -21,7 +21,8 @@ if __name__ == '__main__':
     for q_value in tqdm(q_values):
         # subfolder = "q" + str(q_value).replace('.', 'p')
         # data_path = path.join(results_root_path, subfolder, dataset, file_name)
-        data_path = path.join(project_root_path, f"{q_value:.2f}.txt")
+        data_path = path.join(results_root_path, f"{q_value:.2f}.txt")
+        # data_path = path.join(project_root_path, f"{q_value:.2f}.txt")
         data = transpose(loadtxt(data_path))
 
         plt.plot(data[1], data[2], label=f"q = {q_value:.2f}", marker='o')
