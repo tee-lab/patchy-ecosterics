@@ -132,7 +132,7 @@ def simulate(data):
     lattice = (lattice == 1).astype(int)
 
     if simulation_index == 0:
-        print(f"Simulating ({p:.3f}, {q:.2f})")
+        print(f"Simulating ({p:.6f}, {q:.2f})")
         iterator = tqdm(range(time))
     else:
         iterator = range(time)
