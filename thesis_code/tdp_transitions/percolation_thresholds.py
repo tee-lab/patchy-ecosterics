@@ -19,8 +19,9 @@ if __name__ == '__main__':
     plt.ylabel("percolation probability")
 
     for q_value in tqdm(q_values):
-        subfolder = "q" + str(q_value).replace('.', 'p')
-        data_path = path.join(results_root_path, subfolder, dataset, file_name)
+        # subfolder = "q" + str(q_value).replace('.', 'p')
+        # data_path = path.join(results_root_path, subfolder, dataset, file_name)
+        data_path = path.join(project_root_path, f"{q_value:.2f}.txt")
         data = transpose(loadtxt(data_path))
 
         plt.plot(data[0], data[2], label=f"q = {q_value:.2f}", marker='o')
