@@ -10,6 +10,7 @@ from tqdm import tqdm
 # models
 from models.contact_spatial.in_place_processing import contact_spatial
 from models.null_ising.in_place_processing import null_ising
+from models.null_static.spanning_cluster import null_static as null_static_spanning
 from models.null_stochastic.in_place_processing import null_stochastic
 from models.null_stochastic.spanning_cluster import null_stochastic as null_stochastic_spanning
 from models.scanlon_kalahari.in_place_processing import scanlon_kalahari
@@ -28,25 +29,19 @@ from utils import load_automaton_data
 if __name__ == '__main__':
     set_start_method("spawn")
     num_simulations = cpu_count() - 1
-
-    radius_values = [6, 10, 14, 18, 22]
-    immediacy = 24
-
     output_path = path.join(path.dirname(__file__), "outputs")
     makedirs(output_path, exist_ok=True)
 
-    for radius in radius_values:
-        rainfall_values = arange(400, 1000, 10)
+    occupancies = arange(0.1, 1.00, 0.1)
+    avg_densities = zeros(len(occupancies))
+    percolation_probabilities = zeros(len(occupancies))
 
-        percolation_probablities = zeros(len(rainfall_values), dtype=float)
-        avg_densities = zeros(len(rainfall_values), dtype=float)
-
-        for i in range(len(rainfall_values)):
-            avg_densities[i], percolation_probablities[i] = scanlon_kalahari_spanning(rainfall_values[i], radius, immediacy, num_simulations)
+    for i in tqdm(range(len(occupancies))):
+        avg_densities[i], percolation_probabilities[i] = null_static_spanning(occupancies[i], num_simulations)
 
         output_string = ""
-        for i in range(len(rainfall_values)):
-            output_string += f"{rainfall_values[i]} {avg_densities[i]:.6f} {percolation_probablities[i]:.6f}\n"
+        for i in range(len(occupancies)):
+            output_string += f"{avg_densities[i]:.6f} {percolation_probabilities[i]:.6f}\n"
 
-        with open(path.join(output_path, f"{radius}.txt"), "w") as f:
+        with open(path.join(output_path, "null_static.txt"), "w") as f:
             f.write(output_string)
