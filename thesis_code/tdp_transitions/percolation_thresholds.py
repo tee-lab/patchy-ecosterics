@@ -10,7 +10,7 @@ if __name__ == '__main__':
     results_root_path = path.join(project_root_path, "results", "tricritical")
 
     q_values = [0, 0.25, 0.5, 0.75, 0.92]
-    dataset = "100x100"
+    dataset = "256x256"
     file_name = "transitions.txt"
 
     plt.figure()
@@ -19,9 +19,9 @@ if __name__ == '__main__':
     plt.ylabel("percolation probability")
 
     for q_value in tqdm(q_values):
-        # subfolder = "q" + str(q_value).replace('.', 'p')
-        # data_path = path.join(results_root_path, subfolder, dataset, file_name)
-        data_path = path.join(results_root_path, f"{q_value:.2f}.txt")
+        subfolder = "q" + str(q_value).replace('.', 'p')
+        data_path = path.join(results_root_path, subfolder, dataset, file_name)
+        # data_path = path.join(results_root_path, f"{q_value:.2f}.txt")
         # data_path = path.join(project_root_path, f"{q_value:.2f}.txt")
         data = transpose(loadtxt(data_path))
 
