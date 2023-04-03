@@ -1,39 +1,46 @@
-from concurrent.futures import ThreadPoolExecutor
 from math import floor, sqrt
 from matplotlib import pyplot as plt
+from multiprocessing import Pool
 from numba import njit
 from numpy import arange, array, copy, sum, zeros
 from numpy.random import randint
-from pickle import dump
 from random import random
 from skimage.measure import label
+from tqdm import tqdm
 
 import os
 
 
-@njit(fastmath=True, nogil=False)
-def mc_step(lattice):
+@njit(fastmath=True, nogil=True)
+def landscape_update(lattice, f_carrying, r_influence, immediacy):
     """ Simulates a single Monte Carlo step of the automaton """
+    length = len(lattice)
     f_current = sum(lattice) / (length * length)
 
-    for _ in range(mc_updates):
+    for _ in range(length * length):
         i = int(random() * length)
         j = int(random() * length)
-        rho = get_density(lattice, i, j)
+        
+        rho = get_density(lattice, r_influence, immediacy, i, j)
 
         if lattice[i, j] == 0:
             prob_growth = rho + (f_carrying - f_current) / (1 - f_current)
             if random() < prob_growth:
                 lattice[i, j] = 1
+                f_current += 1 / (length * length)
         else:
             prob_decay = (1 - rho) + (f_current - f_carrying) / f_current
             if random() < prob_decay:
                 lattice[i, j] = 0
+                f_current -= 1 / (length * length)
+
+    return lattice
 
 
-@njit(fastmath=True, nogil=False)
-def get_density(lattice, i, j):
+@njit(fastmath=True, nogil=True)
+def get_density(lattice, r_influence, immediacy, i, j):
     """ Calculates the vegetation density in the neighbourhood of a given cell (i, j) """
+    length = len(lattice)
     normalization = 0
     density = 0
 
@@ -44,28 +51,31 @@ def get_density(lattice, i, j):
                 weightage_term = 1 - (distance / immediacy)
                 density += weightage_term * lattice[a, b]
                 normalization += weightage_term
+
     return density / normalization
 
 
-def simulate(simulation_index):
-    print(f_carrying)
+def simulate(data):
+    simulation_index, length, time, rainfall, r_influence, immediacy = data
     
     # initialize lattice and time series
     lattice = randint(0, 2, (length, length))
-    time_series = [copy(lattice)]
+    f_carrying = get_forest_cover(rainfall)
 
     if simulation_index == 0:
-        print("Compiling functions...")
+        print("Simulating for rainfall = {}".format(rainfall))
+        iterator = tqdm(range(time))
+    else:
+        iterator = range(time)
 
     # simulate
-    for i in range(mc_steps):
-        mc_step(lattice)
-        time_series.append(copy(lattice))
+    for _ in iterator:
+        lattice = landscape_update(lattice, f_carrying, r_influence, immediacy)
 
-        if simulation_index == 0:
-            print(f"{i * 100 / mc_steps} %", end="\r")
+    density = sum(lattice) / (length * length)
+    has_percolation = has_spanning_cluster(lattice)
 
-    return time_series
+    return density, has_percolation
 
 
 def get_forest_cover(rainfall):
@@ -76,14 +86,18 @@ def get_forest_cover(rainfall):
     return max(slope * rainfall + intercept, 0)
 
 
+@njit
 def row_has_cluster(labelled_lattice, row, cluster):
+    length = len(labelled_lattice)
     for j in range(length):
         if labelled_lattice[row, j] == cluster:
             return True
     return False
 
 
+@njit
 def col_has_cluster(labelled_lattice, col, cluster):
+    length = len(labelled_lattice)
     for i in range(length):
         if labelled_lattice[i, col] == cluster:
             return True
@@ -91,6 +105,7 @@ def col_has_cluster(labelled_lattice, col, cluster):
 
 
 def has_spanning_cluster(lattice):
+    length = len(lattice)
     labelled_lattice = label(lattice, connectivity=1, background=0)
     num_labels = labelled_lattice.max()
 
@@ -102,36 +117,21 @@ def has_spanning_cluster(lattice):
     return False
 
 
-def scanlon_kalahari(rainfall_ext = 800, num_parallel = 10):
+def scanlon_kalahari(rainfall_ext, radius_ext, immediacy_ext, num_parallel = 10):
     # model parameters
-    global length, rainfall, f_carrying, r_influence, immediacy
     length = 250
+    time = 1000
     rainfall = rainfall_ext
-    f_carrying = get_forest_cover(rainfall)
-    r_influence = 9
-    immediacy = 24
+    r_influence = radius_ext
+    immediacy = immediacy_ext
 
-    # simulation parameters
-    global mc_steps, mc_updates
-    mc_steps = 50
-    mc_updates = floor(length * length)
+    with Pool(num_parallel) as pool:
+        data = pool.map(simulate, [(i, length, time, rainfall, r_influence, immediacy) for i in range(num_parallel)])
 
-    print(f"Simulating {num_parallel} automatons in parallel ...")
-    with ThreadPoolExecutor(num_parallel) as pool:
-        time_series_records = list(pool.map(simulate, range(num_parallel)))
+    avg_density = sum([d for d, _ in data]) / num_parallel
+    percolation_probablity = sum([p for _, p in data]) / num_parallel
 
-    avg_final_density = 0
-    for time_series in time_series_records:
-        avg_final_density += sum(time_series[-1]) / (length * length)
-    avg_final_density /= num_parallel
-
-    num_spanning_clusters = 0
-    for time_series in time_series_records:
-        if has_spanning_cluster(time_series[-1]):
-            num_spanning_clusters += 1
-    percolation_probability = num_spanning_clusters / num_parallel
-
-    return avg_final_density, percolation_probability
+    return avg_density, percolation_probablity
 
 
 if __name__ == '__main__':
@@ -140,7 +140,6 @@ if __name__ == '__main__':
     percolation_probablities = zeros(len(rainfall_values), dtype=float)
 
     for i, rainfall in enumerate(rainfall_values):
-        print(f"\n---> Simulating rainfall = {rainfall} <---")
         d, p = scanlon_kalahari(rainfall, num_simulations)
         
         print(d, p)

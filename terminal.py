@@ -27,31 +27,26 @@ from utils import load_automaton_data
 
 if __name__ == '__main__':
     set_start_method("spawn")
-    num_simulations = 2 * cpu_count() - 1
+    num_simulations = cpu_count() - 1
 
-    q_values = [0.92]
+    radius_values = [6, 10, 14, 18, 22]
+    immediacy = 24
 
-    for q in q_values:
-        if q == 0.0:
-            p_values = concatenate([arange(0, 0.71, 0.01), arange(0.71, 0.74, 0.0001), arange(0.74, 1, 0.01)])
-        elif q == 0.25:
-            p_values = concatenate([arange(0, 0.64, 0.01), arange(0.64, 0.67, 0.0001), arange(0.67, 1, 0.01)])
-        elif q == 0.5:
-            p_values = concatenate([arange(0, 0.54, 0.01), arange(0.54, 0.57, 0.0001), arange(0.57, 1, 0.01)])
-        elif q == 0.75:
-            p_values = concatenate([arange(0, 0.41, 0.01), arange(0.41, 0.43, 0.0001), arange(0.43, 1, 0.01)])
-        elif q == 0.92:
-            p_values = concatenate([arange(0, 0.28, 0.01), arange(0.28, 0.29, 0.00001), arange(0.29, 1, 0.01)])
+    output_path = path.join(path.dirname(__file__), "outputs")
+    makedirs(output_path, exist_ok=True)
 
-        percolation_probablities = zeros(len(p_values), dtype=float)
-        avg_densities = zeros(len(p_values), dtype=float)
+    for radius in radius_values:
+        rainfall_values = arange(400, 1000, 10)
 
-        for i in range(len(p_values)):
-            avg_densities[i], percolation_probablities[i] = tricritical_spanning(p_values[i], q, num_simulations)
+        percolation_probablities = zeros(len(rainfall_values), dtype=float)
+        avg_densities = zeros(len(rainfall_values), dtype=float)
+
+        for i in range(len(rainfall_values)):
+            avg_densities[i], percolation_probablities[i] = scanlon_kalahari_spanning(rainfall_values[i], radius, immediacy, num_simulations)
 
         output_string = ""
-        for i in range(len(p_values)):
-            output_string += f"{p_values[i]:.6f} {avg_densities[i]:.6f} {percolation_probablities[i]:.6f}\n"
+        for i in range(len(rainfall_values)):
+            output_string += f"{rainfall_values[i]} {avg_densities[i]:.6f} {percolation_probablities[i]:.6f}\n"
 
-        with open(f"{q:.2f}.txt", "w") as f:
+        with open(path.join(output_path, f"{radius}.txt"), "w") as f:
             f.write(output_string)
