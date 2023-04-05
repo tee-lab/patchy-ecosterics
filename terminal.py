@@ -30,24 +30,24 @@ if __name__ == '__main__':
     set_start_method("spawn")
     num_simulations = 2 * cpu_count() - 1
 
-    radius_values = [4, 8, 12, 16]
-    immediacy = 24
+    immediacy_values = [4, 6, 10, 12]
+    r_value = 12
 
     output_path = path.join(path.dirname(__file__), "outputs")
     makedirs(output_path, exist_ok=True)
 
-    for radius in radius_values:
+    for immediacy in immediacy_values:
         rainfall_values = arange(700, 1200, 10)
 
         percolation_probablities = zeros(len(rainfall_values), dtype=float)
         avg_densities = zeros(len(rainfall_values), dtype=float)
 
         for i in range(len(rainfall_values)):
-            avg_densities[i], percolation_probablities[i] = scanlon_kalahari_spanning(rainfall_values[i], radius, immediacy, num_simulations)
+            avg_densities[i], percolation_probablities[i] = scanlon_kalahari_spanning(rainfall_values[i], r_value, immediacy, num_simulations)
 
         output_string = ""
         for i in range(len(rainfall_values)):
             output_string += f"{rainfall_values[i]} {avg_densities[i]:.6f} {percolation_probablities[i]:.6f}\n"
 
-        with open(path.join(output_path, f"{radius}.txt"), "w") as f:
+        with open(path.join(output_path, f"{immediacy}.txt"), "w") as f:
             f.write(output_string)
