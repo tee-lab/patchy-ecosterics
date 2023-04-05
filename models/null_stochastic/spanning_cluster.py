@@ -1,30 +1,17 @@
 from math import exp
 from multiprocessing import Pool
+from numba import njit
 from numpy import array, copy, sum, zeros
 from numpy.random import random, randint
+from pickle import dump
 from skimage.measure import label
+from tqdm import tqdm
 import os
 
-
-def single_update(lattice, r, m):
-    changed_coords = None
-    length = len(lattice)
-    
-    i = randint(0, length)
-    j = randint(0, length)
-
-    if lattice[i, j] == 0:
-        if random() < r:
-            lattice[i, j] = 1
-            changed_coords = (i, j)
-    else:
-        if random() < m:
-            lattice[i, j] = 0
-            changed_coords = (i, j)
-
-    return lattice, changed_coords
+from cluster_dynamics import get_cluster_dynamics, get_changed_lattice
 
 
+@njit
 def landscape_update(lattice, r, m):
     length = len(lattice)
 
@@ -57,7 +44,6 @@ def simulate(data):
     simulation_index, fractional_cover, length, time = data
 
     lattice = get_init_lattice(length, fractional_cover)
-    time_series = [lattice]
 
     if fractional_cover <= 0:
         m = 1
@@ -70,19 +56,22 @@ def simulate(data):
         m_by_r = 1 / fractional_cover - 1
         r = 1 / (m_by_r / m)
 
-    for i in range(time):
-        lattice = landscape_update(lattice, r, m)
-        time_series.append(copy(lattice))
-
-        if simulation_index == 0:
-            print(f"Equilibration: {round(i * 100 / time, 2)} %", end="\r")
-
     if simulation_index == 0:
-        print("Equilibration: 100.00 %\n", end="\r")
+        print(f"Simulation f = {fractional_cover:.3f}")
+        iterator = tqdm(range(time))
+    else:
+        iterator = range(time)
 
-    return time_series
+    for _ in iterator:
+        lattice = landscape_update(lattice, r, m)
+
+    density = sum(lattice) / (length * length)
+    has_percolation = has_spanning_cluster(lattice)
+
+    return density, has_percolation
 
 
+@njit
 def row_has_cluster(labelled_lattice, row, cluster):
     length = len(labelled_lattice)
     for j in range(length):
@@ -91,6 +80,7 @@ def row_has_cluster(labelled_lattice, row, cluster):
     return False
 
 
+@njit
 def col_has_cluster(labelled_lattice, col, cluster):
     length = len(labelled_lattice)
     for i in range(length):
@@ -104,39 +94,34 @@ def has_spanning_cluster(lattice):
     labelled_lattice = label(lattice, connectivity=1, background=0)
     num_labels = labelled_lattice.max()
 
-    for i in range(1, num_labels + 1):
-        if row_has_cluster(labelled_lattice, 0, i) and row_has_cluster(labelled_lattice, length - 1, i):
-            if col_has_cluster(labelled_lattice, 0, i) and col_has_cluster(labelled_lattice, length - 1, i):
-                return True
+    if num_labels == 0:
+        return False
+    
+    sizes = [sum(labelled_lattice == i) for i in range(1, num_labels + 1)]
+    biggest_cluster = sizes.index(max(sizes)) + 1
 
-    return False
+    if row_has_cluster(labelled_lattice, 0, biggest_cluster) and row_has_cluster(labelled_lattice, length - 1, biggest_cluster):
+        return True
+    elif col_has_cluster(labelled_lattice, 0, biggest_cluster) and col_has_cluster(labelled_lattice, length - 1, biggest_cluster):
+        return True
+    else:
+        return False
 
 
 def null_stochastic(fractional_cover, num_parallel = 10):
     # model parameters
-    length = 100
-    time = 100
+    length = 500
+    time = 500
 
-    print(f"\nPreparing {num_parallel} automata in parallel...")
     data = [(simulation_index, fractional_cover, length, time) for simulation_index in range(num_parallel)]
     with Pool(num_parallel) as pool:
-        time_series_records = list(pool.map(simulate, data))
+        data = list(pool.map(simulate, data))
 
-    # calculate final density
-    avg_final_density = 0
-    for time_series in time_series_records:
-        avg_final_density += sum(time_series[-1]) / (length * length)
-    avg_final_density /= num_parallel
+    avg_density = sum([datum[0] for datum in data]) / num_parallel
+    percolation_probability = sum([datum[1] for datum in data]) / num_parallel
 
-    # calculate percolation probability
-    num_spanning_clusters = 0
-    for time_series in time_series_records:
-        if has_spanning_cluster(time_series[-1]):
-            num_spanning_clusters += 1
-    percolation_probability = num_spanning_clusters / num_parallel
-
-    return avg_final_density, percolation_probability
+    return avg_density, percolation_probability
 
 
 if __name__ == '__main__':
-    null_stochastic(1, num_parallel=4)
+    null_stochastic(0.5, num_parallel=4, save_cluster=False)
