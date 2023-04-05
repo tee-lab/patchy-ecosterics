@@ -119,8 +119,8 @@ def has_spanning_cluster(lattice):
 
 def scanlon_kalahari(rainfall_ext, radius_ext, immediacy_ext, num_parallel = 10):
     # model parameters
-    length = 250
-    time = 1000
+    length = 500
+    time = 200
     rainfall = rainfall_ext
     r_influence = radius_ext
     immediacy = immediacy_ext
