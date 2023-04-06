@@ -8,7 +8,7 @@ def purge_data(model_name = None):
         purge_data("contact_spatial")
         purge_data("scanlon_kalahari")
         purge_data("tricritical")
-        purge_data("null_bootstrapped")
+        purge_data("null_static")
         purge_data("null_ising")
         purge_data("null_stochastic")
         return
