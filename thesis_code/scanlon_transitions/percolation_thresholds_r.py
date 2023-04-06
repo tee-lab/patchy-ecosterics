@@ -9,7 +9,7 @@ if __name__ == '__main__':
     project_root_path = path.join(current_path, "..", "..")
     results_root_path = path.join(project_root_path, "results", "scanlon_kalahari")
 
-    r_values = [6, 10, 14, 18]
+    r_values = [4, 8, 12, 16]
 
     plt.figure()
     plt.title("Change in percolation threshold with increasing radius of influence")
@@ -20,7 +20,7 @@ if __name__ == '__main__':
         data_path = path.join(results_root_path, "transitions", "radius", f"{r_value}.txt")
         data = transpose(loadtxt(data_path))
 
-        plt.plot(data[0], data[2], label=f"r = {r_value}", marker='o')
+        plt.plot(data[0][5:-20], data[2][5:-20], label=f"r = {r_value}", marker='o')
 
     plt.legend()
     plt.savefig("percolation_thresholds_r.png")
