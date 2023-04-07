@@ -31,7 +31,7 @@ if __name__ == '__main__':
         data = mean_ds[1:cutoff_index]
         x = cluster_sizes[1:cutoff_index]
 
-        poly = PolynomialFeatures(degree=3)
+        poly = PolynomialFeatures(degree=2)
         x_poly = poly.fit_transform(x.reshape(-1, 1))
         model = LinearRegression()
         model.fit(x_poly, data)
