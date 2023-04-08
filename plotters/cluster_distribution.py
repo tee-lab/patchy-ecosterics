@@ -63,15 +63,20 @@ if __name__ == '__main__':
     # percolation_threshold = 0.72
     # percolation_density = 0.54
 
-    q = 0.25
-    p_values = [0.6, 0.62, 0.65, 0.67]
-    percolation_threshold = 0.65
-    percolation_density = 0.535
+    # q = 0.25
+    # p_values = [0.6, 0.62, 0.65, 0.67]
+    # percolation_threshold = 0.65
+    # percolation_density = 0.535
 
     # q = 0.5
     # p_values = [0.5, 0.53, 0.55, 0.57]
     # percolation_threshold = 0.55
     # percolation_density = 0.53
+
+    q = 0.75
+    p_values = [0.405, 0.41, 0.42, 0.44]
+    percolation_threshold = 0.42
+    percolation_density = 0.52
 
     # q = 0.92
     # p_values = [0.28, 0.285, 0.29, 0.31]
