@@ -9,7 +9,7 @@ if __name__ == '__main__':
     project_root_path = path.join(current_path, "..", "..")
     results_root_path = path.join(project_root_path, "results", "scanlon_kalahari")
 
-    k_values = [4, 7, 10]
+    k_values = [4, 6, 8, 10]
 
     plt.figure()
     plt.title("Change in percolation threshold with increasing immediacy")

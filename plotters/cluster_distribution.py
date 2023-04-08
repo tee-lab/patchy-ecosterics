@@ -73,13 +73,16 @@ if __name__ == '__main__':
     # percolation_threshold = 0.55
     # percolation_density = 0.53
 
-    q = 0.75
-    p_values = [0.405, 0.41, 0.42, 0.44]
-    percolation_threshold = 0.42
-    percolation_density = 0.52
+    # q = 0.75
+    # p_values = [0.405, 0.41, 0.42, 0.44]
+    # percolation_threshold = 0.42
+    # percolation_density = 0.52
 
-    # q = 0.92
-    # p_values = [0.28, 0.285, 0.29, 0.31]
+    q = 0.92
+    p_values = [0.282, 0.283, 0.285, 0.29]
+    densities = [0.878, 0.166, 0.4, 0.67]
+    percolation_threshold = 0.285
+    percolation_density = 0.4
 
     subfolder = "q" + str(q).replace('.', 'p')
     phase_diagram_path = path.join(results_path, model)
@@ -105,7 +108,13 @@ if __name__ == '__main__':
             plt.yticks([])
         plt.plot(birth_prob, densities, label="steady state density")
         plt.plot(percolation_threshold, percolation_density, 'x', label="percolation threshold")
-        plt.plot(p, densities[birth_prob.index(p)], 'o', label="current point")
+
+        # for q = 0.92
+        densities = [0.0878, 0.166, 0.4, 0.67]
+        plt.plot(p_values[i], densities[i], 'o', label="current point")
+
+        # for everything else
+        # plt.plot(p, densities[birth_prob.index(p)], 'o', label="current point")
         plt.legend()
 
         row = 1
