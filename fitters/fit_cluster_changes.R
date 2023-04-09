@@ -1,5 +1,5 @@
 calc_bic <- function(fit_output, data_len) {
-  bic = fit_output$npars * log(data_len) - 2 * (-fit_output$ll)
+  bic = fit_output$npars * log(data_len) - 2 * (fit_output$ll)
   return(bic)
 }
 
