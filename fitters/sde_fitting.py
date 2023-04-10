@@ -1,8 +1,45 @@
 from matplotlib import pyplot as plt
-from numpy import loadtxt, transpose
-from sklearn.preprocessing import PolynomialFeatures
-from sklearn.linear_model import LinearRegression
+from numba import njit
+from numpy import arange, array, dot, loadtxt, ones, transpose, zeros
+from numpy.random import random
 from os import path
+from tqdm import tqdm
+
+
+@njit
+def f(x, w, b):
+    return dot(x, w) + b
+
+
+@njit
+def get_cost(x, y, w, b):
+    m = len(x)
+    return sum((f(x, w, b) - y) ** 2) / (2 * m)
+
+
+def get_grad(X, y, w, b):
+    db = 0
+    dw = zeros(len(w))
+    m = len(X)
+
+    for i in range(m):
+        db += (f(X[i], w, b) - y[i])
+        for j in range(len(w)):
+            dw[j] += (f(X[i], w, b) - y[i]) * X[i][j]
+
+    return dw / m, db / m
+               
+
+def gradient_descent(x, y, learning_rate, num_iterations):
+    w = zeros(len(x[0]))
+    b = 0
+
+    for _ in tqdm(range(num_iterations)):
+        dw, db = get_grad(x, y, w, b)
+        w -= learning_rate * dw
+        b -= learning_rate * db
+
+    return w, b
 
 
 if __name__ == '__main__':
@@ -22,27 +59,46 @@ if __name__ == '__main__':
         data = transpose(loadtxt(path.join(folder_path, file_name)))
         cluster_sizes, mean_ds, num_points = data[0], data[1], data[3]
 
-        cutoff_index = 0
-        for i in range(len(num_points)):
-            if num_points[i] < data_cutoff:
-                cutoff_index = i
-                break
+        # cutoff_index = 0
+        # for i in range(len(num_points)):
+        #     if num_points[i] < data_cutoff:
+        #         cutoff_index = i
+        #         break
 
-        data = mean_ds[1:cutoff_index]
+        cutoff_index = 50
+
+        y = mean_ds[1:cutoff_index]
         x = cluster_sizes[1:cutoff_index]
 
-        poly = PolynomialFeatures(degree=2)
-        x_poly = poly.fit_transform(x.reshape(-1, 1))
-        model = LinearRegression()
-        model.fit(x_poly, data)
-        print(f"p = {p_value}: {model.intercept_} {model.coef_[1:]}")
-        print("R^2 = " + str(model.score(x_poly, data)))
+        # output_string = ""
+        # for i in range(len(x)):
+        #     output_string += str(x[i]) + "\t" + str(y[i]) + "\n"
+        
+        # with open("output.txt", "w") as file:
+        #     file.write(output_string)
 
-        data_fit = model.predict(x_poly)
+        # _ = input()
 
-        plt.title(f"Mean dS vs Cluster Size for p = {p_value}")
-        plt.plot(x, data, label="p = " + str(p_value))
-        plt.plot(x, data_fit, label="Fit")
-        plt.plot([0, cluster_sizes[cutoff_index - 1]], [0, 0])
-        plt.legend()
+        degree = 2
+        X = []
+        for i in range(len(x)):
+            X.append([x[i] ** j for j in range(1, degree + 1)])
+        X = array(X)
+
+        column_means = X.mean(axis=0)
+        column_stds = X.std(axis=0)
+
+        X_scaled = (X - column_means) / column_stds
+
+        learning_rate = 0.01
+        num_iterations = 10000
+
+        w, b = gradient_descent(X_scaled, y, learning_rate, num_iterations)
+        print(b, w)
+        print(get_cost(X_scaled, y, w, b))
+
+        y_pred = f(X_scaled, w, b)
+
+        plt.plot(x, y, "o")
+        plt.plot(x, y_pred)
         plt.show()

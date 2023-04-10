@@ -10,13 +10,14 @@ if __name__ == '__main__':
     # prefixes = ['0p6', '0p62', '0p65', '0p67']
     # prefixes = ['0p5', '0p53', '0p55', '0p57']
     # prefixes = ['0p405', '0p41', '0p42', '0p44']
-    prefixes = ['0p282', '0p283', '0p285', '0p29']
+    # prefixes = ['0p282', '0p283', '0p285', '0p29']
 
     # Scanlon
     # prefixes = ['300', '500', '700', '900']
     
     # Null stochastic
     # prefixes = ['0p48', '0p51', '0p54', '0p57', '0p6']
+    prefixes = ['0p27', '0p48', '0p54', '0p61']
 
     for prefix in prefixes:
         makedirs(path.join(output_path, prefix), exist_ok=True)
