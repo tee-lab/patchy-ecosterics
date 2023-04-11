@@ -75,13 +75,37 @@ def get_mean_ds_sq(data_path, name, limit):
 
 if __name__ == '__main__':
     root_path = path.join(path.dirname(__file__), "..")
+    dataset = "100x100"
 
     q = 0
     p_values = [0.65, 0.7, 0.72, 0.74]
     densities = [0.27, 0.48, 0.54, 0.61]
     tdp_cluster_limits = [100, 500, 4000, 6000]
     null_cluster_limits = [50, 250, 2000, 6000]
-    dataset = "100x100"
+    
+    # q = 0.25
+    # p_values = [0.6, 0.62, 0.65, 0.67]
+    # densities = [0.35, 0.45, 0.55, 0.61]
+    # tdp_cluster_limits = [100, 500, 4000, 6000]
+    # null_cluster_limits = [50, 250, 2000, 6000]
+
+    # q = 0.5
+    # p_values = [0.5, 0.53, 0.55, 0.57]
+    # densities = [0.06, 0.43, 0.53, 0.6]
+    # tdp_cluster_limits = [100, 500, 4000, 6000]
+    # null_cluster_limits = [50, 250, 2000, 6000]
+
+    # q = 0.75
+    # p_values = [0.405, 0.41, 0.42, 0.44]
+    # densities = [0.23, 0.38, 0.52, 0.64]
+    # tdp_cluster_limits = [200, 1000, 4000, 6000]
+    # null_cluster_limits = [100, 500, 2000, 6000]
+
+    # q = 0.92
+    # p_values = [0.282, 0.283, 0.285, 0.29]
+    # densities = [0.09, 0.17, 0.4, 0.7]
+    # tdp_cluster_limits = [300, 600, 1000, 1000]
+    # null_cluster_limits = [150, 300, 500, 1000]
 
     assert len(p_values) == len(densities) == len(tdp_cluster_limits)
 
