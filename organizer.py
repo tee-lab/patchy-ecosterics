@@ -16,8 +16,11 @@ if __name__ == '__main__':
     # prefixes = ['300', '500', '700', '900']
     
     # Null stochastic
-    # prefixes = ['0p48', '0p51', '0p54', '0p57', '0p6']
-    prefixes = ['0p27', '0p48', '0p54', '0p61']
+    # prefixes = ['0p27', '0p48', '0p54', '0p61']
+    # prefixes = ['0p35', '0p45', '0p55', '0p61']
+    # prefixes = ['0p06', '0p43', '0p53', '0p6']
+    # prefixes = ['0p23', '0p38', '0p52', '0p64']
+    prefixes = ['0p09', '0p17', '0p4', '0p7']
 
     for prefix in prefixes:
         makedirs(path.join(output_path, prefix), exist_ok=True)

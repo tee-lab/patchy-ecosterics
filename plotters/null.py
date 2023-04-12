@@ -77,11 +77,11 @@ if __name__ == '__main__':
     root_path = path.join(path.dirname(__file__), "..")
     dataset = "100x100"
 
-    q = 0
-    p_values = [0.65, 0.7, 0.72, 0.74]
-    densities = [0.27, 0.48, 0.54, 0.61]
-    tdp_cluster_limits = [100, 500, 4000, 6000]
-    null_cluster_limits = [50, 250, 2000, 6000]
+    # q = 0
+    # p_values = [0.65, 0.7, 0.72, 0.74]
+    # densities = [0.27, 0.48, 0.54, 0.61]
+    # tdp_cluster_limits = [100, 500, 4000, 6000]
+    # null_cluster_limits = [50, 250, 2000, 6000]
     
     # q = 0.25
     # p_values = [0.6, 0.62, 0.65, 0.67]
@@ -93,27 +93,30 @@ if __name__ == '__main__':
     # p_values = [0.5, 0.53, 0.55, 0.57]
     # densities = [0.06, 0.43, 0.53, 0.6]
     # tdp_cluster_limits = [100, 500, 4000, 6000]
-    # null_cluster_limits = [50, 250, 2000, 6000]
+    # null_cluster_limits = [50, 200, 1500, 6000]
 
     # q = 0.75
     # p_values = [0.405, 0.41, 0.42, 0.44]
     # densities = [0.23, 0.38, 0.52, 0.64]
     # tdp_cluster_limits = [200, 1000, 4000, 6000]
-    # null_cluster_limits = [100, 500, 2000, 6000]
+    # null_cluster_limits = [25, 150, 1000, 6000]
 
-    # q = 0.92
-    # p_values = [0.282, 0.283, 0.285, 0.29]
-    # densities = [0.09, 0.17, 0.4, 0.7]
-    # tdp_cluster_limits = [300, 600, 1000, 1000]
-    # null_cluster_limits = [150, 300, 500, 1000]
+    q = 0.92
+    p_values = [0.282, 0.283, 0.285, 0.29]
+    densities = [0.09, 0.17, 0.4, 0.7]
+    tdp_cluster_limits = [300, 600, 1000, 6000]
+    null_cluster_limits = [15, 50, 100, 6000]
 
     assert len(p_values) == len(densities) == len(tdp_cluster_limits)
+
+    title_size = 16
+    label_size = 14
 
     q_folder = "q" + str(q).replace(".", "p") 
     null_path = path.join("results", "null_stochastic")
     tdp_path = path.join("results", "tricritical", q_folder, dataset)
 
-    plt.subplots(4, len(p_values), figsize=(40, 25))
+    plt.subplots(4, len(p_values), figsize=(40, 26))
     for i in tqdm(range(len(p_values))):
         col = i + 1
         p = p_values[i]
@@ -129,10 +132,10 @@ if __name__ == '__main__':
         null_cluster_sizes, null_inverse_cdf = get_cluster_distribution(null_path, null_folder, null_file_name)
 
         plt.subplot(4, len(p_values), col)
-        plt.title("Cluster Size Distribution")
-        plt.xlabel("s")
+        plt.title("Cluster Size Distribution", fontsize=title_size)
+        plt.xlabel("s", fontsize=label_size)
         if col == 1:
-            plt.ylabel("P(S > s)")
+            plt.ylabel("P(S > s)", fontsize=label_size)
         plt.loglog(tdp_cluster_sizes, tdp_inverse_cdf, 'o', label="TDP")
         plt.loglog(null_cluster_sizes, null_inverse_cdf, 'o', label="Null")
         plt.legend()
@@ -144,10 +147,10 @@ if __name__ == '__main__':
         null_changes, null_inverse_cdf = get_cluster_dynamics(null_path, null_folder, null_file_name)
 
         plt.subplot(4, len(p_values), col + len(p_values))
-        plt.title("Cluster Dynamics")
-        plt.xlabel("ds")
+        plt.title("Cluster Dynamics", fontsize=title_size)
+        plt.xlabel("ds", fontsize=label_size)
         if col == 1:
-            plt.ylabel("P(dS > ds)")
+            plt.ylabel("P(dS > ds)", fontsize=label_size)
         plt.loglog(tdp_changes, tdp_inverse_cdf, label="TDP")
         plt.loglog(null_changes, null_inverse_cdf, label="Null")
         plt.legend()
@@ -159,10 +162,10 @@ if __name__ == '__main__':
         null_cluster_sizes, null_cluster_ds = get_mean_ds(null_path, null_folder, null_cluster_limits[i])
 
         plt.subplot(4, len(p_values), col + 2 * len(p_values))
-        plt.title("Drift Term")
-        plt.xlabel("s")
+        plt.title("Drift Term", fontsize=title_size)
+        plt.xlabel("s", fontsize=label_size)
         if col == 1:
-            plt.ylabel("Mean ds")
+            plt.ylabel("Mean ds", fontsize=label_size)
         plt.plot(tdp_cluster_sizes, tdp_cluster_ds, label="TDP")
         plt.plot(null_cluster_sizes, null_cluster_ds, label="Null")
         plt.plot([0, max(tdp_cluster_limits[i], null_cluster_limits[i])], [0, 0], 'k--')
@@ -175,13 +178,13 @@ if __name__ == '__main__':
         null_cluster_sizes, null_cluster_ds_sq = get_mean_ds_sq(null_path, null_folder, null_cluster_limits[i])
 
         plt.subplot(4, len(p_values), col + 3 * len(p_values))
-        plt.title("Diffusion Term")
-        plt.xlabel("s")
+        plt.title("Diffusion Term", fontsize=title_size)
+        plt.xlabel("s", fontsize=label_size)
         if col == 1:
-            plt.ylabel("Mean (ds^2)")
+            plt.ylabel("Mean (ds^2)", fontsize=label_size)
         plt.plot(tdp_cluster_sizes, tdp_cluster_ds_sq, label="TDP")
         plt.plot(null_cluster_sizes, null_cluster_ds_sq, label="Null")
         plt.legend()
 
-    plt.savefig(f"q{q}_null.png", bbox_inches='tight')
+    plt.savefig(f"q{str(q).replace('.', 'p')}_null.png", bbox_inches='tight')
     plt.show()
