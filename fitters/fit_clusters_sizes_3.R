@@ -12,7 +12,7 @@ q_folder = "q0"
 dataset = "100x100"
 
 q_value = "0"
-p_values = c('0p65', '0p66', '0p67', '0p68', '0p69', '0p7', '0p71', '0p72')
+p_values = c('0p62', '0p63', '0p64', '0p65', '0p66', '0p67', '0p68', '0p69', '0p7', '0p71', '0p72')
 
 root_path = file.path(results_path, model, q_folder, dataset)
 
