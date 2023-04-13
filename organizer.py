@@ -6,8 +6,11 @@ if __name__ == '__main__':
     output_path = path.join(path.dirname(__file__), "outputs")
     # TDP
     # prefixes = ['0p65', '0p7', '0p72', '0p74']
-    prefixes = ['0p62', '0p63', '0p64', '0p66', '0p67', '0p68', '0p69', '0p71']
+    # prefixes = ['0p62', '0p63', '0p64', '0p66', '0p67', '0p68', '0p69', '0p71']
+
     # prefixes = ['0p6', '0p62', '0p65', '0p67']
+    prefixes = ['0p57', '0p58', '0p59', '0p61', '0p63']
+
     # prefixes = ['0p5', '0p53', '0p55', '0p57']
     # prefixes = ['0p405', '0p41', '0p42', '0p44']
     # prefixes = ['0p282', '0p283', '0p285', '0p29']

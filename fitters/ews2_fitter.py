@@ -41,8 +41,13 @@ if __name__ == '__main__':
     model = "tricritical"
     dataset = "100x100"
 
-    q = 0
-    p_values = arange(0.72, 0.62, -0.01)
+    # q = 0
+    # p_values = [0.72, 0.71, 0.7, 0.69, 0.68, 0.67, 0.66, 0.65, 0.64, 0.63]
+    # critical_threshold = 0.62
+
+    q = 0.25
+    p_values = [0.63, 0.62, 0.61, 0.6, 0.59, 0.58, 0.57]
+    critical_threshold = 0.56
 
     subfolder = "q" + str(q).replace('.', 'p')
     phase_diagram_path = path.join(results_path, model)
@@ -54,7 +59,19 @@ if __name__ == '__main__':
         folder_name= str(round(p, 2)).replace('.', 'p')
         file_name = f"{folder_name}_changes.txt"
         changes, inverse_cdf = get_cluster_dynamics(folder_name, file_name)
-        log_inverse_cdf = log(inverse_cdf, where=(inverse_cdf != 0))
+        
+        stop_index = 0
+        for i in range(len(inverse_cdf)):
+            if inverse_cdf[i] < 1e-10:
+                stop_index = i
+                break
+        else:
+            stop_index = len(inverse_cdf)
+        
+        changes = changes[:stop_index]
+        inverse_cdf = inverse_cdf[:stop_index]
+
+        log_inverse_cdf = log(inverse_cdf)
 
         x = array(changes).reshape((-1, 1))
         y = log_inverse_cdf
