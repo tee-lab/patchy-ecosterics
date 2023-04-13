@@ -30,9 +30,9 @@ if __name__ == '__main__':
     model = "tricritical"
     dataset = "100x100"
 
-    q = 0
-    p_values = [0.65, 0.7, 0.72, 0.74]
-    cluster_limits = [100, 500, 4000, 6000]
+    # q = 0
+    # p_values = [0.65, 0.7, 0.72, 0.74]
+    # cluster_limits = [100, 500, 4000, 6000]
 
     # q = 0.25
     # p_values = [0.6, 0.62, 0.65, 0.67]
@@ -46,9 +46,9 @@ if __name__ == '__main__':
     # p_values = [0.405, 0.41, 0.42, 0.44]
     # cluster_limits = [200, 1000, 4000, 6000]
 
-    # q = 0.92
-    # p_values = [0.282, 0.283, 0.285, 0.29]
-    # cluster_limits = [300, 600, 1000, 1000]
+    q = 0.92
+    p_values = [0.282, 0.283, 0.285, 0.29]
+    cluster_limits = [300, 1000, 4000, 6000]
 
     subfolder = "q" + str(q).replace('.', 'p')
     data_path = path.join(results_path, model, subfolder, dataset)

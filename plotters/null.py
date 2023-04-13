@@ -104,8 +104,8 @@ if __name__ == '__main__':
     q = 0.92
     p_values = [0.282, 0.283, 0.285, 0.29]
     densities = [0.09, 0.17, 0.4, 0.7]
-    tdp_cluster_limits = [300, 600, 1000, 6000]
-    null_cluster_limits = [15, 50, 100, 6000]
+    tdp_cluster_limits = [300, 1000, 4000, 6000]
+    null_cluster_limits = [10, 25, 50, 6000]
 
     assert len(p_values) == len(densities) == len(tdp_cluster_limits)
 

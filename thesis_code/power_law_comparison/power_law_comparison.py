@@ -24,11 +24,14 @@ if __name__ == '__main__':
     exponential = exp(-x)
     gaussian = exp(-x ** 2) * 2 / sqrt(pi)
 
+    label_size = 14
+    title_size = 16
+
     plt.subplots(figsize=(10, 20))
     plt.subplot(3, 1, 1)
-    plt.title("Comparison of Distributions")
-    plt.xlabel("x")
-    plt.ylabel("f(x)")
+    plt.title("Comparison of Distributions", fontsize=title_size)
+    plt.xlabel("x", fontsize=label_size)
+    plt.ylabel("f(x)", fontsize=label_size)
     plt.plot(x, power_law, label="Power Law")
     plt.plot(x, exponential, label="Exponential")
     plt.plot(x, gaussian, label="Gaussian")
@@ -37,18 +40,18 @@ if __name__ == '__main__':
     plt.legend()
     
     plt.subplot(3, 1, 2)
-    plt.title("Comparison of Distributions (log-log)")
-    plt.xlabel("x")
-    plt.ylabel("f(x)")
+    plt.title("Comparison of Distributions (log-log)", fontsize=title_size)
+    plt.xlabel("x", fontsize=label_size)
+    plt.ylabel("f(x)", fontsize=label_size)
     plt.loglog(x, power_law, label="Power Law")
     plt.loglog(x, exponential, label="Exponential")
     plt.loglog(x, gaussian, label="Gaussian")
     plt.legend()
     
     plt.subplot(3, 1, 3)
-    plt.title("Comparison of Distributions (semilogy)")
-    plt.xlabel("x")
-    plt.ylabel("f(x)")
+    plt.title("Comparison of Distributions (semilogy)", fontsize=title_size)
+    plt.xlabel("x", fontsize=label_size)
+    plt.ylabel("f(x)", fontsize=label_size)
     plt.semilogy(x, power_law, label="Power Law")
     plt.semilogy(x, exponential, label="Exponential")
     plt.semilogy(x, gaussian, label="Gaussian")
