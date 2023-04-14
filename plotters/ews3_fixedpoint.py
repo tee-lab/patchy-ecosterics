@@ -31,10 +31,15 @@ if __name__ == '__main__':
     # percolation_threshold = 0.72
     # critical_threshold = 0.62
 
-    q = 0.25
-    p_values = [round(0.58 + 0.01 * i, 2) for i in range(0, 8)]
-    percolation_threshold = 0.65
-    critical_threshold = 0.57
+    # q = 0.25
+    # p_values = [round(0.58 + 0.01 * i, 2) for i in range(0, 8)]
+    # percolation_threshold = 0.65
+    # critical_threshold = 0.57
+
+    q = 0.5
+    p_values = [round(0.51 + 0.01 * i, 2) for i in range(0, 5)]
+    percolation_threshold = 0.55
+    critical_threshold = 0.5
 
     subfolder = "q" + str(q).replace('.', 'p')
     data_path = path.join(results_path, model, subfolder, dataset)

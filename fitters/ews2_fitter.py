@@ -41,15 +41,20 @@ if __name__ == '__main__':
     model = "tricritical"
     dataset = "100x100"
 
-    q = 0
-    p_values = [0.74, 0.72, 0.71, 0.7, 0.69, 0.68, 0.67, 0.66, 0.65, 0.64, 0.63]
-    critical_threshold = 0.62
-    percolation_threshold = 0.72
+    # q = 0
+    # p_values = [0.74, 0.73, 0.72, 0.71, 0.7, 0.69, 0.68, 0.67, 0.66, 0.65, 0.64, 0.63]
+    # critical_threshold = 0.62
+    # percolation_threshold = 0.72
 
     # q = 0.25
-    # p_values = [0.67, 0.65, 0.63, 0.62, 0.61, 0.6, 0.59, 0.58, 0.57]
+    # p_values = [0.67, 0.66, 0.65, 0.64, 0.63, 0.62, 0.61, 0.6, 0.59, 0.58, 0.57]
     # critical_threshold = 0.56
     # percolation_threshold = 0.65
+
+    q = 0.5
+    p_values = [0.57, 0.56, 0.55, 0.54, 0.53, 0.52, 0.51]
+    critical_threshold = 0.5
+    percolation_threshold = 0.55
 
     subfolder = "q" + str(q).replace('.', 'p')
     phase_diagram_path = path.join(results_path, model)

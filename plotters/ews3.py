@@ -41,12 +41,19 @@ if __name__ == '__main__':
     # percolation_threshold = 0.72
     # percolation_density = 0.54
 
-    q = 0.25
-    p_values = [0.64, 0.62, 0.60, 0.58]
-    cluster_limits = [1500, 300, 200, 100]
-    critical_threshold = 0.57
-    percolation_threshold = 0.65
-    percolation_density = 0.535
+    # q = 0.25
+    # p_values = [0.64, 0.62, 0.60, 0.58]
+    # cluster_limits = [1500, 300, 200, 100]
+    # critical_threshold = 0.57
+    # percolation_threshold = 0.65
+    # percolation_density = 0.535
+
+    q = 0.5
+    p_values = [0.54, 0.53, 0.52, 0.51]
+    cluster_limits = [2000, 400, 200, 100]
+    critical_threshold = 0.5
+    percolation_threshold = 0.55
+    percolation_density = 0.53
 
     subfolder = "q" + str(q).replace('.', 'p')
     phase_diagram_path = path.join(results_path, model)

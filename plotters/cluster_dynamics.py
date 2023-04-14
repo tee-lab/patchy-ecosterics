@@ -107,7 +107,7 @@ if __name__ == '__main__':
     # data_path = path.join(results_path, model, dataset)
 
     # num_cols = len(rainfall_values)
-    # plt.subplots(2, num_cols, figsize=(20, 10))
+    # plt.subplots(2, num_cols, figsize=(20, 11))
 
     # for i in tqdm(range(num_cols)):
     #     col = i + 1
@@ -118,23 +118,23 @@ if __name__ == '__main__':
     #     file_name = f"{folder_name}_changes.txt"
     #     changes, inverse_cdf = get_cluster_dynamics(folder_name, file_name)
     #     plt.subplot(2, num_cols, row * num_cols + col)
-    #     plt.title(f"Cluster dynamics (log-log) for rainfall = {rainfall}")
-    #     plt.xlabel("|ds|")
+    #     plt.title(f"Cluster dynamics (log-log)", fontsize=14)
+    #     plt.xlabel("|ds|", fontsize=12)
         
     #     if col == 1:
-    #         plt.ylabel("P(|dS| > |ds|)")
+    #         plt.ylabel("P(|dS| > |ds|)", fontsize=12)
 
     #     plt.loglog(changes, inverse_cdf, 'o')
 
     #     row = 1
     #     plt.subplot(2, num_cols, row * num_cols + col)
-    #     plt.title("Cluster dynamics (semilogy)")
-    #     plt.xlabel("|ds|")
+    #     plt.title("Cluster dynamics (semilogy)", fontsize=14)
+    #     plt.xlabel("|ds|", fontsize=12)
 
     #     if col == 1:
-    #         plt.ylabel("P(|dS| > |ds|)")
+    #         plt.ylabel("P(|dS| > |ds|)", fontsize=12)
             
     #     plt.semilogy(changes, inverse_cdf, 'o')
 
-    # plt.savefig("scanlon_dynamics.png")
+    # plt.savefig("scanlon_dynamics.png", bbox_inches='tight')
     # plt.show()

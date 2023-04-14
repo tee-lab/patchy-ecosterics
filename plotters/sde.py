@@ -110,22 +110,22 @@ if __name__ == '__main__':
     #     row = 0
     #     cluster_sizes, mean_ds = get_mean_ds(name, limit)
     #     plt.subplot(2, num_cols, row * num_cols + col)
-    #     plt.title(f"Rainfall = {rainfall}")
-    #     plt.xlabel("Cluster Size")
+    #     plt.title(f"Rainfall = {rainfall}", fontsize=14)
+    #     plt.xlabel("Cluster Size", fontsize=12)
 
     #     if col == 1:
-    #         plt.ylabel("Mean dS")
+    #         plt.ylabel("Mean dS", fontsize=12)
     #     plt.plot(cluster_sizes, mean_ds)
     #     plt.plot([0, limit], [0, 0], 'k--')
 
     #     row = 1
     #     cluster_sizes, mean_ds_sq = get_mean_ds_sq(name, limit)
     #     plt.subplot(2, num_cols, row * num_cols + col)
-    #     plt.xlabel("Cluster Size")
+    #     plt.xlabel("Cluster Size", fontsize=12)
 
     #     if col == 1:
-    #         plt.ylabel("Mean (dS^2)")
+    #         plt.ylabel("Mean (dS^2)", fontsize=12)
     #     plt.plot(cluster_sizes, mean_ds_sq)
     
-    # plt.savefig("scanlon_cluster_sde.png")
+    # plt.savefig("scanlon_cluster_sde.png", bbox_inches='tight')
     # plt.show()

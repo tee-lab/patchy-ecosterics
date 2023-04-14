@@ -58,10 +58,10 @@ if __name__ == '__main__':
     model = "tricritical"
     dataset = "100x100"
 
-    # q = 0
-    # p_values = [0.65, 0.7, 0.72, 0.74]
-    # percolation_threshold = 0.72
-    # percolation_density = 0.54
+    q = 0
+    p_values = [0.65, 0.7, 0.72, 0.74]
+    percolation_threshold = 0.72
+    percolation_density = 0.54
 
     # q = 0.25
     # p_values = [0.6, 0.62, 0.65, 0.67]
@@ -78,11 +78,11 @@ if __name__ == '__main__':
     # percolation_threshold = 0.42
     # percolation_density = 0.52
 
-    q = 0.92
-    p_values = [0.282, 0.283, 0.285, 0.29]
-    densities = [0.878, 0.166, 0.4, 0.67]
-    percolation_threshold = 0.285
-    percolation_density = 0.4
+    # q = 0.92
+    # p_values = [0.282, 0.283, 0.285, 0.29]
+    # densities = [0.878, 0.166, 0.4, 0.67]
+    # percolation_threshold = 0.285
+    # percolation_density = 0.4
 
     subfolder = "q" + str(q).replace('.', 'p')
     phase_diagram_path = path.join(results_path, model)
@@ -110,11 +110,11 @@ if __name__ == '__main__':
         plt.plot(percolation_threshold, percolation_density, 'x', label="percolation threshold")
 
         # for q = 0.92
-        densities = [0.0878, 0.166, 0.4, 0.67]
-        plt.plot(p_values[i], densities[i], 'o', label="current point")
+        # densities = [0.0878, 0.166, 0.4, 0.67]
+        # plt.plot(p_values[i], densities[i], 'o', label="current point")
 
         # for everything else
-        # plt.plot(p, densities[birth_prob.index(p)], 'o', label="current point")
+        plt.plot(p, densities[birth_prob.index(p)], 'o', label="current point")
         plt.legend()
 
         row = 1
@@ -142,7 +142,7 @@ if __name__ == '__main__':
     # data_path = path.join(results_path, model, dataset)
 
     # num_cols = len(rainfall_values)
-    # plt.subplots(2, num_cols, figsize=(20, 10))
+    # plt.subplots(2, num_cols, figsize=(20, 11))
 
     # for i in tqdm(range(num_cols)):
     #     col = i + 1
@@ -152,11 +152,11 @@ if __name__ == '__main__':
     #     row = 0
     #     rainfalls, densities = get_scanlon_phase_diagram(0, int(max(rainfall_values)) + 100)
     #     plt.subplot(2, num_cols, row * num_cols + col)
-    #     plt.title(f"Phase diagram for rainfall = {rainfall}")
-    #     plt.xlabel("p")
+    #     plt.title(f"Phase diagram, rainfall = {rainfall}", fontsize=14)
+    #     plt.xlabel("p", fontsize=12)
 
     #     if col == 1:
-    #         plt.ylabel("density")
+    #         plt.ylabel("density", fontsize=12)
     #     else:
     #         plt.yticks([])
     #     plt.plot(rainfalls, densities, label="steady state density")
@@ -167,12 +167,12 @@ if __name__ == '__main__':
     #     file_name = f"{folder_name}_cluster_distribution.txt"
     #     cluster_sizes, inverse_cdf = get_cluster_distribution(folder_name, file_name)
     #     plt.subplot(2, num_cols, row * num_cols + col)
-    #     plt.title("Cluster size distribution (log-log)")
-    #     plt.xlabel("s")
+    #     plt.title("Cluster size distribution (log-log)", fontsize=14)
+    #     plt.xlabel("s", fontsize=12)
 
     #     if col == 1:
-    #         plt.ylabel("P(S > s)")
+    #         plt.ylabel("P(S > s)", fontsize=12)
     #     plt.loglog(cluster_sizes, inverse_cdf, 'o')
 
-    # plt.savefig("scanlon_CSD.png")
+    # plt.savefig("scanlon_CSD.png", bbox_inches='tight')
     # plt.show()
