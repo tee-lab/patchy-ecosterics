@@ -9,7 +9,7 @@ if __name__ == '__main__':
     # prefixes = ['0p62', '0p63', '0p64', '0p66', '0p67', '0p68', '0p69', '0p71']
 
     # prefixes = ['0p6', '0p62', '0p65', '0p67']
-    prefixes = ['0p57', '0p58', '0p59', '0p61', '0p63']
+    # prefixes = ['0p57', '0p58', '0p59', '0p61', '0p63', '0p64', '0p66']
 
     # prefixes = ['0p5', '0p53', '0p55', '0p57']
     # prefixes = ['0p405', '0p41', '0p42', '0p44']
@@ -24,6 +24,10 @@ if __name__ == '__main__':
     # prefixes = ['0p06', '0p43', '0p53', '0p6']
     # prefixes = ['0p23', '0p38', '0p52', '0p64']
     # prefixes = ['0p09', '0p17', '0p4', '0p7']
+
+    # prefixes = ['0p64', '0p66']
+    prefixes = ['0p51', '0p52', '0p54', '0p56']
+    prefixes = ['0p73']
 
     for prefix in prefixes:
         makedirs(path.join(output_path, prefix), exist_ok=True)

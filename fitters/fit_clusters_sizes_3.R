@@ -8,11 +8,12 @@ library(spatialwarnings)
 
 results_path = "C://Code//Github//vegetation-dynamics//results"
 model = "tricritical"
-q_folder = "q0"
+q_folder = "q0p25"
 dataset = "100x100"
 
 q_value = "0"
-p_values = c('0p62', '0p63', '0p64', '0p65', '0p66', '0p67', '0p68', '0p69', '0p7', '0p71', '0p72')
+# p_values = c('0p62', '0p63', '0p64', '0p65', '0p66', '0p67', '0p68', '0p69', '0p7', '0p71', '0p72')
+p_values = c('0p57', '0p58', '0p59', '0p6', '0p61', '0p62', '0p63', '0p65')
 
 root_path = file.path(results_path, model, q_folder, dataset)
 

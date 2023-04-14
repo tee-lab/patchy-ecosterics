@@ -55,11 +55,17 @@ if __name__ == '__main__':
     model = "tricritical"
     dataset = "100x100"
 
-    q = 0
-    p_values = [0.72, 0.69, 0.66, 0.63]
-    critical_threshold = 0.62
-    percolation_threshold = 0.72
-    percolation_density = 0.54
+    # q = 0
+    # p_values = [0.72, 0.69, 0.66, 0.63]
+    # critical_threshold = 0.62
+    # percolation_threshold = 0.72
+    # percolation_density = 0.54
+
+    q = 0.25
+    p_values = [0.65, 0.62, 0.6, 0.58]
+    critical_threshold = 0.57
+    percolation_threshold = 0.65
+    percolation_density = 0.535
 
     subfolder = "q" + str(q).replace('.', 'p')
     phase_diagram_path = path.join(results_path, model)
@@ -76,7 +82,7 @@ if __name__ == '__main__':
         row = 0
         birth_prob, densities = get_tricritical_phase_diagram(phase_diagram_path, q)
         plt.subplot(2, len(p_values), row * num_cols + col)
-        plt.title(f"Phase diagram for p = {p}", fontsize=14)
+        plt.title(f"Phase diagram, p = {p}", fontsize=14)
         plt.xlabel("p", fontsize=12)
 
         if col == 1:

@@ -58,10 +58,10 @@ if __name__ == '__main__':
     model = "tricritical"
     dataset = "100x100"
 
-    q = 0
-    p_values = [0.65, 0.7, 0.72, 0.74]
-    percolation_threshold = 0.72
-    percolation_density = 0.54
+    # q = 0
+    # p_values = [0.65, 0.7, 0.72, 0.74]
+    # percolation_threshold = 0.72
+    # percolation_density = 0.54
 
     # q = 0.25
     # p_values = [0.6, 0.62, 0.65, 0.67]
@@ -78,11 +78,11 @@ if __name__ == '__main__':
     # percolation_threshold = 0.42
     # percolation_density = 0.52
 
-    # q = 0.92
-    # p_values = [0.282, 0.283, 0.285, 0.29]
-    # densities = [0.878, 0.166, 0.4, 0.67]
-    # percolation_threshold = 0.285
-    # percolation_density = 0.4
+    q = 0.92
+    p_values = [0.282, 0.283, 0.285, 0.29]
+    densities = [0.878, 0.166, 0.4, 0.67]
+    percolation_threshold = 0.285
+    percolation_density = 0.4
 
     subfolder = "q" + str(q).replace('.', 'p')
     phase_diagram_path = path.join(results_path, model)
@@ -99,7 +99,7 @@ if __name__ == '__main__':
         row = 0
         birth_prob, densities = get_tricritical_phase_diagram(phase_diagram_path, q)
         plt.subplot(2, len(p_values), row * num_cols + col)
-        plt.title(f"Phase diagram for p = {p}", fontsize=14)
+        plt.title(f"Phase diagram, p = {p}", fontsize=14)
         plt.xlabel("p", fontsize=12)
 
         if col == 1:
@@ -110,11 +110,11 @@ if __name__ == '__main__':
         plt.plot(percolation_threshold, percolation_density, 'x', label="percolation threshold")
 
         # for q = 0.92
-        # densities = [0.0878, 0.166, 0.4, 0.67]
-        # plt.plot(p_values[i], densities[i], 'o', label="current point")
+        densities = [0.0878, 0.166, 0.4, 0.67]
+        plt.plot(p_values[i], densities[i], 'o', label="current point")
 
         # for everything else
-        plt.plot(p, densities[birth_prob.index(p)], 'o', label="current point")
+        # plt.plot(p, densities[birth_prob.index(p)], 'o', label="current point")
         plt.legend()
 
         row = 1
