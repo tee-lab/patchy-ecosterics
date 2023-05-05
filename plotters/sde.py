@@ -34,6 +34,10 @@ if __name__ == '__main__':
     # p_values = [0.65, 0.7, 0.72, 0.74]
     # cluster_limits = [100, 500, 4000, 6000]
 
+    q = 0
+    p_values = [0.72, 0.68, 0.64]
+    cluster_limits = [4000, 200, 100]
+
     # q = 0.25
     # p_values = [0.6, 0.62, 0.65, 0.67]
     # cluster_limits = [100, 500, 4000, 6000]
@@ -46,15 +50,15 @@ if __name__ == '__main__':
     # p_values = [0.405, 0.41, 0.42, 0.44]
     # cluster_limits = [200, 1000, 4000, 6000]
 
-    q = 0.92
-    p_values = [0.282, 0.283, 0.285, 0.29]
-    cluster_limits = [300, 1000, 4000, 6000]
+    # q = 0.92
+    # p_values = [0.282, 0.283, 0.285, 0.29]
+    # cluster_limits = [300, 1000, 4000, 6000]
 
     subfolder = "q" + str(q).replace('.', 'p')
     data_path = path.join(results_path, model, subfolder, dataset)
 
     num_cols = len(p_values)
-    plt.subplots(2, num_cols, figsize=(20, 10))
+    plt.subplots(2, num_cols, figsize=(5 * num_cols, 11))
 
     for i in tqdm(range(num_cols)):
         col = i + 1
@@ -68,20 +72,20 @@ if __name__ == '__main__':
         plt.title(f"p = {p}", fontsize=14)
 
         if row == 2:
-            plt.xlabel("Cluster Size", fontsize=12)
+            plt.xlabel("s", fontsize=12)
 
         if col == 1:
-            plt.ylabel("Mean dS", fontsize=12)
+            plt.ylabel("$f(s)$", fontsize=12)
         plt.plot(cluster_sizes[1:], mean_ds[1:])
         plt.plot([0, limit], [0, 0], 'k--')
 
         row = 1
         cluster_sizes, mean_ds_sq = get_mean_ds_sq(name, limit)
         plt.subplot(2, num_cols, row * num_cols + col)
-        plt.xlabel("Cluster Size", fontsize=12)
+        plt.xlabel("s", fontsize=12)
 
         if col == 1:
-            plt.ylabel("Mean (dS^2)", fontsize=12)
+            plt.ylabel("$g^2 (s)$", fontsize=12)
         plt.plot(cluster_sizes, mean_ds_sq)
     
     plt.savefig(subfolder + "_cluster_sde.png", bbox_inches='tight')

@@ -43,7 +43,7 @@ if __name__ == '__main__':
     dataset = "100x100"
 
     q = 0
-    p_values = [0.65, 0.7, 0.72, 0.74]
+    p_values = [0.72, 0.68, 0.64]
     
     # q = 0.25
     # p_values = [0.6, 0.62, 0.65, 0.67]
@@ -62,7 +62,7 @@ if __name__ == '__main__':
     data_path = path.join(phase_diagram_path, subfolder, dataset)
 
     num_cols = len(p_values)
-    plt.subplots(2, num_cols, figsize=(20, 10))
+    plt.subplots(2, num_cols, figsize=(5 * num_cols, 11))
 
     for i in tqdm(range(len(p_values))):
         col = i + 1
@@ -73,7 +73,7 @@ if __name__ == '__main__':
         file_name = f"{folder_name}_changes.txt"
         changes, inverse_cdf = get_cluster_dynamics(folder_name, file_name)
         plt.subplot(2, len(p_values), row * num_cols + col)
-        plt.title("Cluster dynamics (log-log)", fontsize=14)
+        plt.title(f"Cluster dynamics for p = {p}\nlog-log scale", fontsize=14)
 
         if row == 1:
             plt.xlabel("|ds|", fontsize=12)
@@ -85,7 +85,7 @@ if __name__ == '__main__':
 
         row = 1
         plt.subplot(2, len(p_values), row * num_cols + col)
-        plt.title(f"Cluster dynamics (semilogy)", fontsize=14)
+        plt.title(f"semilog-y scale", fontsize=14)
         plt.xlabel("|ds|", fontsize=12)
 
         if col == 1:

@@ -30,7 +30,7 @@ def plot_sde(folder, file_prefix, limit):
     plt.title("Mean Cluster Change")
     plt.xlabel("Cluster Size")
     plt.ylabel("Mean dS")
-    plt.plot(range(cluster_analyze_limit), cluster_ds_data[1])
+    plt.plot(range(1, cluster_analyze_limit), cluster_ds_data[1][1:])
     plt.plot(range(cluster_analyze_limit), [0 for _ in range(cluster_analyze_limit)])
     plt.savefig(path.join(folder, file_prefix + '_cluster_mean_ds.png'))
     plt.show()
@@ -117,7 +117,7 @@ def plot_cluster_dynamics(folder, file_prefix):
 if __name__ == '__main__':
     results_path = path.join(path.dirname(path.dirname(__file__)), 'results')
     model = "tricritical"
-    p = 0.72
+    p = 0.64
     q = 0
     dataset = "100x100"
 
@@ -126,6 +126,6 @@ if __name__ == '__main__':
     data_path = path.join(results_path, model, folder, dataset, subfolder)
 
     # plot_growth_probabilities(data_path, subfolder)
-    # plot_sde(data_path, subfolder, 2000)
+    plot_sde(data_path, subfolder, 100)
     # plot_cluster_distribution(data_path, subfolder)
-    plot_cluster_dynamics(data_path, subfolder)
+    # plot_cluster_dynamics(data_path, subfolder)

@@ -59,7 +59,7 @@ if __name__ == '__main__':
     dataset = "100x100"
 
     q = 0
-    p_values = [0.65, 0.7, 0.72, 0.74]
+    p_values = [0.72, 0.68, 0.64]
     percolation_threshold = 0.72
     percolation_density = 0.54
 
@@ -89,7 +89,10 @@ if __name__ == '__main__':
     data_path = path.join(phase_diagram_path, subfolder, dataset)
 
     num_cols = len(p_values)
-    plt.subplots(2, num_cols, figsize=(20, 11))
+    plt.subplots(2, num_cols, figsize=(num_cols * 5, 11))
+
+    title_size = 14
+    label_size = 12
 
     for i in tqdm(range(len(p_values))):
         col = i + 1
@@ -99,11 +102,11 @@ if __name__ == '__main__':
         row = 0
         birth_prob, densities = get_tricritical_phase_diagram(phase_diagram_path, q)
         plt.subplot(2, len(p_values), row * num_cols + col)
-        plt.title(f"Phase diagram, p = {p}", fontsize=14)
-        plt.xlabel("p", fontsize=12)
+        plt.title(f"Phase diagram, p = {p}", fontsize=title_size)
+        plt.xlabel("p", fontsize=label_size)
 
         if col == 1:
-            plt.ylabel("density", fontsize=12)
+            plt.ylabel("density", fontsize=label_size)
         else:
             plt.yticks([])
         plt.plot(birth_prob, densities, label="steady state density")
