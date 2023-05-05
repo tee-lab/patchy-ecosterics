@@ -1,7 +1,7 @@
 from numba import njit
 from numpy import mean, sum
 
-@njit
+
 def perform_linear_regression(x, y):
     """ Performs a linear regression on the data """
     x_mean = mean(x)
