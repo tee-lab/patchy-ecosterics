@@ -59,7 +59,7 @@ if __name__ == '__main__':
     dataset = "100x100"
 
     q = 0
-    p_values = [0.72, 0.68, 0.64]
+    p_values = [0.64, 0.68, 0.72]
     percolation_threshold = 0.72
     percolation_density = 0.54
 

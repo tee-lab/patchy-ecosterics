@@ -178,7 +178,7 @@ def compile_changes(model_name, simulation_indices, plot_name='data'):
         if len(cluster_ds[i]) == 0:
             continue
         mean = sum(cluster_ds[i]) / len(cluster_ds[i])
-        mean_sq = sum([value ** 2 for value in cluster_ds[i]]) / len(cluster_ds[i])
+        mean_sq = sum([(value - mean) ** 2 for value in cluster_ds[i]]) / len(cluster_ds[i])
         output_string += f"{i} {mean} {mean_sq} {len(cluster_ds[i])}\n"
     fp.write(output_string)
     fp.close()
