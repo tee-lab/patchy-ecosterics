@@ -142,5 +142,5 @@ if __name__ == '__main__':
     plt.xlabel("Cluster size s")
     plt.ylabel("P(S > s)")
     plt.loglog(range(1, len(pdf) + 1), inverse_cdf, label="inverse cdf")
-    plt.savefig(f"csd_{p}_{q}.png")
+    plt.savefig(f"spatial.png")
     plt.show()

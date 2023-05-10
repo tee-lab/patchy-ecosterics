@@ -29,7 +29,6 @@ def get_cluster_dynamics(folder_path, file_name):
     inverse_cdf = zeros(len(probability_distribution))
     for i in range(len(probability_distribution)):
         inverse_cdf[i] = sum(probability_distribution[i:])
-    inverse_cdf = inverse_cdf / sum(inverse_cdf)
 
     return abs_changes[3:], inverse_cdf[3:]
 
@@ -66,6 +65,11 @@ if __name__ == '__main__':
     model_densities.append([0.09, 0.27, 0.43])
     model_variables.append("rainfall")
 
+    title_size = "xx-large"
+    label_size = "x-large"
+    tick_size = "x-large"
+    legend_size = "x-large"
+
     num_rows = len(models)
     num_cols = len(model_params[0])
     plt.subplots(num_rows, num_cols, figsize=(num_cols * 6 + 2, num_rows * 4 + 5))
@@ -95,21 +99,43 @@ if __name__ == '__main__':
             null_cluster_sizes, null_inverse_cdf = get_cluster_dynamics(null_folder_path, null_file_name)
 
             plt.subplot(num_rows, num_cols, row * num_cols + j + 1)
-            plt.title("Cluster Dynamics")
 
             if row == num_rows - 1:
-                plt.xlabel("change in cluster size ds")
+                plt.xlabel("change in cluster size ds", fontsize=label_size)
             if j == 0:
-                plt.ylabel("P(dS > ds)")
+                plt.ylabel("P(dS > ds)", fontsize=label_size)
+
             plt.loglog(cluster_sizes, inverse_cdf, label=f"{model_variable} = {model_param[j]}")
-            plt.loglog(null_cluster_sizes, null_inverse_cdf, label="null model")
+            plt.loglog(null_cluster_sizes, null_inverse_cdf, label=f"null model (f = {model_density[j]})")
 
-            # add inset plot with semilogy scale
-            ax = plt.gca()
-            axins = ax.inset_axes([0.2, 0.1, 0.4, 0.3])
-            axins.semilogy(cluster_sizes, inverse_cdf)
+            plt.ylim(10 ** (-10), 1)
+            if j == 0:
+                plt.xlim(1, 10 ** 2.5)
+            elif j == 1:
+                plt.xlim(1, 10 ** 3.5)
+            elif j == 2:
+                plt.xlim(1, 10 ** 4.5)
 
-            plt.legend()
+            if row != num_rows - 1:
+                plt.xticks([])
+            else:
+                plt.xticks(fontsize=tick_size)
+            if j != 0:
+                plt.yticks([])
+            else:
+                plt.yticks(fontsize=tick_size)
+
+            if row == 0:
+                plt.title("Cluster dynamics", fontsize=title_size)
+            if j == 0:
+                ax = plt.gca()
+                axins = ax.inset_axes([0.1, 0.05, 0.4, 0.3])
+                axins.semilogy(cluster_sizes, inverse_cdf)
+                axins.semilogy(null_cluster_sizes, null_inverse_cdf)
+                axins.xaxis.set_visible(False)
+                axins.yaxis.set_visible(False)
+
+            plt.legend(fontsize=legend_size)
 
     plt.savefig("fig2.png", bbox_inches="tight")
     plt.show()

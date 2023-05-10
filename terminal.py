@@ -30,13 +30,12 @@ if __name__ == '__main__':
     set_start_method("spawn")
     num_simulations = cpu_count() - 1
 
-    p_values = [0.5, 0.505, 0.51, 0.515, 0.52, 0.525, 0.53, 0.535, 0.54, 0.545, 0.55, 0.555, 0.56, 0.565, 0.57, 0.575, 0.58]
-    q = 0.5
+    f_values = [0.01 * i for i in range(1, 100)]
 
-    for p in p_values:
+    for f in f_values:
         purge_data()
-        print(f"\n---> Simulating p = {p} <---")
-        file_string = str(p).replace('.', 'p')
-        tricritical(p, q, num_simulations, save_series=False, save_cluster=True)
-        compile_changes("tricritical", range(num_simulations), plot_name=file_string)
+        print(f"\n---> Simulating f = {f} <---")
+        file_string = str(f).replace('.', 'p')
+        null_stochastic(f, num_simulations, save_series=False, save_cluster=True)
+        compile_changes("null_stochastic", range(num_simulations), plot_name=file_string)
         plot_changes(file_string)

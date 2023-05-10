@@ -156,7 +156,7 @@ def save_data(record):
 def null_stochastic(fractional_cover, num_parallel = 10, save_series = False, save_cluster = True):
     # model parameters
     length = 100
-    eq_time = 200
+    eq_time = 100
     simul_time = 1000
 
     print(f"\nPreparing {num_parallel} automata in parallel...")

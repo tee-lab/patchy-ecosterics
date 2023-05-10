@@ -50,14 +50,14 @@ if __name__ == '__main__':
     model_variables = []
 
     models.append(path.join("tricritical", "q0"))
-    model_names.append("TDP across q = 0")
+    model_names.append("Contact Process")
     model_datasets.append("100x100_new")
     model_params.append([0.65, 0.7, 0.72])
     model_densities.append([0.27, 0.48, 0.54])
     model_variables.append("p")
     
     models.append(path.join("tricritical", "q0p5"))
-    model_names.append("TDP across q = 0.5")
+    model_names.append("TDP (q = 0)")
     model_datasets.append("100x100")
     model_params.append([0.5, 0.53, 0.55])
     model_densities.append([0.06, 0.43, 0.53])
@@ -70,9 +70,15 @@ if __name__ == '__main__':
     model_densities.append([0.09, 0.27, 0.43])
     model_variables.append("rainfall")
 
+    title_size = "xx-large"
+    label_size = "x-large"
+    tick_size = "x-large"
+    legend_size = "x-large"
+
     num_rows = len(models)
     num_cols = 1 + len(model_params[0])
-    plt.subplots(num_rows, num_cols, figsize=(num_cols * 6 + 2, num_rows * 4 + 5))
+    # plt.subplot_mosaic([[chr(65 + i) + str(j + 1) for j in range(num_cols)] for i in range(num_rows)])
+    plt.subplots(num_rows, num_cols, figsize=(num_cols * 6 + 4, num_rows * 4 + 7))
 
     for i in tqdm(range(len(models))):
         row = i
@@ -90,9 +96,11 @@ if __name__ == '__main__':
         phase_diagram = get_phase_diagram(dataset_path)
 
         plt.subplot(len(models), 1 + len(model_params[0]), row * num_cols + col)
-        plt.title("Phase diagram of " + model_name)
-        plt.xlabel(model_variable)
-        plt.ylabel("density")
+        plt.title("Phase diagram of " + model_name, fontsize=title_size)
+        plt.xlabel(model_variable, fontsize=label_size)
+        plt.ylabel("density", fontsize=label_size)
+        plt.xticks(fontsize=tick_size)
+        plt.yticks(fontsize=tick_size)
         plt.plot(phase_diagram[0], phase_diagram[1])
 
         # distribution plots
@@ -108,14 +116,44 @@ if __name__ == '__main__':
             null_cluster_sizes, null_inverse_cdf = get_cluster_distribution(null_folder_path, null_file_name)
 
             plt.subplot(len(models), 1 + len(model_params[0]), row * num_cols + col + j + 1)
-            plt.title("Cluster Size Distribution")
+
+            if row == 0:
+                plt.title("Cluster Size Distribution", fontsize=title_size)
 
             if row == num_rows - 1:
-                plt.xlabel("cluster size s")
-            plt.ylabel("P(S > s)")
+                plt.xlabel("cluster size s", fontsize=label_size)
+            if j == 0:
+                plt.ylabel("P(S > s)", fontsize=label_size)
+
             plt.loglog(cluster_sizes, inverse_cdf, label=f"{model_variable} = {model_param[j]}")
-            plt.loglog(null_cluster_sizes, null_inverse_cdf, label="null model")
-            plt.legend()
+            plt.loglog(null_cluster_sizes, null_inverse_cdf, label=f"null model (f = {model_density[j]})")
+
+            plt.ylim(10 ** (-5.5), 1)
+            if j == 0:
+                plt.xlim(1, 10 ** 2.5)
+            elif j == 1:
+                plt.xlim(1, 10 ** 3.5)
+            elif j == 2:
+                plt.xlim(1, 10 ** 4.5)
+
+            if j != 0:
+                plt.yticks([])
+            else:
+                plt.yticks(fontsize=tick_size)
+            if row != num_rows - 1:
+                plt.xticks([])
+            else:
+                plt.xticks(fontsize=tick_size)
+
+            if j == 0:
+                ax = plt.gca()
+                axins = ax.inset_axes([0.1, 0.05, 0.4, 0.3])
+                axins.semilogy(cluster_sizes, inverse_cdf)
+                axins.semilogy(null_cluster_sizes, null_inverse_cdf)
+                axins.xaxis.set_visible(False)
+                axins.yaxis.set_visible(False)
+
+            plt.legend(fontsize=legend_size)
 
     plt.savefig("fig1.png", bbox_inches="tight")
     plt.show()
