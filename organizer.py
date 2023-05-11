@@ -6,7 +6,7 @@ from shutil import move
 if __name__ == '__main__':
     output_path = path.join(path.dirname(__file__), "outputs")
     # TDP
-    prefixes = [str(round(p, 2)).replace('.', 'p') for p in arange(0.63, 0.77, 0.01)]
+    # prefixes = [str(round(p, 2)).replace('.', 'p') for p in arange(0.63, 0.77, 0.01)]
     # prefixes = ['0p65', '0p7', '0p72', '0p74']
     # prefixes = ['0p62', '0p63', '0p64', '0p66', '0p67', '0p68', '0p69', '0p71']
 
@@ -26,6 +26,7 @@ if __name__ == '__main__':
     # prefixes = ['0p06', '0p43', '0p53', '0p6']
     # prefixes = ['0p23', '0p38', '0p52', '0p64']
     # prefixes = ['0p09', '0p17', '0p4', '0p7']
+    prefixes = [str(round(p, 2)).replace('.', 'p') for p in arange(0.01, 0.4, 0.01)]
 
     # prefixes = ['0p64', '0p66']
     # prefixes = ['0p51', '0p52', '0p54', '0p56']
