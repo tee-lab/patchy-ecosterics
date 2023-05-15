@@ -24,13 +24,31 @@ def load_mean_ds_data(folder_name):
     return array(range(1, limit)), mean_ds_data[1:limit], mean_ds_sq_data[1:limit]
 
 
+def construct_drift_function(a, b, c, approximation):
+    if approximation == "logistic_sqrt":
+        @njit(fastmath=True)
+        def drift_function(size):
+            return a * sqrt(size) - b * size
+        return drift_function
+    elif approximation == "logistic":
+        @njit(fastmath=True)
+        def drift_function(size):
+            return a * size - b * size ** 2 + c
+        return drift_function
+    elif approximation == "linear":
+        @njit(fastmath=True)
+        def drift_function(size):
+            return a * size + c
+        return drift_function
+
+
 @njit(fastmath=True)
-def simulate(time_series):
+def simulate(time_series, drift_function):
     size = 10
 
     for i in range(num_steps):
         time_series[i] = size
-        drift = a * size - b * size ** 2 + c
+        drift = drift_function(size)
         diffusion = sqrt(noise_slope * size) * normal()
         size += (drift * dt + diffusion * sqrt_dt)
 
@@ -43,7 +61,7 @@ if __name__ == '__main__':
     p = 0.7
     samples_threshold = 50000
     # approximation = "linear"
-    approximation = "logistic"
+    approximation = "logistic_sqrt"
 
     results_path = path.join(path.dirname(__file__), "..", 'results')
     model = "tricritical"
@@ -73,24 +91,46 @@ if __name__ == '__main__':
         b = 1
         c = 0
 
+        drift_function = construct_drift_function(a, b, c, approximation)
+
         max_x = fixed_point / 2
-        max_value = a * max_x - b * max_x ** 2 + c
+        max_value = drift_function(max_x)
         scaling_constant = max(cluster_ds) / max_value
 
         a *= scaling_constant
         b *= scaling_constant
         c *= scaling_constant
+
+        drift_function = construct_drift_function(a, b, c, approximation)
+    elif approximation == "logistic_sqrt":
+        a = sqrt(fixed_point)
+        b = 1
+        c = 0
+
+        drift_function = construct_drift_function(a, b, c, approximation)
+
+        max_x = (a / (2 * b)) ** 2
+        max_value = drift_function(max_x)
+        scaling_constant = max(cluster_ds) / max_value
+
+        a *= scaling_constant
+        b *= scaling_constant
+        c *= scaling_constant
+
+        drift_function = construct_drift_function(a, b, c, approximation)
     else:
         slope, intercept, _ = perform_linear_regression(cluster_sizes, cluster_ds)
         a = slope
         b = 0
         c = intercept
 
-    plt.title(f"Drift term approximation for (p, q) = ({p}, {q})")
+        drift_function = construct_drift_function(a, b, c, approximation)
+
+    plt.title(f"Drift term approximation ({approximation}) for (p, q) = ({p}, {q})")
     plt.xlabel("Cluster size s")
     plt.ylabel("$f(s)$")
     plt.plot(cluster_sizes, cluster_ds, label="data")
-    plt.plot(cluster_sizes, a * cluster_sizes - b * cluster_sizes ** 2 + c, label="fit")   
+    plt.plot(cluster_sizes, [drift_function(cluster_size) for cluster_size in cluster_sizes], label="fit")   
     plt.plot(range(data_length), [0] * data_length, '--')
     plt.legend()
     plt.show()
@@ -110,7 +150,7 @@ if __name__ == '__main__':
     num_steps = int(simulation_time / dt)
 
     time_series = zeros(num_steps, dtype=float)
-    simulate(time_series)  
+    simulate(time_series, drift_function)  
 
     plt.title(f"Time series for (p, q) = ({p}, {q})")
     plt.xlabel("Time")

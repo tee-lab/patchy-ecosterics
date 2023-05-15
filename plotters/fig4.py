@@ -22,13 +22,32 @@ def load_mean_ds_data(folder_path, file_name):
     return array(range(1, limit)), mean_ds_data[1:limit], mean_ds_sq_data[1:limit]
 
 
+def construct_drift_function(a, b, c, approximation):
+    if approximation == "logistic_sqrt":
+        @njit(fastmath=True)
+        def drift_function(size):
+            return a * sqrt(size) - b * size + c
+        return drift_function
+    elif approximation == "logistic":
+        @njit(fastmath=True)
+        def drift_function(size):
+            return a * size - b * size ** 2 + c
+        return drift_function
+    elif approximation == "linear":
+        @njit(fastmath=True)
+        def drift_function(size):
+            return a * size + c
+        return drift_function
+
+
+
 @njit(fastmath=True)
-def simulate(time_series):
+def simulate(time_series, drift_function):
     size = 10
 
     for i in range(num_steps):
         time_series[i] = size
-        drift = a * size - b * size ** 2 + c
+        drift = drift_function(size)
         diffusion = sqrt(noise_slope * size) * normal()
         size += (drift * dt + diffusion * sqrt_dt)
 
@@ -77,16 +96,16 @@ if __name__ == '__main__':
     models.append(path.join("tricritical", "q0"))
     model_names.append("TDP across q = 0")
     model_datasets.append("100x100_new")
-    model_params.append([0.64, 0.66, 0.68])
+    model_params.append([0.7, 0.7])
     model_variables.append("p")
-    model_approximations.append(["linear", "linear", "logistic"])
+    model_approximations.append(["logistic", "logistic_sqrt"])
     
     models.append(path.join("tricritical", "q0p5"))
     model_names.append("TDP across q = 0.5")
     model_datasets.append("100x100")
-    model_params.append([0.5, 0.51, 0.52])
+    model_params.append([0.53, 0.53])
     model_variables.append("p")
-    model_approximations.append(["linear", "linear", "logistic"])
+    model_approximations.append(["logistic", "logistic_sqrt"])
 
     title_size = "xx-large"
     label_size = "x-large"
@@ -124,6 +143,7 @@ if __name__ == '__main__':
 
             # self consistency part
             approximation = model_approximation[j]
+            print(approximation)
             file_name = file_prefix + "_cluster_ds.txt"
             cluster_sizes, cluster_ds, cluster_ds_sq = load_mean_ds_data(folder_path, file_name)
             data_length = len(cluster_sizes)
@@ -146,22 +166,44 @@ if __name__ == '__main__':
                 b = 1
                 c = 0
 
+                drift_function = construct_drift_function(a, b, c, approximation)
+
                 max_x = fixed_point / 2
-                max_value = a * max_x - b * max_x ** 2 + c
+                max_value = drift_function(max_x)
                 scaling_constant = max(cluster_ds) / max_value
 
                 a *= scaling_constant
                 b *= scaling_constant
                 c *= scaling_constant
-            else:
+
+                drift_function = construct_drift_function(a, b, c, approximation)
+            elif approximation == "logistic_sqrt":
+                a = sqrt(fixed_point)
+                b = 1
+                c = 0
+
+                drift_function = construct_drift_function(a, b, c, approximation)
+
+                max_x = (a / (2 * b)) ** 2
+                max_value = drift_function(max_x)
+                scaling_constant = max(cluster_ds) / max_value
+
+                a *= scaling_constant
+                b *= scaling_constant
+                c *= scaling_constant
+
+                drift_function = construct_drift_function(a, b, c, approximation)
+            elif approximation == "linear":
                 slope, intercept, _ = perform_linear_regression(cluster_sizes, cluster_ds)
                 a = slope
                 b = 0
                 c = intercept
 
+                drift_function = construct_drift_function(a, b, c, approximation)
+
             # simulate sde
             time_series = zeros(num_steps, dtype=float)
-            simulate(time_series) 
+            simulate(time_series, drift_function) 
             hist, bins = histogram(time_series, bins=range(0, int(max(time_series)) + 1))
             hist = hist / sum(hist)
             inverse_cdf = zeros(len(hist))
@@ -171,22 +213,22 @@ if __name__ == '__main__':
             # plot csd from sde simulation
             plt.loglog(bins[:-1], inverse_cdf, label="SDE simulation")
 
-            plt.ylim(10 ** -5, 1)
-            if j == 0:
-                plt.xlim(1, 10 ** 2.5)
-            elif j == 1:
-                plt.xlim(1, 10 ** 3)
-            else:
-                plt.xlim(1, 10 ** 3.5)
+            # plt.ylim(10 ** -5, 1)
+            # if j == 0:
+            #     plt.xlim(1, 10 ** 2.5)
+            # elif j == 1:
+            #     plt.xlim(1, 10 ** 3)
+            # else:
+            #     plt.xlim(1, 10 ** 3.5)
 
-            if row != num_rows - 1:
-                plt.xticks([])
-            else:
-                plt.xticks(fontsize=tick_size)
-            if j != 0:
-                plt.yticks([])
-            else:
-                plt.yticks(fontsize=tick_size)
+            # if row != num_rows - 1:
+            #     plt.xticks([])
+            # else:
+            #     plt.xticks(fontsize=tick_size)
+            # if j != 0:
+            #     plt.yticks([])
+            # else:
+            #     plt.yticks(fontsize=tick_size)
             
             if row == num_rows - 1:
                 plt.xlabel("Cluster size s", fontsize=label_size)
