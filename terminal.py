@@ -30,7 +30,8 @@ if __name__ == '__main__':
     set_start_method("spawn")
     num_simulations = cpu_count() - 1
 
-    f_values = [0.01 * i for i in range(40, 100)]
+    f_values = [round(0.01 * i, 2) for i in range(47, 100)]
+    print(f_values)
 
     for f in f_values:
         purge_data()
