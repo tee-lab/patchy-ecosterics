@@ -52,6 +52,7 @@ def analyze_data(model_name, simulation_index):
             changes_list.append(change)
             cluster_ds[0].append(change)
             grown_clusters.append(0)
+            print("Appearance")
 
         elif update["type"] == "disappearance":
             change = -1
@@ -135,7 +136,7 @@ def compile_changes(model_name, simulation_indices, plot_name='data'):
     cluster_distribution = zeros((lattice_length * lattice_length + 1))
 
     for lattice in final_lattices:
-        cluster_distribution += depth_first_clustering(lattice, False)
+        cluster_distribution += depth_first_clustering(lattice, periodic=True, trim=False)
 
     max_index = -1
     for i in range(len(cluster_distribution) - 1, -1, -1):
@@ -176,6 +177,7 @@ def compile_changes(model_name, simulation_indices, plot_name='data'):
     output_string = ""
     for i in range(len(cluster_ds)):
         if len(cluster_ds[i]) == 0:
+            output_string += f"{i} 0 0 0\n"
             continue
         mean = sum(cluster_ds[i]) / len(cluster_ds[i])
         mean_sq = sum([(value - mean) ** 2 for value in cluster_ds[i]]) / len(cluster_ds[i])

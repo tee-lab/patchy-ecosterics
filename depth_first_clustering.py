@@ -3,8 +3,10 @@ from matplotlib import pyplot as plt
 from numpy import random, zeros
 from skimage.measure import label
 
+from cluster_dynamics import apply_periodic_boundary
 
-def depth_first_clustering(lattice, trim=False):
+
+def depth_first_clustering(lattice, periodic=True, trim=True):
     """ Calculates number of clusters of each size, in the given lattce """
     n = len(lattice)
     cluster_sizes = zeros((n * n + 1), dtype=(int))
@@ -23,8 +25,30 @@ def depth_first_clustering(lattice, trim=False):
 
             while len(stack) > 0:
                 i, j = stack.pop()
-                von_neumann_neighbours = [(i - 1, j), (i + 1, j),
-                                            (i, j - 1), (i, j + 1)]
+                von_neumann_neighbours = []
+
+                if periodic:
+                    if i > 0:
+                        von_neumann_neighbours.append((i - 1, j))
+                    else:
+                        von_neumann_neighbours.append((n - 1, j))
+
+                    if i < n - 1:
+                        von_neumann_neighbours.append((i + 1, j))
+                    else:
+                        von_neumann_neighbours.append((0, j))
+
+                    if j > 0:
+                        von_neumann_neighbours.append((i, j - 1))
+                    else:
+                        von_neumann_neighbours.append((i, n - 1))
+
+                    if j < n - 1:
+                        von_neumann_neighbours.append((i, j + 1))
+                    else:
+                        von_neumann_neighbours.append((i, 0))
+                else:
+                    von_neumann_neighbours = [(i - 1, j), (i + 1, j), (i, j - 1), (i, j + 1)]
 
                 for i, j in von_neumann_neighbours:
                     if 0 <= i < n and 0 <= j < n:
@@ -48,10 +72,10 @@ def depth_first_clustering(lattice, trim=False):
 
 if __name__ == '__main__':
     random_lattice = random.randint(0, 2, (10, 10))
-    cluster_distribution = depth_first_clustering(random_lattice, True)
+    cluster_distribution = depth_first_clustering(random_lattice, True, True)
 
     for i in range(len(cluster_distribution)):
         print(f"Cluster size {i}: {cluster_distribution[i]} clusters")
 
-    plt.imshow(label(random_lattice, background=0, connectivity=1))
+    plt.imshow(apply_periodic_boundary(label(random_lattice, background=0, connectivity=1)))
     plt.show()

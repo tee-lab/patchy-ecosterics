@@ -1,15 +1,40 @@
 from matplotlib import pyplot as plt
+from numba import njit
 from numpy import uint64, unique, zeros
 from skimage.measure import label
 
 
+def apply_periodic_boundary(labels):
+    length = len(labels)
+
+    for i in range(length):
+        if labels[i, 0] != 0 and labels[i, -1] != 0 and labels[i, 0] != labels[i, -1]:
+            new_label = labels[i, 0]
+            old_label = labels[i, -1]
+            labels[labels == old_label] = new_label
+    
+    for j in range(length):
+        if labels[0, j] != 0 and labels[-1, j] != 0 and labels[0, j] != labels[-1, j]:
+            new_label = labels[0, j]
+            old_label = labels[-1, j]
+            labels[labels == old_label] = new_label
+
+    return labels
+
+
 def get_changed_lattice(old_labels, changed_coords):
+    length = old_labels.shape[0]
     new_labels = old_labels.copy()
+
+    if changed_coords[0] == 0 or changed_coords[0] == length - 1 or changed_coords[1] == 0 or changed_coords[1] == length - 1:
+        boundary = True
+    else:
+        boundary = False
 
     if old_labels[changed_coords] == 0:
         # a point changed from 0 to 1
-        num_neighbours = get_num_neighbours(old_labels, changed_coords)
-        clusters_around = get_clusters_around(old_labels, changed_coords)
+        num_neighbours = get_num_neighbours(old_labels, changed_coords, boundary)
+        clusters_around = get_clusters_around(old_labels, changed_coords, boundary)
 
         if num_neighbours == 0:
             # appearance
@@ -24,8 +49,8 @@ def get_changed_lattice(old_labels, changed_coords):
                 new_labels[old_labels == cluster] = min(clusters_around)
     else:
         # a point changed from 1 to 0
-        num_neighbours = get_num_neighbours(old_labels, changed_coords)
-        clusters_around = get_clusters_around(old_labels, changed_coords)
+        num_neighbours = get_num_neighbours(old_labels, changed_coords, boundary)
+        clusters_around = get_clusters_around(old_labels, changed_coords, boundary)
 
         if num_neighbours == 0:
             # disappearance
@@ -39,7 +64,7 @@ def get_changed_lattice(old_labels, changed_coords):
             new_labels[changed_coords] = 0
             new_labels = label(new_labels, background=0, connectivity=1)
 
-    return new_labels
+    return apply_periodic_boundary(new_labels)
 
 
 def get_cluster_sizes(labelled_lattice, num_clusters):
@@ -52,41 +77,69 @@ def get_cluster_sizes(labelled_lattice, num_clusters):
     return cluster_sizes
 
 
-def get_clusters_around(labelled_lattice, coords):
+def get_clusters_around(labelled_lattice, coords, boundary):
+    length = labelled_lattice.shape[0]
     i, j = coords
     clusters = set()
 
-    if i > 0 and labelled_lattice[i - 1, j]:
-        clusters.add(labelled_lattice[i - 1, j])
-    if i < labelled_lattice.shape[0] - 1 and labelled_lattice[i + 1, j]:
-        clusters.add(labelled_lattice[i + 1, j])
-    if j > 0 and labelled_lattice[i, j - 1]:
-        clusters.add(labelled_lattice[i, j - 1])
-    if j < labelled_lattice.shape[1] - 1 and labelled_lattice[i, j + 1]:
-        clusters.add(labelled_lattice[i, j + 1])
+    if not boundary:
+        if i > 0 and labelled_lattice[i - 1, j]:
+            clusters.add(labelled_lattice[i - 1, j])
+        if i < labelled_lattice.shape[0] - 1 and labelled_lattice[i + 1, j]:
+            clusters.add(labelled_lattice[i + 1, j])
+        if j > 0 and labelled_lattice[i, j - 1]:
+            clusters.add(labelled_lattice[i, j - 1])
+        if j < labelled_lattice.shape[1] - 1 and labelled_lattice[i, j + 1]:
+            clusters.add(labelled_lattice[i, j + 1])
+    else:
+        if labelled_lattice[(i - 1 + length) % length, j]:
+            clusters.add(labelled_lattice[(i - 1 + length) % length, j])
+        if labelled_lattice[(i + 1) % length, j]:
+            clusters.add(labelled_lattice[(i + 1) % length, j])
+        if labelled_lattice[i, (j - 1 + length) % length]:
+            clusters.add(labelled_lattice[i, (j - 1 + length) % length])
+        if labelled_lattice[i, (j + 1) % length]:
+            clusters.add(labelled_lattice[i, (j + 1) % length])
 
     return clusters
 
 
-def get_num_neighbours(labelled_lattice, coords):
+def get_num_neighbours(labelled_lattice, coords, boundary):
+    length = labelled_lattice.shape[0]
     i, j = coords
     num_neighbours = 0
 
-    if i > 0 and labelled_lattice[i - 1, j]:
-        num_neighbours += 1
-    if i < labelled_lattice.shape[0] - 1 and labelled_lattice[i + 1, j]:
-        num_neighbours += 1
-    if j > 0 and labelled_lattice[i, j - 1]:
-        num_neighbours += 1
-    if j < labelled_lattice.shape[1] - 1 and labelled_lattice[i, j + 1]:
-        num_neighbours += 1
+    if not boundary:
+        if i > 0 and labelled_lattice[i - 1, j]:
+            num_neighbours += 1
+        if i < labelled_lattice.shape[0] - 1 and labelled_lattice[i + 1, j]:
+            num_neighbours += 1
+        if j > 0 and labelled_lattice[i, j - 1]:
+            num_neighbours += 1
+        if j < labelled_lattice.shape[1] - 1 and labelled_lattice[i, j + 1]:
+            num_neighbours += 1
+    else:
+        if labelled_lattice[(i - 1 + length) % length, j]:
+            num_neighbours += 1
+        if labelled_lattice[(i + 1) % length, j]:
+            num_neighbours += 1
+        if labelled_lattice[i, (j - 1 + length) % length]:
+            num_neighbours += 1
+        if labelled_lattice[i, (j + 1) % length]:
+            num_neighbours += 1
 
     return num_neighbours
 
 
 def get_cluster_dynamics(old_labels, new_labels, changed_coords):
+    length = old_labels.shape[0]
     num_old_clusters = unique(old_labels).size - 1
     num_new_clusters = unique(new_labels).size - 1
+
+    if changed_coords[0] == 0 or changed_coords[0] == length - 1 or changed_coords[1] == 0 or changed_coords[1] == length - 1:
+        boundary = True
+    else:
+        boundary = False
 
     status = {}
 
@@ -98,7 +151,7 @@ def get_cluster_dynamics(old_labels, new_labels, changed_coords):
             status['type'] = 'growth'
             status['size'] = len(new_labels[new_labels == new_labels[changed_coords]]) - 1
     elif num_old_clusters < num_new_clusters:
-        split_clusters = get_clusters_around(new_labels, changed_coords)
+        split_clusters = get_clusters_around(new_labels, changed_coords, boundary)
 
         if len(split_clusters) > 1:
             status['type'] = 'split'
@@ -108,7 +161,7 @@ def get_cluster_dynamics(old_labels, new_labels, changed_coords):
         else:
             status['type'] = 'appearance'
     else:
-        merging_clusters = get_clusters_around(old_labels, changed_coords)
+        merging_clusters = get_clusters_around(old_labels, changed_coords, boundary)
 
         if len(merging_clusters) > 1:
             status['type'] = 'merge'

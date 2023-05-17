@@ -2,7 +2,7 @@ from matplotlib import pyplot as plt
 from math import sqrt
 from numba import njit
 from numpy import array, delete, histogram, loadtxt, transpose, zeros
-from numpy.random import normal
+from numpy.random import normal, randint
 from os import path
 from tqdm import tqdm
 
@@ -52,7 +52,7 @@ def simulate(time_series, drift_function):
         size += (drift * dt + diffusion * sqrt_dt)
 
         if size < 0:
-            size = 1
+            size = randint(1, 1000)
 
 
 def get_cluster_distribution(folder_path, file_name):
@@ -98,14 +98,14 @@ if __name__ == '__main__':
     model_datasets.append("100x100_new")
     model_params.append([0.7, 0.7])
     model_variables.append("p")
-    model_approximations.append(["logistic", "logistic_sqrt"])
+    model_approximations.append(["poly", "logistic_sqrt"])
     
     models.append(path.join("tricritical", "q0p5"))
     model_names.append("TDP across q = 0.5")
     model_datasets.append("100x100")
     model_params.append([0.53, 0.53])
     model_variables.append("p")
-    model_approximations.append(["logistic", "logistic_sqrt"])
+    model_approximations.append(["poly", "logistic_sqrt"])
 
     title_size = "xx-large"
     label_size = "x-large"

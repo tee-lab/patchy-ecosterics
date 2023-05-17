@@ -14,7 +14,7 @@ def get_sde(folder_path, file_name):
             limit = i
             break
 
-    return range(limit), mean_ds_data[:limit], mean_ds_sq_data[:limit]
+    return range(1, limit), mean_ds_data[1:limit], mean_ds_sq_data[1:limit]
 
 
 if __name__ == '__main__':

@@ -1,7 +1,7 @@
 from matplotlib import pyplot as plt
 from math import sqrt
 from numba import njit
-from numpy import array, histogram, loadtxt, transpose, zeros
+from numpy import array, histogram, loadtxt, polyfit, transpose, zeros
 from numpy.random import choice, normal, randint
 from os import path
 from skimage.measure import label
@@ -24,18 +24,29 @@ def load_mean_ds_data(folder_name):
     return array(range(1, limit)), mean_ds_data[1:limit], mean_ds_sq_data[1:limit]
 
 
-def construct_drift_function(a, b, c, approximation):
+def construct_drift_function(params, approximation):
     if approximation == "logistic_sqrt":
+        a, b, c = params
         @njit(fastmath=True)
         def drift_function(size):
-            return a * sqrt(size) - b * size
+            return a * sqrt(size) - b * size + c
         return drift_function
+    
     elif approximation == "logistic":
+        a, b, c = params
         @njit(fastmath=True)
         def drift_function(size):
             return a * size - b * size ** 2 + c
         return drift_function
+
+    elif approximation == "poly":
+        @njit(fastmath=True)
+        def drift_function(size):
+            return sum([params[deg] * size ** deg for deg in range(len(params))])
+        return drift_function
+
     elif approximation == "linear":
+        a, b, c = params
         @njit(fastmath=True)
         def drift_function(size):
             return a * size + c
@@ -53,7 +64,7 @@ def simulate(time_series, drift_function):
         size += (drift * dt + diffusion * sqrt_dt)
 
         if size < 0:
-            size = 1
+            size = randint(1, 1000)
 
 
 if __name__ == '__main__':
@@ -61,7 +72,7 @@ if __name__ == '__main__':
     p = 0.7
     samples_threshold = 50000
     # approximation = "linear"
-    approximation = "logistic_sqrt"
+    approximation = "poly"
 
     results_path = path.join(path.dirname(__file__), "..", 'results')
     model = "tricritical"
@@ -90,8 +101,9 @@ if __name__ == '__main__':
         a = fixed_point
         b = 1
         c = 0
+        params = [a, b, c]
 
-        drift_function = construct_drift_function(a, b, c, approximation)
+        drift_function = construct_drift_function(params, approximation)
 
         max_x = fixed_point / 2
         max_value = drift_function(max_x)
@@ -100,14 +112,16 @@ if __name__ == '__main__':
         a *= scaling_constant
         b *= scaling_constant
         c *= scaling_constant
+        params = [a, b, c]
 
-        drift_function = construct_drift_function(a, b, c, approximation)
+        drift_function = construct_drift_function(params, approximation)
     elif approximation == "logistic_sqrt":
         a = sqrt(fixed_point)
         b = 1
         c = 0
+        params = [a, b, c]
 
-        drift_function = construct_drift_function(a, b, c, approximation)
+        drift_function = construct_drift_function(params, approximation)
 
         max_x = (a / (2 * b)) ** 2
         max_value = drift_function(max_x)
@@ -116,15 +130,21 @@ if __name__ == '__main__':
         a *= scaling_constant
         b *= scaling_constant
         c *= scaling_constant
+        params = [a, b, c]
 
-        drift_function = construct_drift_function(a, b, c, approximation)
-    else:
+        drift_function = construct_drift_function(params, approximation)
+    elif approximation == "poly":
+        params = polyfit(cluster_sizes, cluster_ds, 6)
+        params = array(list(reversed(params)))
+        drift_function = construct_drift_function(params, approximation)
+    elif approximation == "linear":
         slope, intercept, _ = perform_linear_regression(cluster_sizes, cluster_ds)
         a = slope
         b = 0
         c = intercept
+        params = [a, b, c]
 
-        drift_function = construct_drift_function(a, b, c, approximation)
+        drift_function = construct_drift_function(params, approximation)
 
     plt.title(f"Drift term approximation ({approximation}) for (p, q) = ({p}, {q})")
     plt.xlabel("Cluster size s")
@@ -145,7 +165,7 @@ if __name__ == '__main__':
     plt.show()
 
     simulation_time = 10000
-    dt = 0.01
+    dt = 0.001
     sqrt_dt = sqrt(dt)
     num_steps = int(simulation_time / dt)
 

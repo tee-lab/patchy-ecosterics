@@ -29,14 +29,13 @@ from utils import load_automaton_data
 if __name__ == '__main__':
     set_start_method("spawn")
     num_simulations = cpu_count() - 1
+    p_values = [0.63, 0.64, 0.65, 0.66, 0.67, 0.68, 0.69, 0.7, 0.71, 0.72, 0.73, 0.74]
+    q = 0
 
-    f_values = [round(0.01 * i, 2) for i in range(47, 100)]
-    print(f_values)
-
-    for f in f_values:
+    for p in p_values:
         purge_data()
-        print(f"\n---> Simulating f = {f} <---")
-        file_string = str(f).replace('.', 'p')
-        null_stochastic(f, num_simulations, save_series=False, save_cluster=True)
-        compile_changes("null_stochastic", range(num_simulations), plot_name=file_string)
+        print(f"\n---> Simulating p = {p} <---")
+        file_string = str(p).replace('.', 'p')
+        tricritical(p, q, num_simulations, save_series=False, save_cluster=True)
+        compile_changes("tricritical", range(num_simulations), plot_name=file_string)
         plot_changes(file_string)
