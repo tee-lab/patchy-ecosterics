@@ -9,7 +9,7 @@ def get_sde(folder_path, file_name):
     mean_ds_data, mean_ds_sq_data, number_samples = cluster_ds_data[1], cluster_ds_data[2], cluster_ds_data[3]
 
     limit = 0
-    for i in range(len(mean_ds_data)):
+    for i in range(1, len(mean_ds_data)):
         if number_samples[i] < samples_threshold:
             limit = i
             break

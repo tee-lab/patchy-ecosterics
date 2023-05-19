@@ -1,7 +1,7 @@
 from matplotlib import pyplot as plt
 from math import sqrt
 from numba import njit
-from numpy import array, histogram, loadtxt, polyfit, transpose, zeros
+from numpy import array, cumsum, delete, histogram, loadtxt, polyfit, transpose, zeros
 from numpy.random import choice, normal, randint
 from os import path
 from skimage.measure import label
@@ -22,6 +22,27 @@ def load_mean_ds_data(folder_name):
             break
 
     return array(range(1, limit)), mean_ds_data[1:limit], mean_ds_sq_data[1:limit]
+
+
+def get_cluster_distribution(folder_path, file_name):
+    file_path = path.join(folder_path, file_name)
+    cluster_distribution_data = transpose(loadtxt(open(file_path, 'r')))
+    cluster_sizes, num = cluster_distribution_data[0][1:], cluster_distribution_data[1][1:]
+
+    inverse_cdf = zeros(len(num))
+    for i in range(len(num)):
+        inverse_cdf[i] = sum(num[i:])
+    inverse_cdf = inverse_cdf / sum(num)
+
+    remove_indices = []
+    for i in range(len(cluster_sizes) - 1):
+        if inverse_cdf[i] == inverse_cdf[i + 1]:
+            remove_indices.append(i)
+
+    cluster_sizes = delete(cluster_sizes, remove_indices)
+    inverse_cdf = delete(inverse_cdf, remove_indices)
+
+    return cluster_sizes, inverse_cdf
 
 
 def construct_drift_function(params, approximation):
@@ -64,7 +85,7 @@ def simulate(time_series, drift_function):
         size += (drift * dt + diffusion * sqrt_dt)
 
         if size < 0:
-            size = randint(1, 1000)
+            size = 1
 
 
 if __name__ == '__main__':
@@ -179,10 +200,18 @@ if __name__ == '__main__':
     plt.show()
 
     hist, bins = histogram(time_series, bins=range(0, int(max(time_series)) + 1))
+    hist = hist / sum(hist)
+    inverse_cdf = zeros(len(hist))
+    for i in range(len(hist)):
+        inverse_cdf[i] = sum(hist[i:])
     
-    plt.title(f"Histogram for time series of (p, q) = ({p}, {q})")
+    plt.title(f"Inverse CDF of time series of (p, q) = ({p}, {q})")
     plt.xlabel("Cluster size")
     plt.ylabel("Frequency")
-    plt.loglog(bins[:-1], hist)
+    plt.loglog(bins[:-1], inverse_cdf, label="SDE simulation")
+
+    cluster_sizes, inverse_cdf = get_cluster_distribution(path.join(data_path, folder_name), f"{folder_name}_cluster_distribution.txt")
+    plt.loglog(cluster_sizes, inverse_cdf, label="actual data")
+    plt.legend()
     plt.savefig("temporal.png")
     plt.show()
