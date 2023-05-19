@@ -171,6 +171,18 @@ def get_cluster_dynamics(old_labels, new_labels, changed_coords):
         else:
             status['type'] = 'disappearance'
 
+    # if ('size' in status and status['size'] == 2) or ('initial_sizes' in status and max(status['initial_sizes']) == 2):
+    #     print(status)
+
+    #     plt.subplot(121)
+    #     plt.imshow(old_labels)
+    #     plt.axis("off")
+    #     plt.subplot(122)
+    #     plt.title(f"Changed coord: {changed_coords}")
+    #     plt.imshow(new_labels)
+    #     plt.axis("off")
+    #     plt.show()
+
     return status
 
 

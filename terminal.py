@@ -29,7 +29,7 @@ from utils import load_automaton_data
 if __name__ == '__main__':
     set_start_method("spawn")
     num_simulations = cpu_count() - 1
-    p_values = [0.5, 0.505, 0.51, 0.515, 0.52, 0.525, 0.53, 0.535, 0.54, 0.545, 0.55, 0.555, 0.56]
+    p_values = [0.53, 0.535, 0.54, 0.545, 0.55, 0.555, 0.56]
     q = 0.5
 
     for p in p_values:
