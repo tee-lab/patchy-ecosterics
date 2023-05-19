@@ -175,7 +175,7 @@ def compile_changes(model_name, simulation_indices, plot_name='data'):
     print("Saving dS values undergone by each cluster ...")
     fp = open(path.join(folder_path, plot_name + '_cluster_ds.txt'), "w")
     output_string = ""
-    for i in range(len(cluster_ds)):
+    for i in tqdm(range(len(cluster_ds))):
         if len(cluster_ds[i]) == 0:
             output_string += f"{i} 0 0 0\n"
             continue
@@ -184,6 +184,30 @@ def compile_changes(model_name, simulation_indices, plot_name='data'):
         output_string += f"{i} {mean} {mean_sq} {len(cluster_ds[i])}\n"
     fp.write(output_string)
     fp.close()
+
+    print("Saving number of each process undergone by each cluster ...")
+    fp = open(path.join(folder_path, plot_name + '_cluster_processes.txt'), "w")
+    output_string = ""
+    for i in tqdm(range(len(cluster_ds))):
+        num_growth = 0
+        num_decay = 0
+        num_merge = 0
+        num_split = 0
+
+        for value in cluster_ds[i]:
+            if value == 1:
+                num_growth += 1
+            elif value == -1:
+                num_decay += 1
+            elif value == 2:
+                num_merge += 1
+            elif value == -2:
+                num_split += 1
+
+        output_string += f"{i} {num_growth} {num_decay} {num_merge} {num_split}\n"
+    fp.write(output_string)
+    fp.close()
+
 
     print("Saving cluster change values ...")
     fp = open(path.join(folder_path, plot_name + '_changes.txt'), 'w')

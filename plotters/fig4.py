@@ -1,7 +1,7 @@
 from matplotlib import pyplot as plt
 from math import sqrt
 from numba import njit
-from numpy import array, delete, histogram, loadtxt, transpose, zeros
+from numpy import array, delete, histogram, loadtxt, polyfit, transpose, zeros
 from numpy.random import normal, randint
 from os import path
 from tqdm import tqdm
@@ -14,7 +14,7 @@ def load_mean_ds_data(folder_path, file_name):
     mean_ds_data, mean_ds_sq_data, number_samples = cluster_ds_data[1], cluster_ds_data[2], cluster_ds_data[3]
 
     limit = 0
-    for i in range(len(mean_ds_data)):
+    for i in range(1, len(mean_ds_data)):
         if number_samples[i] < samples_threshold:
             limit = i
             break
@@ -22,23 +22,33 @@ def load_mean_ds_data(folder_path, file_name):
     return array(range(1, limit)), mean_ds_data[1:limit], mean_ds_sq_data[1:limit]
 
 
-def construct_drift_function(a, b, c, approximation):
+def construct_drift_function(params, approximation):
     if approximation == "logistic_sqrt":
+        a, b, c = params
         @njit(fastmath=True)
         def drift_function(size):
             return a * sqrt(size) - b * size + c
         return drift_function
+    
     elif approximation == "logistic":
+        a, b, c = params
         @njit(fastmath=True)
         def drift_function(size):
             return a * size - b * size ** 2 + c
         return drift_function
+
+    elif approximation == "poly":
+        @njit(fastmath=True)
+        def drift_function(size):
+            return sum([params[deg] * size ** deg for deg in range(len(params))])
+        return drift_function
+
     elif approximation == "linear":
+        a, b, c = params
         @njit(fastmath=True)
         def drift_function(size):
             return a * size + c
         return drift_function
-
 
 
 @njit(fastmath=True)
@@ -53,6 +63,7 @@ def simulate(time_series, drift_function):
 
         if size < 0:
             size = randint(1, 1000)
+
 
 
 def get_cluster_distribution(folder_path, file_name):
@@ -96,16 +107,16 @@ if __name__ == '__main__':
     models.append(path.join("tricritical", "q0"))
     model_names.append("TDP across q = 0")
     model_datasets.append("100x100_new")
-    model_params.append([0.7, 0.7])
+    model_params.append([0.7, 0.7, 0.7])
     model_variables.append("p")
-    model_approximations.append(["poly", "logistic_sqrt"])
+    model_approximations.append(["poly", "logistic", "logistic_sqrt"])
     
-    models.append(path.join("tricritical", "q0p5"))
-    model_names.append("TDP across q = 0.5")
-    model_datasets.append("100x100")
-    model_params.append([0.53, 0.53])
-    model_variables.append("p")
-    model_approximations.append(["poly", "logistic_sqrt"])
+    # models.append(path.join("tricritical", "q0p5"))
+    # model_names.append("TDP across q = 0.5")
+    # model_datasets.append("100x100")
+    # model_params.append([0.53, 0.53])
+    # model_variables.append("p")
+    # model_approximations.append(["poly", "logistic", "logistic_sqrt"])
 
     title_size = "xx-large"
     label_size = "x-large"
@@ -165,8 +176,9 @@ if __name__ == '__main__':
                 a = fixed_point
                 b = 1
                 c = 0
+                params = [a, b, c]
 
-                drift_function = construct_drift_function(a, b, c, approximation)
+                drift_function = construct_drift_function(params, approximation)
 
                 max_x = fixed_point / 2
                 max_value = drift_function(max_x)
@@ -175,14 +187,16 @@ if __name__ == '__main__':
                 a *= scaling_constant
                 b *= scaling_constant
                 c *= scaling_constant
+                params = [a, b, c]
 
-                drift_function = construct_drift_function(a, b, c, approximation)
+                drift_function = construct_drift_function(params, approximation)
             elif approximation == "logistic_sqrt":
                 a = sqrt(fixed_point)
                 b = 1
                 c = 0
+                params = [a, b, c]
 
-                drift_function = construct_drift_function(a, b, c, approximation)
+                drift_function = construct_drift_function(params, approximation)
 
                 max_x = (a / (2 * b)) ** 2
                 max_value = drift_function(max_x)
@@ -191,15 +205,21 @@ if __name__ == '__main__':
                 a *= scaling_constant
                 b *= scaling_constant
                 c *= scaling_constant
+                params = [a, b, c]
 
-                drift_function = construct_drift_function(a, b, c, approximation)
+                drift_function = construct_drift_function(params, approximation)
+            elif approximation == "poly":
+                params = polyfit(cluster_sizes, cluster_ds, 6)
+                params = array(list(reversed(params)))
+                drift_function = construct_drift_function(params, approximation)
             elif approximation == "linear":
                 slope, intercept, _ = perform_linear_regression(cluster_sizes, cluster_ds)
                 a = slope
                 b = 0
                 c = intercept
+                params = [a, b, c]
 
-                drift_function = construct_drift_function(a, b, c, approximation)
+                drift_function = construct_drift_function(params, approximation)
 
             # simulate sde
             time_series = zeros(num_steps, dtype=float)
