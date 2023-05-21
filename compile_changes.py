@@ -80,7 +80,7 @@ def analyze_data(model_name, simulation_index):
     return analysed_data
 
 
-def compile_changes(model_name, simulation_indices, plot_name='data'):
+def compile_changes(model_name, simulation_indices, plot_name='data', calc_residue=False):
     grown_clusters = []
     decayed_clusters = []
 
@@ -181,6 +181,17 @@ def compile_changes(model_name, simulation_indices, plot_name='data'):
             continue
         mean = sum(cluster_ds[i]) / len(cluster_ds[i])
         mean_sq = sum([(value - mean) ** 2 for value in cluster_ds[i]]) / len(cluster_ds[i])
+
+        if calc_residue and i > 0 and i % 10 == 0 and len(cluster_ds[i]) > 1000:
+            residue = [(value - mean) for value in cluster_ds[i]]
+            
+            plt.title(f"Histogram of residues for clusters of size {i}")
+            plt.hist(residue, bins=20)
+            plt.xlabel("Residue")
+            plt.ylabel("Frequency")
+            plt.savefig(path.join(folder_path, plot_name + f"_residue_{i}.png"))
+            plt.show()
+
         output_string += f"{i} {mean} {mean_sq} {len(cluster_ds[i])}\n"
     fp.write(output_string)
     fp.close()
