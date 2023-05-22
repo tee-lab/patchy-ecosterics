@@ -1,6 +1,6 @@
 from matplotlib import pyplot as plt
 from multiprocessing import Pool, set_start_method
-from numpy import histogram, unique, zeros
+from numpy import histogram, zeros
 from os import makedirs, path
 from tqdm import tqdm
 
@@ -175,29 +175,42 @@ def compile_changes(model_name, simulation_indices, plot_name='data', calc_resid
     print("Saving dS values undergone by each cluster ...")
     fp = open(path.join(folder_path, plot_name + '_cluster_ds.txt'), "w")
     output_string = ""
+    residue_info = []
+
     for i in tqdm(range(len(cluster_ds))):
         if len(cluster_ds[i]) == 0:
             output_string += f"{i} 0 0 0\n"
             continue
+
         mean = sum(cluster_ds[i]) / len(cluster_ds[i])
         mean_sq = sum([(value - mean) ** 2 for value in cluster_ds[i]]) / len(cluster_ds[i])
+        output_string += f"{i} {mean} {mean_sq} {len(cluster_ds[i])}\n"
 
         if calc_residue and i > 0 and i % 10 == 0 and len(cluster_ds[i]) > 50000:
             residue = [(value - mean) for value in cluster_ds[i]]
             residue_int = [int(value) for value in residue]
-            num_bins = len(set(residue_int))
+            min_bin = min(residue_int) - 1
+            max_bin = max(residue_int) + 1
 
-            plt.figure()
-            plt.title(f"Histogram of residues for clusters of size {i}")
-            plt.hist(residue, bins=num_bins)
-            plt.xlabel("Residue")
-            plt.ylabel("Frequency")
-            plt.savefig(path.join(folder_path, plot_name + f"_residue_{i}.png"))
-            plt.show()
-
-        output_string += f"{i} {mean} {mean_sq} {len(cluster_ds[i])}\n"
+            freq, bins = histogram(residue, bins=[i for i in range(min_bin, max_bin + 1)])
+            residue_info.append({
+                "size": i,
+                "min_bin": min_bin,
+                "max_bin": max_bin,
+                "freq": freq
+            })
+        
     fp.write(output_string)
     fp.close()
+
+    if calc_residue:
+        print("Saving residue information ...")
+        fp = open(path.join(folder_path, plot_name + '_residue_info.txt'), "w")
+        output_string = ""
+        for info in residue_info:
+            output_string += f"{info['size']} : {info['min_bin']}, {info['max_bin']} : {', '.join([str(val) for val in info['freq']])}\n"
+        fp.write(output_string)
+        fp.close()
 
     print("Saving number of each process undergone by each cluster ...")
     fp = open(path.join(folder_path, plot_name + '_cluster_processes.txt'), "w")

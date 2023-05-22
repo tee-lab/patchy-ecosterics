@@ -7,7 +7,7 @@ if __name__ == '__main__':
     output_path = path.join(path.dirname(__file__), "outputs")
     # TDP
     # prefixes = [str(round(p, 2)).replace('.', 'p') for p in arange(0.63, 0.73, 0.01)]
-    prefixes = [str(p).replace('.', 'p') for p in [0.5, 0.505, 0.51, 0.515, 0.52, 0.525, 0.53, 0.535, 0.54, 0.545, 0.55, 0.555, 0.56]]
+    # prefixes = [str(p).replace('.', 'p') for p in [0.5, 0.505, 0.51, 0.515, 0.52, 0.525, 0.53, 0.535, 0.54, 0.545, 0.55, 0.555, 0.56]]
     prefixes = ['0p65']
 
     # prefixes = ['0p65', '0p7', '0p72', '0p74']

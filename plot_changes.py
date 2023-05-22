@@ -63,6 +63,19 @@ def plot_changes(filename, base_path = "outputs"):
     plt.savefig(path.join(output_path, filename + '_cluster_num_changes.png'))
     plt.show()
 
+    residue_data = open(path.join(output_path, filename + '_residue_info.txt'), 'r').read().split('\n')
+    for data in residue_data[:-1]:
+        size, bins, freq = data.split(':')
+        min_bin, max_bin = bins.split(',')
+        freqs = list(map(int, freq.split(',')))
+
+        plt.figure()
+        plt.title("Residue " + size + " distribution for cluster size " + size)
+        plt.xlabel("Residue")
+        plt.ylabel("Frequency")
+        plt.bar(range(int(min_bin), int(max_bin)), freqs)
+        plt.savefig(path.join(output_path, filename + '_residue_' + size + '.png'))
+
     changes_data = transpose(loadtxt(open(path.join(output_path, filename + '_changes.txt'), 'r')))
     changes, changes_histogram = list(changes_data[0]), changes_data[1]
     changes_probabilities = changes_histogram / sum(changes_histogram)
