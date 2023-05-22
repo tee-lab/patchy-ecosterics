@@ -182,7 +182,7 @@ def compile_changes(model_name, simulation_indices, plot_name='data', calc_resid
         mean = sum(cluster_ds[i]) / len(cluster_ds[i])
         mean_sq = sum([(value - mean) ** 2 for value in cluster_ds[i]]) / len(cluster_ds[i])
 
-        if calc_residue and i > 0 and i % 10 == 0 and len(cluster_ds[i]) > 1000:
+        if calc_residue and i > 0 and i % 10 == 0 and len(cluster_ds[i]) > 50000:
             residue = [(value - mean) for value in cluster_ds[i]]
             
             plt.title(f"Histogram of residues for clusters of size {i}")
