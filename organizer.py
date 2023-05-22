@@ -8,7 +8,8 @@ if __name__ == '__main__':
     # TDP
     # prefixes = [str(round(p, 2)).replace('.', 'p') for p in arange(0.63, 0.73, 0.01)]
     # prefixes = [str(p).replace('.', 'p') for p in [0.5, 0.505, 0.51, 0.515, 0.52, 0.525, 0.53, 0.535, 0.54, 0.545, 0.55, 0.555, 0.56]]
-    prefixes = ['0p7', '0p72']
+    # prefixes = ['0p7', '0p72']
+    prefixes = ['0p5', '0p53', '0p55']
 
     # prefixes = ['0p65', '0p7', '0p72', '0p74']
     # prefixes = ['0p62', '0p63', '0p64', '0p66', '0p67', '0p68', '0p69', '0p71']
