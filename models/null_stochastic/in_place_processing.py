@@ -7,7 +7,7 @@ from skimage.measure import label
 from tqdm import tqdm
 import os
 
-from cluster_dynamics import get_cluster_dynamics, get_changed_lattice
+from cluster_dynamics import get_cluster_dynamics, get_changed_lattice, apply_periodic_boundary
 
 
 def single_update(lattice, r, m):
@@ -94,7 +94,7 @@ def simulate(data):
     else:
         iterator = range(int(simul_time * length * length))
 
-    old_labels = label(lattice, background=0, connectivity=1)
+    old_labels = apply_periodic_boundary(label(lattice, background=0, connectivity=1))
     new_labels = None
 
     for i in iterator:

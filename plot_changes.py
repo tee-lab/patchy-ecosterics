@@ -16,7 +16,7 @@ def trim_log_probabilities(y):
     return y[:start_index + 1]
 
 
-def plot_changes(filename, base_path = "outputs"):
+def plot_changes(filename, base_path = "outputs", calc_residue=False):
     output_path = path.join(path.dirname(__file__), base_path)
     makedirs(output_path, exist_ok=True)
 
@@ -63,18 +63,19 @@ def plot_changes(filename, base_path = "outputs"):
     plt.savefig(path.join(output_path, filename + '_cluster_num_changes.png'))
     plt.show()
 
-    residue_data = open(path.join(output_path, filename + '_residue_info.txt'), 'r').read().split('\n')
-    for data in residue_data[:-1]:
-        size, bins, freq = data.split(':')
-        min_bin, max_bin = bins.split(',')
-        freqs = list(map(int, freq.split(',')))
+    if calc_residue:
+        residue_data = open(path.join(output_path, filename + '_residue_info.txt'), 'r').read().split('\n')
+        for data in residue_data[:-1]:
+            size, bins, freq = data.split(':')
+            min_bin, max_bin = bins.split(',')
+            freqs = list(map(int, freq.split(',')))
 
-        plt.figure()
-        plt.title("Residue " + size + " distribution for cluster size " + size)
-        plt.xlabel("Residue")
-        plt.ylabel("Frequency")
-        plt.bar(range(int(min_bin), int(max_bin)), freqs)
-        plt.savefig(path.join(output_path, filename + '_residue_' + size + '.png'))
+            plt.figure()
+            plt.title("Residue " + size + " distribution for cluster size " + size)
+            plt.xlabel("Residue")
+            plt.ylabel("Frequency")
+            plt.bar(range(int(min_bin), int(max_bin)), freqs)
+            plt.savefig(path.join(output_path, filename + '_residue_' + size + '.png'))
 
     changes_data = transpose(loadtxt(open(path.join(output_path, filename + '_changes.txt'), 'r')))
     changes, changes_histogram = list(changes_data[0]), changes_data[1]

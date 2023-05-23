@@ -52,7 +52,6 @@ def analyze_data(model_name, simulation_index):
             changes_list.append(change)
             cluster_ds[0].append(change)
             grown_clusters.append(0)
-            print("Appearance")
 
         elif update["type"] == "disappearance":
             change = -1
