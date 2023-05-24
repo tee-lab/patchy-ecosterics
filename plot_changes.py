@@ -75,7 +75,7 @@ def plot_changes(filename, base_path = "outputs", calc_residue=False):
             plt.xlabel("Residue")
             plt.ylabel("Frequency")
             plt.bar(range(int(min_bin), int(max_bin)), freqs)
-            plt.savefig(path.join(output_path, filename + '_residue_' + size + '.png'))
+            plt.savefig(path.join(output_path, filename + '_residue_' + size[:-1] + '.png'))
 
     changes_data = transpose(loadtxt(open(path.join(output_path, filename + '_changes.txt'), 'r')))
     changes, changes_histogram = list(changes_data[0]), changes_data[1]
