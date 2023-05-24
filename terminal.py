@@ -30,12 +30,12 @@ if __name__ == '__main__':
     set_start_method("spawn")
     num_simulations = cpu_count() - 1
 
-    f_values = [0.27, 0.48, 0.54, 0.25, 0.42, 0.53, 0.26, 0.43, 0.6]
+    f_values = [0.27, 0.48, 0.54, 0.25, 0.42, 0.53, 0.26, 0.43, 0.56]
 
     for f in f_values:
         purge_data()
         print(f"\n---> Simulating f = {f} <---")
         file_string = str(f).replace('.', 'p')
-        null_stochastic(f, num_simulations, save_series=False, save_cluster=True)
-        compile_changes("null_stochastic", range(num_simulations), plot_name=file_string)
+        null_stochastic(f, num_simulations, save_series=False, save_cluster=True, calc_residue=True)
+        compile_changes("null_stochastic", range(num_simulations), plot_name=file_string, calc_residue=True)
         plot_changes(file_string)
