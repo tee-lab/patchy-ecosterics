@@ -94,7 +94,8 @@ def compile_changes(model_name, simulation_indices, plot_name='data', calc_resid
     length = len(data[0][4])
     cluster_ds = [[] for _ in range(length * length)]
 
-    for analysed_data in data:
+    print("Combining lists...")
+    for analysed_data in tqdm(data):
         grown_clusters += analysed_data[0]
         decayed_clusters += analysed_data[1]
         changes_list += analysed_data[2]
@@ -117,7 +118,7 @@ def compile_changes(model_name, simulation_indices, plot_name='data', calc_resid
 
     print("Computing probabilities")
     growth_probabilities, decay_probabilities = [], []
-    for size in sizes:
+    for size in tqdm(sizes):
         total_events = growth_sizes_histogram[size - start] + decay_sizes_histogram[size - start]
 
         if total_events != 0:
@@ -185,7 +186,7 @@ def compile_changes(model_name, simulation_indices, plot_name='data', calc_resid
         mean_sq = sum([(value - mean) ** 2 for value in cluster_ds[i]]) / len(cluster_ds[i])
         output_string += f"{i} {mean} {mean_sq} {len(cluster_ds[i])}\n"
 
-        if calc_residue and i > 0 and len(cluster_ds[i]) > 50000 and (i in [10, 20, 50, 90] or i % 100 == 0):
+        if calc_residue and i > 0 and len(cluster_ds[i]) > 1000 and (i in [10, 20, 30, 40, 50, 70, 90] or i % 100 == 0):
             residue = [(value - mean) for value in cluster_ds[i]]
             residue_int = [int(value) for value in residue]
             min_bin = min(residue_int) - 1
