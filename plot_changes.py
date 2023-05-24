@@ -71,7 +71,7 @@ def plot_changes(filename, base_path = "outputs", calc_residue=False):
             freqs = list(map(int, freq.split(',')))
 
             plt.figure()
-            plt.title("Residue " + size + " distribution for cluster size " + size)
+            plt.title("Residue distribution for cluster size " + size)
             plt.xlabel("Residue")
             plt.ylabel("Frequency")
             plt.bar(range(int(min_bin), int(max_bin)), freqs)
