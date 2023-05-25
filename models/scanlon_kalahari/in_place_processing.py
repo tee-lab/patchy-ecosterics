@@ -13,6 +13,7 @@ import os
 from cluster_dynamics import get_cluster_dynamics, get_changed_lattice
 
 
+@njit
 def landscape_update(lattice, f_carrying, r_influence, immediacy):
     """ Simulates N^2 Monte Carlo steps of the automaton """
     length = len(lattice)
@@ -35,6 +36,7 @@ def landscape_update(lattice, f_carrying, r_influence, immediacy):
     return lattice
 
 
+@njit
 def single_update(lattice, f_carrying, r_influence, immediacy):
     """ Simulates a single Monte Carlo step of the automaton """
     length = len(lattice)
@@ -59,6 +61,7 @@ def single_update(lattice, f_carrying, r_influence, immediacy):
     return lattice, changed_coords
 
 
+@njit
 def get_density(lattice, i, j, r_influence, immediacy):
     """ Calculates the vegetation density in the neighbourhood of a given cell (i, j) """
     length = len(lattice)
@@ -180,10 +183,10 @@ def scanlon_kalahari(rainfall_ext = 800, num_parallel = 10, save_series = False,
     length = 100
     rainfall = rainfall_ext
     f_carrying = get_forest_cover(rainfall)
-    r_influence = 6
-    immediacy = 10
+    r_influence = 8
+    immediacy = 24
 
-    eq_time = 200
+    eq_time = 1000
     simulation_time = 1000
 
     print(f"Simulating {num_parallel} automata in parallel...")
