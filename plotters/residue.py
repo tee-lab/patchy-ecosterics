@@ -5,14 +5,14 @@ from os import path
 if __name__ == '__main__':
     results_folder = path.join(path.dirname(path.dirname(__file__)), "results")
 
-    model = "null_stochastic"
-    subfolder = "q0"
+    model = "scanlon_kalahari"
     dataset = "100x100_residue"
-    param = "0p54"
+    param = "850"
 
     file_name = param + "_residue_info.txt"
     # file_path = path.join(results_folder, model, subfolder, dataset, param)
-    file_path = path.join(results_folder, model, param)
+    # file_path = path.join(results_folder, model, param)
+    file_path = path.join(results_folder, model, dataset, param)
 
     residue_data = open(path.join(file_path, file_name), "r").readlines()
     for data in residue_data[:-1]:
@@ -20,7 +20,7 @@ if __name__ == '__main__':
         min_bin, max_bin = bins.split(',')
         freqs = list(map(int, freq.split(',')))
 
-        if int(size) in [10, 30, 50, 100, 200]:
+        if int(size) in [10, 30, 50, 70, 100, 200]:
             zero_index = -int(min_bin) if int(min_bin) < 0 else int(min_bin)
             freqs = freqs[zero_index:]
             residues = range(0, len(freqs))
