@@ -45,34 +45,34 @@ if __name__ == '__main__':
     model_variables = []
 
     models.append(path.join("tricritical", "q0"))
-    model_names.append("TDP across q = 0")
-    model_datasets.append("100x100_new")
+    model_names.append("Contact Process")
+    model_datasets.append("100x100_residue")
     model_params.append([0.65, 0.7, 0.72])
     model_densities.append([0.27, 0.48, 0.54])
     model_variables.append("p")
     
     models.append(path.join("tricritical", "q0p5"))
-    model_names.append("TDP across q = 0.5")
-    model_datasets.append("100x100")
-    model_params.append([0.5, 0.53, 0.55])
-    model_densities.append([0.06, 0.43, 0.53])
+    model_names.append("TDP (q = 0.5)")
+    model_datasets.append("100x100_residue")
+    model_params.append([0.51, 0.53, 0.55])
+    model_densities.append([0.25, 0.43, 0.53])
     model_variables.append("p")
 
     models.append(path.join("scanlon_kalahari"))
-    model_names.append("Scanlon model")
-    model_datasets.append("100x100")
-    model_params.append([300, 500, 700])
-    model_densities.append([0.09, 0.27, 0.43])
+    model_names.append("Scanlon")
+    model_datasets.append("100x100_residue")
+    model_params.append([500, 700, 850])
+    model_densities.append([0.26, 0.43, 0.56])
     model_variables.append("rainfall")
 
-    title_size = "xx-large"
-    label_size = "x-large"
-    tick_size = "x-large"
-    legend_size = "x-large"
+    title_size = 14
+    label_size = 12
+    tick_size = 10
+    legend_size = 10
 
     num_rows = len(models)
     num_cols = len(model_params[0])
-    plt.subplots(num_rows, num_cols, figsize=(num_cols * 6 + 2, num_rows * 4 + 5))
+    plt.subplots(num_rows, num_cols, figsize=(8.27, 8.27 * num_rows / num_cols))
 
     print("This takes a while...")
     for i in tqdm(range(len(models))):
@@ -106,7 +106,7 @@ if __name__ == '__main__':
                 plt.ylabel("P(dS > ds)", fontsize=label_size)
 
             plt.loglog(cluster_sizes, inverse_cdf, label=f"{model_variable} = {model_param[j]}")
-            plt.loglog(null_cluster_sizes, null_inverse_cdf, label=f"null model (f = {model_density[j]})")
+            plt.loglog(null_cluster_sizes, null_inverse_cdf, label=f"null (f = {model_density[j]})")
 
             plt.ylim(10 ** (-10), 1)
             if j == 0:
@@ -125,17 +125,21 @@ if __name__ == '__main__':
             else:
                 plt.yticks(fontsize=tick_size)
 
-            if row == 0:
+            if row == 0 and j == 1:
                 plt.title("Cluster dynamics", fontsize=title_size)
-            if j == 0:
-                ax = plt.gca()
-                axins = ax.inset_axes([0.1, 0.05, 0.4, 0.3])
-                axins.semilogy(cluster_sizes, inverse_cdf)
-                axins.semilogy(null_cluster_sizes, null_inverse_cdf)
-                axins.xaxis.set_visible(False)
-                axins.yaxis.set_visible(False)
+
+            # if row == 0:
+            #     plt.title("Cluster dynamics", fontsize=title_size)
+            # if j == 0:
+            #     ax = plt.gca()
+            #     axins = ax.inset_axes([0.1, 0.05, 0.4, 0.3])
+            #     axins.semilogy(cluster_sizes, inverse_cdf)
+            #     axins.semilogy(null_cluster_sizes, null_inverse_cdf)
+            #     axins.xaxis.set_visible(False)
+            #     axins.yaxis.set_visible(False)
 
             plt.legend(fontsize=legend_size)
+            plt.tight_layout()
 
-    plt.savefig("fig2.png", bbox_inches="tight")
+    plt.savefig("fig2.png", dpi=300)
     plt.show()
