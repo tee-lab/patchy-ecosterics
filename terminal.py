@@ -30,8 +30,8 @@ if __name__ == '__main__':
     set_start_method("spawn")
     num_simulations = cpu_count() - 1
 
-    q = 0.25
-    p_values = [0.59, 0.62, 0.64]
+    q = 0.75
+    p_values = [0.405, 0.41, 0.42]
 
     for p in p_values:
         purge_data()
@@ -41,7 +41,7 @@ if __name__ == '__main__':
         compile_changes("tricritical", range(num_simulations), plot_name=file_string, calc_residue=True)
         plot_changes(file_string, calc_residue=True)
 
-    f_values = [0.45, 0.52]
+    f_values = [0.24, 0.38, 0.52, 0.56]
 
     for f in f_values:
         purge_data()
@@ -49,4 +49,14 @@ if __name__ == '__main__':
         file_string = str(f).replace('.', 'p')
         null_stochastic(f, num_simulations, save_series=False, save_cluster=True)
         compile_changes("null_stochastic", range(num_simulations), plot_name=file_string, calc_residue=True)
+        plot_changes(file_string, calc_residue=True)
+
+    rainfall_values = [850]
+
+    for rainfall in rainfall_values:
+        purge_data()
+        print(f"\n---> Simulating rainfall = {rainfall} <---")
+        file_string = str(rainfall).replace('.', 'p')
+        scanlon_kalahari(rainfall, num_simulations, save_series=False, save_cluster=True)
+        compile_changes("scanlon_kalahari", range(num_simulations), plot_name=file_string, calc_residue=True)
         plot_changes(file_string, calc_residue=True)
