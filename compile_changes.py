@@ -186,7 +186,7 @@ def compile_changes(model_name, simulation_indices, plot_name='data', calc_resid
         mean_sq = sum([(value - mean) ** 2 for value in cluster_ds[i]]) / len(cluster_ds[i])
         output_string += f"{i} {mean} {mean_sq} {len(cluster_ds[i])}\n"
 
-        if calc_residue and i > 0 and len(cluster_ds[i]) > 1000 and (i in [10, 20, 30, 40, 50, 70, 90] or i % 100 == 0):
+        if calc_residue and i > 0 and len(cluster_ds[i]) > 1000 and (i in [10, 20, 30, 40, 50, 70, 90, 100] or i % 500 == 0):
             residue = [(value - mean) for value in cluster_ds[i]]
             residue_int = [int(value) for value in residue]
             min_bin = min(residue_int) - 1
