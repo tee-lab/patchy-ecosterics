@@ -30,27 +30,6 @@ if __name__ == '__main__':
     set_start_method("spawn")
     num_simulations = cpu_count() - 1
 
-    q = 0.75
-    p_values = [0.405, 0.41, 0.42]
-
-    for p in p_values:
-        purge_data()
-        print(f"\n---> Simulating p = {p} <---")
-        file_string = str(p).replace('.', 'p')
-        tricritical(p, q, num_simulations, save_series=False, save_cluster=True)
-        compile_changes("tricritical", range(num_simulations), plot_name=file_string, calc_residue=True)
-        plot_changes(file_string, calc_residue=True)
-
-    f_values = [0.24, 0.38, 0.52, 0.56]
-
-    for f in f_values:
-        purge_data()
-        print(f"\n---> Simulating f = {f} <---")
-        file_string = str(f).replace('.', 'p')
-        null_stochastic(f, num_simulations, save_series=False, save_cluster=True)
-        compile_changes("null_stochastic", range(num_simulations), plot_name=file_string, calc_residue=True)
-        plot_changes(file_string, calc_residue=True)
-
     rainfall_values = [850]
 
     for rainfall in rainfall_values:

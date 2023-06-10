@@ -187,7 +187,7 @@ def scanlon_kalahari(rainfall_ext = 800, num_parallel = 10, save_series = False,
     immediacy = 24
 
     eq_time = 1000
-    simulation_time = 1000
+    simulation_time = 2000
 
     print(f"Simulating {num_parallel} automata in parallel...")
     data = [(simulation_index, save_series, save_cluster, length, eq_time, simulation_time, f_carrying, r_influence, immediacy) for simulation_index in range(num_parallel)]
