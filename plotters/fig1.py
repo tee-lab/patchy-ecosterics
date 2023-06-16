@@ -49,40 +49,40 @@ if __name__ == '__main__':
     model_datasets = []
     model_variables = []
 
-    # models.append(path.join("tricritical", "q0"))
-    # model_names.append("Contact Process")
-    # model_datasets.append("100x100_residue")
-    # model_params.append([0.65, 0.7, 0.72])
-    # model_densities.append([0.27, 0.48, 0.54])
-    # model_variables.append("p")
+    models.append(path.join("tricritical", "q0"))
+    model_names.append("Contact Process")
+    model_datasets.append("100x100_residue")
+    model_params.append([0.65, 0.7, 0.72])
+    model_densities.append([0.27, 0.48, 0.54])
+    model_variables.append("p")
     
-    # models.append(path.join("tricritical", "q0p5"))
-    # model_names.append("TDP (q = 0.5)")
+    models.append(path.join("tricritical", "q0p5"))
+    model_names.append("TDP (q = 0.5)")
+    model_datasets.append("100x100_residue")
+    model_params.append([0.51, 0.53, 0.55])
+    model_densities.append([0.25, 0.43, 0.53])
+    model_variables.append("p")
+
+    models.append(path.join("scanlon_kalahari"))
+    model_names.append("Scanlon")
+    model_datasets.append("100x100_residue")
+    model_params.append([500, 700, 850])
+    model_densities.append([0.26, 0.43, 0.56])
+    model_variables.append("rainfall")
+
+    # models.append(path.join("tricritical", "q0p25"))
+    # model_names.append("TDP (q = 0.25)")
     # model_datasets.append("100x100_residue")
-    # model_params.append([0.51, 0.53, 0.55])
-    # model_densities.append([0.25, 0.43, 0.53])
+    # model_params.append([0.59, 0.62, 0.64])
+    # model_densities.append([0.27, 0.45, 0.52])
     # model_variables.append("p")
 
-    # models.append(path.join("scanlon_kalahari"))
-    # model_names.append("Scanlon")
+    # models.append(path.join("tricritical", "q0p75"))
+    # model_names.append("TDP (q = 0.75)")
     # model_datasets.append("100x100_residue")
-    # model_params.append([500, 700, 850])
-    # model_densities.append([0.26, 0.43, 0.56])
-    # model_variables.append("rainfall")
-
-    models.append(path.join("tricritical", "q0p25"))
-    model_names.append("TDP (q = 0.25)")
-    model_datasets.append("100x100_residue")
-    model_params.append([0.59, 0.62, 0.64])
-    model_densities.append([0.27, 0.45, 0.52])
-    model_variables.append("p")
-
-    models.append(path.join("tricritical", "q0p75"))
-    model_names.append("TDP (q = 0.75)")
-    model_datasets.append("100x100_residue")
-    model_params.append([0.405, 0.41, 0.42])
-    model_densities.append([0.24, 0.38, 0.52])
-    model_variables.append("p")
+    # model_params.append([0.405, 0.41, 0.42])
+    # model_densities.append([0.24, 0.38, 0.52])
+    # model_variables.append("p")
 
     title_size = 10
     label_size = 8
@@ -95,6 +95,8 @@ if __name__ == '__main__':
     # plt.subplots(num_rows, num_cols, figsize=(num_cols * 5 + 16, num_rows * 5 + 10))
     plt.subplots(num_rows, num_cols, figsize=(8.27, 8.27 * num_rows / num_cols))
     # plt.subplot_mosaic([[chr(65 + i) + str(j + 1) for j in range(num_cols)] for i in range(num_rows)])
+
+    plt.suptitle("Variation in Cluster Size Distribution")
 
     for i in tqdm(range(len(models))):
         row = i
@@ -113,8 +115,7 @@ if __name__ == '__main__':
 
         plt.subplot(len(models), 1 + len(model_params[0]), row * num_cols + col)
 
-        if row == 0:
-            plt.title("Phase diagram", fontsize=title_size)
+        plt.title(chr(65 + row) + "1", fontsize=title_size, loc="left")
         
         plt.xlabel(model_variable, fontsize=label_size)
         plt.ylabel("density", fontsize=label_size)
@@ -137,8 +138,10 @@ if __name__ == '__main__':
 
             plt.subplot(len(models), 1 + len(model_params[0]), row * num_cols + col + j + 1)
 
-            if row == 0 and j == 1:
-                plt.title("Cluster Size Distributions", fontsize=title_size)
+            # if row == 0 and j == 1:
+            #     plt.title("Cluster Size Distributions", fontsize=title_size)
+
+            plt.title(chr(65 + row) + str(j + 2), fontsize=title_size, loc="left")
 
             if row == num_rows - 1:
                 plt.xlabel("cluster size s", fontsize=label_size)
