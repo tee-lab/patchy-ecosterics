@@ -87,7 +87,7 @@ if __name__ == '__main__':
     title_size = 10
     label_size = 8
     tick_size = 6
-    legend_size = 6
+    legend_size = 8
 
     num_rows = len(models)
     num_cols = 1 + len(model_params[0])
@@ -96,7 +96,7 @@ if __name__ == '__main__':
     plt.subplots(num_rows, num_cols, figsize=(8.27, 8.27 * num_rows / num_cols))
     # plt.subplot_mosaic([[chr(65 + i) + str(j + 1) for j in range(num_cols)] for i in range(num_rows)])
 
-    plt.suptitle("Variation in Cluster Size Distribution")
+    plt.suptitle("Cluster Size Distribution")
 
     for i in tqdm(range(len(models))):
         row = i
@@ -115,14 +115,20 @@ if __name__ == '__main__':
 
         plt.subplot(len(models), 1 + len(model_params[0]), row * num_cols + col)
 
-        plt.title(chr(65 + row) + "1", fontsize=title_size, loc="left")
+        plt.title(chr(65 + row), fontsize=title_size, loc="left")
         
         plt.xlabel(model_variable, fontsize=label_size)
         plt.ylabel("density", fontsize=label_size)
         plt.xticks(fontsize=tick_size)
         plt.yticks(fontsize=tick_size)
-        plt.plot(phase_diagram[0], phase_diagram[1], label=model_name)
-        plt.legend(fontsize=legend_size)
+        plt.plot(phase_diagram[0], phase_diagram[1])
+        # plt.legend(fontsize=legend_size)
+
+        plt.plot(model_param, model_density, "x")
+
+        annotations = [chr(65 + row) + str(k + 1) for k in range(num_cols)]
+        for j in range(len(model_param)):
+            plt.annotate(annotations[j], (model_param[j], model_density[j]), fontsize=label_size)
 
         # distribution plots
         for j in range(len(model_param)):
@@ -141,43 +147,32 @@ if __name__ == '__main__':
             # if row == 0 and j == 1:
             #     plt.title("Cluster Size Distributions", fontsize=title_size)
 
-            plt.title(chr(65 + row) + str(j + 2), fontsize=title_size, loc="left")
+            plt.title(chr(65 + row) + str(j + 1), fontsize=title_size, loc="left")
 
             if row == num_rows - 1:
-                plt.xlabel("cluster size s", fontsize=label_size)
+                plt.xlabel("cluster size (s)", fontsize=label_size)
             if j == 0:
                 plt.ylabel("P(S > s)", fontsize=label_size)
 
-            plt.loglog(cluster_sizes, inverse_cdf, 'k-', label=f"{model_variable} = {model_param[j]}")
-            plt.loglog(null_cluster_sizes, null_inverse_cdf, 'k--', label=f"null (f = {model_density[j]})")
+            if row == 0 and j == 0:
+                plt.loglog(cluster_sizes, inverse_cdf, 'b-', label="model")
+                plt.loglog(null_cluster_sizes, null_inverse_cdf, 'k-', label="null")
+            else:
+                plt.loglog(cluster_sizes, inverse_cdf, 'b-')
+                plt.loglog(null_cluster_sizes, null_inverse_cdf, 'k-')
+            plt.xticks(fontsize=tick_size)
+            plt.yticks(fontsize=tick_size)
 
             plt.ylim(10 ** (-5.5), 1)
-            if j == 0:
-                plt.xlim(1, 10 ** 2.5)
-            elif j == 1:
-                plt.xlim(1, 10 ** 3.5)
-            elif j == 2:
-                plt.xlim(1, 10 ** 4.5)
-
             if j != 0:
                 plt.yticks([])
-            else:
-                plt.yticks(fontsize=tick_size)
-            if row != num_rows - 1:
-                plt.xticks([])
-            else:
-                plt.xticks(fontsize=tick_size)
 
-            # if j == 0:
-            #     ax = plt.gca()
-            #     axins = ax.inset_axes([0.1, 0.05, 0.4, 0.3])
-            #     axins.semilogy(cluster_sizes, inverse_cdf)
-            #     axins.semilogy(null_cluster_sizes, null_inverse_cdf)
-            #     axins.xaxis.set_visible(False)
-            #     axins.yaxis.set_visible(False)
-
-            # plt.legend(fontsize=legend_size)
+            if j == 2:
+                plt.ylabel(model_name, fontsize=label_size, rotation=270, labelpad=15)
+                ax = plt.gca()
+                ax.yaxis.set_label_position("right")
             plt.tight_layout()
 
+    plt.figlegend(loc="upper right", fontsize=legend_size, bbox_to_anchor=(0.99, 0.99))
     plt.savefig("fig1.png", dpi=300)
     plt.show()

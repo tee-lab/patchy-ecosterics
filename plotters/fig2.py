@@ -30,7 +30,16 @@ def get_cluster_dynamics(folder_path, file_name):
     for i in range(len(probability_distribution)):
         inverse_cdf[i] = sum(probability_distribution[i:])
 
-    return abs_changes[3:], inverse_cdf[3:]
+    cutoff = 0
+    for i in range(3, len(inverse_cdf)):
+        if inverse_cdf[i] < 1e-12:
+            cutoff = i
+            break
+
+    if cutoff == 0:
+        cutoff = len(inverse_cdf)
+
+    return abs_changes[3:cutoff], inverse_cdf[3:cutoff]
 
 
 if __name__ == '__main__':
@@ -87,7 +96,7 @@ if __name__ == '__main__':
     num_rows = len(models)
     num_cols = len(model_params[0])
     plt.subplots(num_rows, num_cols, figsize=(8.27, 8.27 * num_rows / num_cols))
-    plt.suptitle("Variation in Cluster Dynamics", fontsize=title_size)
+    plt.suptitle("Cluster Dynamics: Distribution of Changes in Cluter Sizes", fontsize=title_size)
 
     print("This takes a while...")
     for i in tqdm(range(len(models))):
@@ -116,16 +125,24 @@ if __name__ == '__main__':
             plt.subplot(num_rows, num_cols, row * num_cols + j + 1)
 
             if row == num_rows - 1:
-                plt.xlabel("change in cluster size ds", fontsize=label_size)
+                plt.xlabel("change in cluster size ($\Delta$s)", fontsize=label_size)
             if j == 0:
-                plt.ylabel("P(dS > ds)", fontsize=label_size)
+                plt.ylabel("cCDF of $\Delta$ s", fontsize=label_size)
+            if j == num_cols - 1:
+                plt.ylabel(model_name, fontsize=label_size, rotation=270, labelpad=15)
+                ax = plt.gca()
+                ax.yaxis.set_label_position("right")
 
-            plt.loglog(cluster_sizes, inverse_cdf, "k-", label=f"{model_variable} = {model_param[j]}")
-            plt.loglog(null_cluster_sizes, null_inverse_cdf, "k--", label=f"null (f = {model_density[j]})")
+            if row == 0 and j == 0:
+                plt.loglog(cluster_sizes, inverse_cdf, "b-", label=f"model")
+                plt.loglog(null_cluster_sizes, null_inverse_cdf, "k-", label=f"null")
+            else:
+                plt.loglog(cluster_sizes, inverse_cdf, "b-")
+                plt.loglog(null_cluster_sizes, null_inverse_cdf, "k-")
 
             plt.ylim(10 ** (-10), 1)
             if j == 0:
-                plt.xlim(1, 10 ** 2.5)
+                plt.xlim(1, 10 ** 3)
             elif j == 1:
                 plt.xlim(1, 10 ** 3.5)
             elif j == 2:
@@ -141,19 +158,8 @@ if __name__ == '__main__':
                 plt.yticks(fontsize=tick_size)
 
             plt.title(chr(65 + row) + str(j + 1), loc="left", fontsize=title_size)
-
-            # if row == 0:
-            #     plt.title("Cluster dynamics", fontsize=title_size)
-            # if j == 0:
-            #     ax = plt.gca()
-            #     axins = ax.inset_axes([0.1, 0.05, 0.4, 0.3])
-            #     axins.semilogy(cluster_sizes, inverse_cdf)
-            #     axins.semilogy(null_cluster_sizes, null_inverse_cdf)
-            #     axins.xaxis.set_visible(False)
-            #     axins.yaxis.set_visible(False)
-
-            # plt.legend(fontsize=legend_size)
             plt.tight_layout()
 
+    plt.figlegend(loc="upper right", fontsize=legend_size, bbox_to_anchor=(0.99, 0.99))
     plt.savefig("fig2.png", dpi=300)
     plt.show()

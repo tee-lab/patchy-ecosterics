@@ -72,7 +72,7 @@ if __name__ == '__main__':
     num_rows = len(models)
     num_cols = len(model_params[0])
     plt.subplots(num_rows, num_cols, figsize=(8.27, 8.27 * num_rows / num_cols))
-    plt.suptitle("Variation of mean ds with cluster size s", fontsize=title_size)
+    plt.suptitle("Growth Rate of Clusters", fontsize=title_size)
 
     for i in tqdm(range(len(models))):
         row = i
@@ -100,12 +100,16 @@ if __name__ == '__main__':
             plt.subplot(num_rows, num_cols, row * num_cols + j + 1)
 
             if row == num_rows - 1:
-                plt.xlabel("cluster size s", fontsize=label_size)
+                plt.xlabel("cluster size (s)", fontsize=label_size)
             if j == 0:
-                plt.ylabel("f(s)", fontsize=label_size)
+                plt.ylabel("Mean Growth Rate", fontsize=label_size)
 
-            plt.plot(cluster_sizes, mean_ds, 'b-', label=f"{model_variable} = {model_param[j]}")
-            plt.plot(null_cluster_sizes, null_mean_ds, 'k-', label=f"null (f = {model_density[j]})")
+            if row == 0 and j == 0:
+                plt.plot(cluster_sizes, mean_ds, 'b-', label=f"model")
+                plt.plot(null_cluster_sizes, null_mean_ds, 'k-', label=f"null")
+            else:
+                plt.plot(cluster_sizes, mean_ds, 'b-')
+                plt.plot(null_cluster_sizes, null_mean_ds, 'k-')
             plt.axhline(y=0, linestyle="--")
 
             if j == 0:
@@ -114,6 +118,11 @@ if __name__ == '__main__':
                 plt.xlim([0, 1000])
             elif j == 2:
                 plt.xlim([0, 4000])
+
+            if j == num_cols - 1:
+                plt.ylabel(model_name, fontsize=label_size, rotation=270, labelpad=15)
+                ax = plt.gca()
+                ax.yaxis.set_label_position("right")
 
             if row != num_rows - 1:
                 plt.xticks([])
@@ -128,5 +137,6 @@ if __name__ == '__main__':
             # plt.legend(fontsize=legend_size)
             plt.tight_layout()
 
+    plt.figlegend(loc="upper right", fontsize=legend_size, bbox_to_anchor=(0.99, 0.99))
     plt.savefig("fig3.png", dpi=300)
     plt.show()

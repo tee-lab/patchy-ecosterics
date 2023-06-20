@@ -72,7 +72,7 @@ if __name__ == '__main__':
     num_rows = len(models)
     num_cols = len(model_params[0])
     plt.subplots(num_rows, num_cols, figsize=(8.27, 8.27 * num_rows / num_cols))
-    plt.suptitle("Variation of noise with cluster size", fontsize=title_size)
+    plt.suptitle("Variance in Growth Rate of Clusters", fontsize=title_size)
 
     for i in tqdm(range(len(models))):
         row = i
@@ -100,14 +100,18 @@ if __name__ == '__main__':
             plt.subplot(num_rows, num_cols, row * num_cols + j + 1)
 
             if row == num_rows - 1:
-                plt.xlabel("cluster size s", fontsize=label_size)
+                plt.xlabel("cluster size (s)", fontsize=label_size)
             if j == 0:
-                plt.ylabel("f(s)", fontsize=label_size)
+                plt.ylabel("Variance in Growth Rate", fontsize=label_size)
 
             plt.title(chr(65 + row) + str(j + 1), fontsize=title_size, loc="left")
 
-            plt.plot(cluster_sizes, mean_ds_sq, 'b-', label=f"{model_variable} = {model_param[j]}")
-            plt.plot(null_cluster_sizes, null_mean_ds_sq, 'k-', label=f"null (f = {model_density[j]})")
+            if row == 0 and j == 0:
+                plt.plot(cluster_sizes, mean_ds_sq, 'b-', label=f"model")
+                plt.plot(null_cluster_sizes, null_mean_ds_sq, 'k-', label=f"null")
+            else:
+                plt.plot(cluster_sizes, mean_ds_sq, 'b-')
+                plt.plot(null_cluster_sizes, null_mean_ds_sq, 'k-')
 
             if j == 0:
                 plt.xlim([0, 200])
@@ -116,16 +120,16 @@ if __name__ == '__main__':
             if j == 2:
                 plt.xlim([0, 4000])
 
+            if j == num_cols - 1:
+                plt.ylabel(model_name, fontsize=label_size, rotation=270, labelpad=15)
+                ax = plt.gca()
+                ax.yaxis.set_label_position("right")
+
             if row != num_rows - 1:
                 plt.xticks([])
 
-            # ax = plt.gca()
-            # axins = ax.inset_axes([0.15, 0.1, 0.4, 0.3])
-            # axins.plot(cluster_sizes, mean_ds_sq)
-            # axins.plot(null_cluster_sizes, null_mean_ds_sq)
-
-            # plt.legend(fontsize=legend_size)
             plt.tight_layout()
 
+    plt.figlegend(loc="upper right", fontsize=legend_size, bbox_to_anchor=(0.99, 0.99))
     plt.savefig("fig4.png", dpi=300)
     plt.show()
