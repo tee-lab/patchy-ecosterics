@@ -7,7 +7,7 @@ from os import path
 from skimage.measure import label
 from tqdm import tqdm
 
-from linear_regression import perform_linear_regression
+from utils import perform_linear_regression
 
 
 def get_random_cluster_sizes(lattice_size = 100):

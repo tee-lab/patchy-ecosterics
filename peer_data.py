@@ -1,3 +1,8 @@
+"""
+Generates a quick summary of a realisation
+"""
+
+
 from matplotlib import pyplot as plt
 from matplotlib.animation import FuncAnimation
 from numpy import array, sum, zeros

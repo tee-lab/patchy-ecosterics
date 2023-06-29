@@ -1,3 +1,10 @@
+"""
+This program takes a lattice as input and calculates the number of clusters of each size present in it
+If one only wants the sizes of clusters (explicit labelling of cluster is not required)
+then depth first search is faster
+"""
+
+
 from itertools import product
 from matplotlib import pyplot as plt
 from numpy import random, zeros

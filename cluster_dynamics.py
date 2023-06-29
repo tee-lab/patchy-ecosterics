@@ -1,3 +1,14 @@
+"""
+Given two lattices that differ by only one update,
+the get_cluster_dynamics() function returns a status object, which contains:
+1) Type of process undergone (growth, decay, appearance, disappearance, merge, split)
+2) Size of cluster(s) involved in the process
+3) Size of cluster(s) resulting from the process
+
+All other functions are helper functions for get_cluster_dynamics()
+"""
+
+
 from matplotlib import pyplot as plt
 from numba import njit
 from numpy import uint64, unique, zeros
@@ -23,6 +34,12 @@ def apply_periodic_boundary(labels):
 
 
 def get_changed_lattice(old_labels, changed_coords):
+    """
+    In most cases, it is possible to get the labels of the new lattice by looking at the old latice and the change it has undergone
+    Only in the case of a merge or a split, it is necessary to re-label the lattice
+    This optimization resulted in a 60x speedup
+    """    
+
     length = old_labels.shape[0]
     new_labels = old_labels.copy()
 
@@ -170,18 +187,6 @@ def get_cluster_dynamics(old_labels, new_labels, changed_coords):
             status['final_size'] = len(new_labels[new_labels == merged_cluster])
         else:
             status['type'] = 'disappearance'
-
-    # if ('size' in status and status['size'] == 2) or ('initial_sizes' in status and max(status['initial_sizes']) == 2):
-    #     print(status)
-
-    #     plt.subplot(121)
-    #     plt.imshow(old_labels)
-    #     plt.axis("off")
-    #     plt.subplot(122)
-    #     plt.title(f"Changed coord: {changed_coords}")
-    #     plt.imshow(new_labels)
-    #     plt.axis("off")
-    #     plt.show()
 
     return status
 

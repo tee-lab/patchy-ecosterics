@@ -7,7 +7,7 @@ from os import path
 from skimage.measure import label
 from tqdm import tqdm
 
-from linear_regression import perform_linear_regression
+from utils import perform_linear_regression
 
 
 def load_mean_ds_data(folder_name):

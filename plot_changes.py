@@ -1,3 +1,8 @@
+"""
+Processes all the .txt files crunced by compile_changes.py file to generate plots
+"""
+
+
 from matplotlib import pyplot as plt
 from numpy import loadtxt, log, transpose, zeros
 from os import makedirs, path

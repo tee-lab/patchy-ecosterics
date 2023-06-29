@@ -1,3 +1,12 @@
+"""
+This script imports all models and analysis scripts
+We used this to run jobs on the computing cluster
+Code snippets for carrying out analysis of all models are included in the code_snippets folder
+
+IMPORTANT: set_spawn_method("spawn") is required for multiprocessing to work on Linux
+"""
+
+
 # libraries
 from concurrent.futures import ThreadPoolExecutor
 from matplotlib import pyplot as plt

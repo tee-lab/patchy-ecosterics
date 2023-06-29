@@ -1,3 +1,8 @@
+"""
+Compare any results between a specific model and the null_stochastic model
+"""
+
+
 from matplotlib import pyplot as plt
 from numpy import loadtxt, transpose, zeros
 from os import makedirs, path

@@ -1,3 +1,9 @@
+"""
+This is for grouping output .txt and .png files with a common prefix into a same folder
+Essentially, the folder contains all data associated with a single realisation
+"""
+
+
 from numpy import arange
 from os import listdir, makedirs, path
 from shutil import move
