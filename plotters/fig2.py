@@ -127,7 +127,7 @@ if __name__ == '__main__':
             if row == num_rows - 1:
                 plt.xlabel("change in cluster size ($\Delta$s)", fontsize=label_size)
             if j == 0:
-                plt.ylabel("cCDF of $\Delta$ s", fontsize=label_size)
+                plt.ylabel("P ($\Delta$S > $\Delta$s)", fontsize=label_size)
             if j == num_cols - 1:
                 plt.ylabel(model_name, fontsize=label_size, rotation=270, labelpad=15)
                 ax = plt.gca()
@@ -135,10 +135,10 @@ if __name__ == '__main__':
 
             if row == 0 and j == 0:
                 plt.loglog(cluster_sizes, inverse_cdf, "b-", label=f"model")
-                plt.loglog(null_cluster_sizes, null_inverse_cdf, "k-", label=f"null")
+                plt.loglog(null_cluster_sizes, null_inverse_cdf, "0.7", label=f"null")
             else:
                 plt.loglog(cluster_sizes, inverse_cdf, "b-")
-                plt.loglog(null_cluster_sizes, null_inverse_cdf, "k-")
+                plt.loglog(null_cluster_sizes, null_inverse_cdf, "0.7")
 
             plt.ylim(10 ** (-10), 1)
             if j == 0:

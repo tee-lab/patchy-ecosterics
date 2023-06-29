@@ -108,17 +108,17 @@ if __name__ == '__main__':
 
             if row == 0 and j == 0:
                 plt.plot(cluster_sizes, mean_ds_sq, 'b-', label=f"model")
-                plt.plot(null_cluster_sizes, null_mean_ds_sq, 'k-', label=f"null")
+                plt.plot(null_cluster_sizes, null_mean_ds_sq, '0.7', label=f"null")
             else:
                 plt.plot(cluster_sizes, mean_ds_sq, 'b-')
-                plt.plot(null_cluster_sizes, null_mean_ds_sq, 'k-')
+                plt.plot(null_cluster_sizes, null_mean_ds_sq, '0.7')
 
             if j == 0:
                 plt.xlim([0, 200])
             if j == 1:
                 plt.xlim([0, 1500])
             if j == 2:
-                plt.xlim([0, 4000])
+                plt.xlim([0, 5000])
 
             if j == num_cols - 1:
                 plt.ylabel(model_name, fontsize=label_size, rotation=270, labelpad=15)

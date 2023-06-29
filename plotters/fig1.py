@@ -84,9 +84,9 @@ if __name__ == '__main__':
     # model_densities.append([0.24, 0.38, 0.52])
     # model_variables.append("p")
 
-    title_size = 10
-    label_size = 8
-    tick_size = 6
+    title_size = 12
+    label_size = 10
+    tick_size = 8
     legend_size = 8
 
     num_rows = len(models)
@@ -128,7 +128,7 @@ if __name__ == '__main__':
 
         annotations = [chr(65 + row) + str(k + 1) for k in range(num_cols)]
         for j in range(len(model_param)):
-            plt.annotate(annotations[j], (model_param[j], model_density[j]), fontsize=label_size)
+            plt.annotate(annotations[j], (model_param[j], model_density[j]), fontsize=label_size - 2)
 
         # distribution plots
         for j in range(len(model_param)):
@@ -156,10 +156,10 @@ if __name__ == '__main__':
 
             if row == 0 and j == 0:
                 plt.loglog(cluster_sizes, inverse_cdf, 'b-', label="model")
-                plt.loglog(null_cluster_sizes, null_inverse_cdf, 'k-', label="null")
+                plt.loglog(null_cluster_sizes, null_inverse_cdf, '0.7', label="null")
             else:
                 plt.loglog(cluster_sizes, inverse_cdf, 'b-')
-                plt.loglog(null_cluster_sizes, null_inverse_cdf, 'k-')
+                plt.loglog(null_cluster_sizes, null_inverse_cdf, '0.7')
             plt.xticks(fontsize=tick_size)
             plt.yticks(fontsize=tick_size)
 

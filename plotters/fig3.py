@@ -106,10 +106,10 @@ if __name__ == '__main__':
 
             if row == 0 and j == 0:
                 plt.plot(cluster_sizes, mean_ds, 'b-', label=f"model")
-                plt.plot(null_cluster_sizes, null_mean_ds, 'k-', label=f"null")
+                plt.plot(null_cluster_sizes, null_mean_ds, '0.8', label=f"null")
             else:
                 plt.plot(cluster_sizes, mean_ds, 'b-')
-                plt.plot(null_cluster_sizes, null_mean_ds, 'k-')
+                plt.plot(null_cluster_sizes, null_mean_ds, '0.8')
             plt.axhline(y=0, linestyle="--")
 
             if j == 0:
@@ -117,7 +117,7 @@ if __name__ == '__main__':
             elif j == 1:
                 plt.xlim([0, 1000])
             elif j == 2:
-                plt.xlim([0, 4000])
+                plt.xlim([0, 5000])
 
             if j == num_cols - 1:
                 plt.ylabel(model_name, fontsize=label_size, rotation=270, labelpad=15)
