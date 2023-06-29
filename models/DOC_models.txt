@@ -1,0 +1,14 @@
+All models associated with this project may contain the following script(s).
+All of them essentially simulate the same model, but return/save different data and are optimized for the suited purpose
+
+The dumper.py script simulates the model in question without analysing cluster dynamics, and returns the averaged final density
+This is ideal for generating phase diagrams
+
+The final_lattice.py script also does the same, but also saves the final lattice configurations from every ensemble
+This data is required for statistical fitting of power-laws on the cluster size distribution
+
+The in_place_processing.py script carries out cluster dynamics after every step of the simulation
+This is the main script used in this project. The others are modifications of this script for specific purposes
+
+The spanning_cluster.py script simulates the model in question and returns the fraction of ensembles that feature a percolating cluster
+This is ideal for analysing percolation transitions

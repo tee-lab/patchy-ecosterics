@@ -1,3 +1,10 @@
+"""
+This script is placed here to enable local imports from the models folder
+terminal.py will use the version of script in the root folder instead
+Refer to that file for documentation
+"""
+
+
 from matplotlib import pyplot as plt
 from numba import njit
 from numpy import uint64, unique, zeros
