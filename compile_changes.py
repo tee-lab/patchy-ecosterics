@@ -110,7 +110,7 @@ def analyze_data(model_name, simulation_index):
     return analysed_data
 
 
-def compile_changes(model_name, simulation_indices, plot_name='data', calc_residue=False):
+def compile_changes(model_name, simulation_indices, plot_name='data', calc_residue=True):
     grown_clusters = []
     decayed_clusters = []
 

@@ -11,7 +11,8 @@ from shutil import move
 
 if __name__ == '__main__':
     output_path = path.join(path.dirname(__file__), "outputs")
-    prefixes = ["0p55", "0p56", "830"]
+    params = [0.498, 0.502, 0.504, 0.506, 0.508, 0.52]
+    prefixes = [str(p).replace('.', 'p') for p in params]
 
     for prefix in prefixes:
         makedirs(path.join(output_path, prefix), exist_ok=True)
