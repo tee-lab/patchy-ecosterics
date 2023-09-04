@@ -18,7 +18,6 @@ from skimage.measure import label
 from tqdm import tqdm
 # models
 from models.contact_spatial.in_place_processing import contact_spatial
-from models.null_ising.in_place_processing import null_ising
 from models.null_static.spanning_cluster import null_static as null_static_spanning
 from models.null_stochastic.in_place_processing import null_stochastic
 from models.null_stochastic.spanning_cluster import null_stochastic as null_stochastic_spanning
@@ -38,23 +37,24 @@ from utils import load_automaton_data
 if __name__ == '__main__':
     set_start_method("spawn")
     num_simulations = cpu_count() - 1
+    p_values = [0.616, 0.618, 0.62, 0.625, 0.63, 0.64]
+    q = 0
 
-    rainfall_values = [830]
-
-    for rainfall in rainfall_values:
+    for p in p_values:
         purge_data()
-        print(f"\n---> Simulating rainfall = {rainfall} <---")
-        file_string = str(rainfall).replace('.', 'p')
-        scanlon_kalahari(rainfall, num_simulations, save_series=False, save_cluster=True)
-        compile_changes("scanlon_kalahari", range(num_simulations), plot_name=file_string, calc_residue=True)
-        plot_changes(file_string, calc_residue=True)
+        print(f"\n---> Simulating p = {p} <---")
+        file_string = str(p).replace('.', 'p')
+        tricritical(p, q, num_simulations, save_series=False, save_cluster=True)
+        compile_changes("tricritical", range(num_simulations), plot_name=file_string)
+        plot_changes(file_string)
 
-    f_values = [0.55, 0.56]
+    p_values = [0.498, 0.502, 0.504, 0.506, 0.508, 0.52]
+    q = 0.5
 
-    for f in f_values:
+    for p in p_values:
         purge_data()
-        print(f"\n---> Simulating f = {f} <---")
-        file_string = str(f).replace('.', 'p')
-        null_stochastic(f, num_simulations, save_series=False, save_cluster=True)
-        compile_changes("null_stochastic", range(num_simulations), plot_name=file_string)
+        print(f"\n---> Simulating p = {p} <---")
+        file_string = str(p).replace('.', 'p')
+        tricritical(p, q, num_simulations, save_series=False, save_cluster=True)
+        compile_changes("tricritical", range(num_simulations), plot_name=file_string)
         plot_changes(file_string)
