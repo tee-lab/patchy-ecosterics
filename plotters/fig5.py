@@ -22,7 +22,7 @@ def load_residue_data(file_path, file_name, cluster_size):
 if __name__ == '__main__':
     results_path = path.join(path.dirname(__file__), "..", "results")
     cluster_sizes = [10, 50, 100]
-    position = 1
+    position = 3
 
     models = []
     model_names = []
@@ -73,8 +73,8 @@ if __name__ == '__main__':
         model_params.append(0.55)
         model_densities.append(0.53)
 
-        model_params.append(850)
-        model_densities.append(0.56)
+        model_params.append(830)
+        model_densities.append(0.54)
 
     num_cols = len(cluster_sizes)
     num_rows = len(models)
