@@ -23,6 +23,7 @@ from models.null_stochastic.in_place_processing import null_stochastic
 from models.null_stochastic.spanning_cluster import null_stochastic as null_stochastic_spanning
 from models.scanlon_kalahari.in_place_processing import scanlon_kalahari
 from models.scanlon_kalahari.spanning_cluster import scanlon_kalahari as scanlon_kalahari_spanning
+from models.tricritical.coarse_dynamics import tricritical as tricritical_coarse
 from models.tricritical.dumper import tricritical as tricritical_fast
 from models.tricritical.final_lattice import tricritical as tricritical_final
 from models.tricritical.in_place_processing import tricritical
@@ -37,24 +38,10 @@ from utils import load_automaton_data
 if __name__ == '__main__':
     set_start_method("spawn")
     num_simulations = cpu_count() - 1
-    p_values = [0.566, 0.568, 0.57, 0.575, 0.58]
-    q = 0.25
+    p_values = [0.62, 0.65, 0.7, 0.72, 0.74]
+    q = 0
+    diff_values = [1, 5, 10, 50, 100]
 
     for p in p_values:
-        purge_data()
-        print(f"\n---> Simulating p = {p} <---")
-        file_string = str(p).replace('.', 'p')
-        tricritical(p, q, num_simulations, save_series=False, save_cluster=True)
-        compile_changes("tricritical", range(num_simulations), plot_name=file_string)
-        plot_changes(file_string)
-
-    p_values = [0.399, 0.4, 0.401, 0.403]
-    q = 0.75
-
-    for p in p_values:
-        purge_data()
-        print(f"\n---> Simulating p = {p} <---")
-        file_string = str(p).replace('.', 'p')
-        tricritical(p, q, num_simulations, save_series=False, save_cluster=True)
-        compile_changes("tricritical", range(num_simulations), plot_name=file_string)
-        plot_changes(file_string)
+        for diff in diff_values:
+            tricritical_coarse(p, 0, diff, num_simulations)
