@@ -8,11 +8,21 @@ library(spatialwarnings)
 
 results_path = "C://Code//Github//vegetation-dynamics//results"
 model = "tricritical"
-q_folder = "q0"
-dataset = "100x100"
+dataset = "100x100_residue"
 
-q_value = "0"
-p_values = c("0p65", "0p7", "0p72", "0p74")
+q_folder = "q0"
+p_values = c("0p616", "0p618", "0p62", "0p625", "0p63", "0p64", "0p65", "0p7", "0p72")
+
+# q_folder = "q0p25"
+# p_values = c("0p566", "0p568", "0p57", "0p575", "0p58", "0p59", "0p62", "0p64")
+
+# q_folder = "q0p5"
+# p_values = c("0p498", "0p5", "0p502", "0p504", "0p506", "0p508", "0p51", "0p52", "0p53", "0p55")
+  
+# q_folder = "q0p75"
+# p_values = c("0p399", "0p4", "0p401", "0p403", "0p405", "0p41", "0p42")
+
+data_frame = data.frame()
 
 root_path = file.path(results_path, model, q_folder, dataset)
 
@@ -40,4 +50,13 @@ for (p in p_values) {
   print(paste("Power-law BIC:", pl_bic))
   print(paste("Truncated Power-law BIC:", tpl_bic))
   print(paste("Exponential BIC:", exp_bic))
+  
+  data_frame = rbind(data_frame, c(p, pl_bic, tpl_bic, exp_bic))
 }
+
+colnames(data_frame)[1] = "p"
+colnames(data_frame)[2] = "PL"
+colnames(data_frame)[3] = "TPL"
+colnames(data_frame)[4] = "Exp"
+
+write.csv(data_frame, paste(q_folder, "_cd", ".csv", sep=""))
