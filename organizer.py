@@ -11,7 +11,7 @@ from shutil import move
 
 if __name__ == '__main__':
     output_path = path.join(path.dirname(__file__), "outputs")
-    params = [0.399, 0.4, 0.401, 0.403]
+    params = [0.62, 0.65, 0.7, 0.72, 0.74]
     prefixes = [str(p).replace('.', 'p') for p in params]
 
     for prefix in prefixes:
