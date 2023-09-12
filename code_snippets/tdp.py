@@ -3,6 +3,8 @@
 if __name__ == '__main__':
     pass
 
+    # p_values = [0.616, 0.618, 0.62, 0.625, 0.63, 0.64, 0.65, 0.7, 0.72]
+
     # CLUSTER SIZE DISTRIBUTION
     # set_start_method("spawn")
     # num_simulations = cpu_count() - 1
@@ -27,7 +29,16 @@ if __name__ == '__main__':
     #     compile_changes("tricritical", range(num_simulations), plot_name=file_string)
     #     plot_changes(file_string)
 
+    # COARSE DYNAMICS
+    # set_start_method("spawn")
+    # num_simulations = int(cpu_count() / 2)
+    # p_values = [0.62, 0.65, 0.7, 0.72, 0.74]
+    # q = 0
+    # diff_values = [1, 5, 10, 50, 100]
 
+    # for p in p_values:
+    #     for diff in diff_values:
+    #         tricritical_coarse(p, 0, diff, num_simulations)
 
     # PHASE DIAGRAM
     # set_start_method("spawn")

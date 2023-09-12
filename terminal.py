@@ -37,11 +37,10 @@ from utils import load_automaton_data
 
 if __name__ == '__main__':
     set_start_method("spawn")
-    num_simulations = int(cpu_count() / 2)
-    p_values = [0.62, 0.65, 0.7, 0.72, 0.74]
+    num_simulations = cpu_count() - 1
+    p_values = [0.616, 0.618, 0.62, 0.625, 0.63, 0.64, 0.65, 0.7, 0.72]
     q = 0
-    diff_values = [1, 5, 10, 50, 100]
 
     for p in p_values:
-        for diff in diff_values:
-            tricritical_coarse(p, 0, diff, num_simulations)
+        print(f"\n---> Simulating p = {p} <---")
+        tricritical_final(p, q, num_simulations)
