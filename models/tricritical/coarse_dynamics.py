@@ -174,7 +174,7 @@ def tricritical(p_ext = 0.5, q_ext = 0.5, diff_ext = 1, num_parallel = 10):
     length = 500
     eq_time = 1000
     difference_time = diff_ext
-    simulation_iters = 1
+    simulation_iters = 100
     p = p_ext
     q = q_ext
 
