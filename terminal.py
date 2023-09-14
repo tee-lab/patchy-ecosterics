@@ -37,10 +37,35 @@ from utils import load_automaton_data
 
 if __name__ == '__main__':
     set_start_method("spawn")
-    num_simulations = cpu_count() - 1
-    p_values = [0.399, 0.4, 0.401, 0.403, 0.405, 0.41, 0.42]
-    q = 0.75
+    num_simulations = int(cpu_count() / 2)
+    p_values = [0.616, 0.618, 0.62, 0.625, 0.63, 0.64, 0.65, 0.7, 0.72]
+    q = 0
+    diff_values = [1, 5, 10, 50, 100]
 
     for p in p_values:
-        print(f"\n---> Simulating p = {p} <---")
-        tricritical_final(p, q, num_simulations)
+        for diff in diff_values:
+            tricritical_coarse(p, 0, diff, num_simulations)
+
+    p_values = [0.566, 0.569, 0.57, 0.575, 0.58, 0.59, 0.62, 0.64]
+    q = 0.25
+    diff_values = [1, 5, 10, 50, 100]
+
+    for p in p_values:
+        for diff in diff_values:
+            tricritical_coarse(p, 0, diff, num_simulations)
+
+    p_values = [0.498, 0.5, 0.502, 0.504, 0.506, 0.508, 0.51, 0.52, 0.53, 0.55]
+    q = 0.5
+    diff_values = [1, 5, 10, 50, 100]
+
+    for p in p_values:
+        for diff in diff_values:
+            tricritical_coarse(p, 0, diff, num_simulations)
+
+    p_values = [0.399, 0.4, 0.401, 0.403, 0.405, 0.41, 0.42]
+    q = 0.75
+    diff_values = [1, 5, 10, 50, 100]
+
+    for p in p_values:
+        for diff in diff_values:
+            tricritical_coarse(p, 0, diff, num_simulations)

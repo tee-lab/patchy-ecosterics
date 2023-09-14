@@ -156,9 +156,15 @@ def simulate(data):
             lattice = landscape_update(lattice, p, q)
         new_lattice = copy(lattice)
 
-        difference_map = abs(new_lattice - old_lattice)
-        changes_distribution = array(depth_first_clustering(difference_map, periodic=True, trim=False))
-        all_changes += changes_distribution
+        difference_map = new_lattice - old_lattice
+        growth_map = (difference_map == 1).astype(int)
+        decay_map = (difference_map == -1).astype(int)
+
+        growth_distribution = array(depth_first_clustering(growth_map, connectivity=2, periodic=True, trim=False))
+        all_changes += growth_distribution
+
+        decay_distribution = array(depth_first_clustering(decay_map, connectivity=2, periodic=True, trim=False))
+        all_changes += decay_distribution
 
     return all_changes
 
@@ -190,14 +196,21 @@ def tricritical(p_ext = 0.5, q_ext = 0.5, diff_ext = 1, num_parallel = 10):
     all_changes = all_changes[1:cutoff_index]
     output_path = os.path.join(os.path.dirname(__file__), "..", "..", "outputs")
     os.makedirs(output_path, exist_ok=True)
-    file_name = f"{str(p).replace('.', 'p')}_{difference_time}_diffmap.png"
+    file_name = f"{str(p).replace('.', 'p')}_{difference_time}_diffmap"
 
     plt.figure()
-    plt.title("Distribution of patch sizes in difference map")
+    plt.title("Distribution of patch sizes in difference map (log log)")
     plt.xlabel("Patch size")
     plt.ylabel("Number of patches")
     plt.loglog(all_changes)
-    plt.savefig(os.path.join(output_path, file_name))
+    plt.savefig(os.path.join(output_path, file_name + "_loglog.png"))
+
+    plt.figure()
+    plt.title("Distribution of patch sizes in difference map (semilogy)")
+    plt.xlabel("Patch size")
+    plt.ylabel("Number of patches")
+    plt.semilogy(all_changes)
+    plt.savefig(os.path.join(output_path, file_name + "_semilogy.png"))
 
 
 if __name__ == '__main__':
