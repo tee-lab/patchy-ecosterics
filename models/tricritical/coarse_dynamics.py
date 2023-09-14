@@ -160,10 +160,10 @@ def simulate(data):
         growth_map = (difference_map == 1).astype(int)
         decay_map = (difference_map == -1).astype(int)
 
-        growth_distribution = array(depth_first_clustering(growth_map, connectivity=2, periodic=True, trim=False))
+        growth_distribution = array(depth_first_clustering(growth_map, connectivity=1, periodic=True, trim=False))
         all_changes += growth_distribution
 
-        decay_distribution = array(depth_first_clustering(decay_map, connectivity=2, periodic=True, trim=False))
+        decay_distribution = array(depth_first_clustering(decay_map, connectivity=1, periodic=True, trim=False))
         all_changes += decay_distribution
 
     return all_changes
@@ -204,6 +204,7 @@ def tricritical(p_ext = 0.5, q_ext = 0.5, diff_ext = 1, num_parallel = 10):
     plt.ylabel("Number of patches")
     plt.loglog(all_changes)
     plt.savefig(os.path.join(output_path, file_name + "_loglog.png"))
+    plt.close()
 
     plt.figure()
     plt.title("Distribution of patch sizes in difference map (semilogy)")
@@ -211,6 +212,7 @@ def tricritical(p_ext = 0.5, q_ext = 0.5, diff_ext = 1, num_parallel = 10):
     plt.ylabel("Number of patches")
     plt.semilogy(all_changes)
     plt.savefig(os.path.join(output_path, file_name + "_semilogy.png"))
+    plt.close()
 
 
 if __name__ == '__main__':

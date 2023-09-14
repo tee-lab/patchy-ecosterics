@@ -11,7 +11,8 @@ model = "tricritical"
 dataset = "100x100_residue"
 
 q_folder = "q0"
-p_values = c("0p616", "0p618", "0p62", "0p625", "0p63", "0p64", "0p65", "0p7", "0p72")
+p_values = c("0p65")
+# p_values = c("0p616", "0p618", "0p62", "0p625", "0p63", "0p64", "0p65", "0p7", "0p72")
 
 # q_folder = "q0p25"
 # p_values = c("0p566", "0p568", "0p57", "0p575", "0p58", "0p59", "0p62", "0p64")
@@ -33,15 +34,26 @@ for (p in p_values) {
   file_path = file.path(root_path, p, file_name)
   source_python("load_changes.py")
   changes_icdf = load_changes(file_path)
+  # print(file_path)
+  # print(changes_icdf)
   
   x_start = 3
-  x_range = 3:length(changes_icdf)
-  changes_icdf = changes_icdf[3:length(changes_icdf)]
+  x_range = x_start:length(changes_icdf)
+  changes_icdf = changes_icdf[x_start:length(changes_icdf)]
   data_len = length(changes_icdf)
+  plot(x_range, changes_icdf, main=paste("cd of", p, "- normal scale"))
+  
+  exp_output = exp_fit(changes_icdf)
+  b = exp_output$cutoff
+  plot(x_range, log(changes_icdf), main=paste("cd of", p, "- semilogy plot"))
+  lines(x_range, -b * x_range)
   
   pl_output = pl_fit(changes_icdf)
+  exponent = pl_output$plexpo
+  plot(log(x_range), log(changes_icdf), main=paste("cd of", p, "- log log plot"))
+  plot(log(x_range), log(x_range ^ -exponent))
+  
   tpl_output = tpl_fit(changes_icdf)
-  exp_output = exp_fit(changes_icdf)
   
   pl_bic = calc_bic(pl_output, data_len)
   tpl_bic = calc_bic(tpl_output, data_len)
