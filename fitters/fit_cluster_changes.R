@@ -63,6 +63,8 @@ for (p in p_values) {
   tpl_bic = calc_bic(tpl_output, data_len)
   exp_bic = calc_bic(exp_output, data_len)
   
+  plot_distr()
+  
   print(paste("Power-law BIC:", pl_bic))
   print(paste("Truncated Power-law BIC:", tpl_bic))
   print(paste("Exponential BIC:", exp_bic))
