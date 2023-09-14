@@ -160,10 +160,10 @@ def simulate(data):
         growth_map = (difference_map == 1).astype(int)
         decay_map = (difference_map == -1).astype(int)
 
-        growth_distribution = array(depth_first_clustering(growth_map, connectivity=1, periodic=True, trim=False))
+        growth_distribution = array(depth_first_clustering(growth_map, connectivity=2, periodic=True, trim=False))
         all_changes += growth_distribution
 
-        decay_distribution = array(depth_first_clustering(decay_map, connectivity=1, periodic=True, trim=False))
+        decay_distribution = array(depth_first_clustering(decay_map, connectivity=2, periodic=True, trim=False))
         all_changes += decay_distribution
 
     return all_changes

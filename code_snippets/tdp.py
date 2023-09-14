@@ -41,7 +41,7 @@ if __name__ == '__main__':
 
     # for p in p_values:
     #     for diff in diff_values:
-    #         tricritical_coarse(p, 0, diff, num_simulations)
+    #         tricritical_coarse(p, q, diff, num_simulations)
 
     # PHASE DIAGRAM
     # set_start_method("spawn")
