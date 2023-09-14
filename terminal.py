@@ -38,8 +38,8 @@ from utils import load_automaton_data
 if __name__ == '__main__':
     set_start_method("spawn")
     num_simulations = cpu_count() - 1
-    p_values = [0.616, 0.618, 0.62, 0.625, 0.63, 0.64, 0.65, 0.7, 0.72]
-    q = 0
+    p_values = [0.566, 0.569, 0.57, 0.575, 0.58, 0.59, 0.62, 0.64]
+    q = 0.25
 
     for p in p_values:
         print(f"\n---> Simulating p = {p} <---")

@@ -4,6 +4,7 @@ if __name__ == '__main__':
     pass
 
     # p_values = [0.616, 0.618, 0.62, 0.625, 0.63, 0.64, 0.65, 0.7, 0.72]
+    p_values = [0.566, 0.569, 0.57, 0.575, 0.58, 0.59, 0.62, 0.64]
 
     # CLUSTER SIZE DISTRIBUTION
     # set_start_method("spawn")
