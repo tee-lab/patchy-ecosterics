@@ -46,14 +46,18 @@ for (p in p_values) {
   exp_output = exp_fit(changes_icdf)
   b = exp_output$cutoff
   plot(x_range, log(changes_icdf), main=paste("cd of", p, "- semilogy plot"))
-  lines(x_range, -b * x_range)
+  plot(x_range, -b * x_range, main="exp fit")
   
   pl_output = pl_fit(changes_icdf)
   exponent = pl_output$plexpo
   plot(log(x_range), log(changes_icdf), main=paste("cd of", p, "- log log plot"))
-  plot(log(x_range), log(x_range ^ -exponent))
+  plot(log(x_range), log(x_range ^ -exponent), main="pl fit")
   
   tpl_output = tpl_fit(changes_icdf)
+  exponent = tpl_output$plexpo
+  b = tpl_output$cutoff
+  plot(log(x_range), log(changes_icdf), main=paste("cd of", p, "- log log plot"))
+  plot(log(x_range), log((x_range ^ -exponent) * exp(-b * x_range)), main="tpl fit")
   
   pl_bic = calc_bic(pl_output, data_len)
   tpl_bic = calc_bic(tpl_output, data_len)

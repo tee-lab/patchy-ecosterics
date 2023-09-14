@@ -17,9 +17,9 @@ dataset = "100x100_final"
 # q_value = "0p5"
 # p_values = c("0p498", "0p5", "0p502", "0p504", "0p506", "0p508", "0p51", "0p52", "0p53", "0p55")
 
-q_folder = "q0p75"
-q_value = "0p75"
-p_values = c("0p399", "0p4", "0p401", "0p403", "0p405", "0p41", "0p42")
+# q_folder = "q0p75"
+# q_value = "0p75"
+# p_values = c("0p399", "0p4", "0p401", "0p403", "0p405", "0p41", "0p42")
 
 root_path = file.path(results_path, model, q_folder, dataset)
 data_frame = data.frame()
