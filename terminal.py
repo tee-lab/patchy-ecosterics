@@ -36,21 +36,49 @@ from utils import load_automaton_data
 
 
 if __name__ == '__main__':
-    purge_data()
     set_start_method("spawn")
-    num_simulations = int(cpu_count() / 2)
+    num_simulations = cpu_count() - 1
 
-    p_values = [0.62, 0.65, 0.7, 0.72]
+    p_values = [0.73, 0.74]
     q = 0
-    diff = 10
 
-    plt.figure()
-    plt.title("Superimposed difference plots for various p values")
     for p in p_values:
-        changes = tricritical_coarse(p, q, diff, num_simulations)
-        plt.semilogy(changes, label=f"p = {p}")
-    plt.xlabel("Patch sizes in difference maps")
-    plt.ylabel("Number of patches")
-    plt.legend()
-    plt.savefig("combined_diff_plots.png")
-    plt.show()
+        purge_data()
+        print(f"\n---> Simulating p = {p} <---")
+        file_string = str(p).replace('.', 'p')
+        tricritical(p, q, num_simulations, save_series=False, save_cluster=True)
+        compile_changes("tricritical", range(num_simulations), plot_name=file_string)
+        plot_changes(file_string)
+
+    p_values = [0.65, 0.66]
+    q = 0.25
+
+    for p in p_values:
+        purge_data()
+        print(f"\n---> Simulating p = {p} <---")
+        file_string = str(p).replace('.', 'p')
+        tricritical(p, q, num_simulations, save_series=False, save_cluster=True)
+        compile_changes("tricritical", range(num_simulations), plot_name=file_string)
+        plot_changes(file_string)
+
+    p_values = [0.56, 0.57]
+    q = 0.5
+
+    for p in p_values:
+        purge_data()
+        print(f"\n---> Simulating p = {p} <---")
+        file_string = str(p).replace('.', 'p')
+        tricritical(p, q, num_simulations, save_series=False, save_cluster=True)
+        compile_changes("tricritical", range(num_simulations), plot_name=file_string)
+        plot_changes(file_string)
+
+    p_values = [0.43, 0.44]
+    q = 0.75
+
+    for p in p_values:
+        purge_data()
+        print(f"\n---> Simulating p = {p} <---")
+        file_string = str(p).replace('.', 'p')
+        tricritical(p, q, num_simulations, save_series=False, save_cluster=True)
+        compile_changes("tricritical", range(num_simulations), plot_name=file_string)
+        plot_changes(file_string)
