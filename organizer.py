@@ -17,6 +17,8 @@ if __name__ == '__main__':
     # p_values = [0.498, 0.5, 0.502, 0.504, 0.506, 0.508, 0.51, 0.52, 0.53, 0.55]
     p_values = [0.399, 0.4, 0.401, 0.403, 0.405, 0.41, 0.42]
 
+    p_values = [0.73, 0.74]
+
     params = p_values
     prefixes = [str(p).replace('.', 'p') for p in params]
 

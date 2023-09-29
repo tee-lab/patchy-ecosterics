@@ -43,42 +43,26 @@ if __name__ == '__main__':
     q = 0
 
     for p in p_values:
-        purge_data()
         print(f"\n---> Simulating p = {p} <---")
-        file_string = str(p).replace('.', 'p')
-        tricritical(p, q, num_simulations, save_series=False, save_cluster=True)
-        compile_changes("tricritical", range(num_simulations), plot_name=file_string)
-        plot_changes(file_string)
+        tricritical_final(p, q, num_simulations)
 
     p_values = [0.65, 0.66]
     q = 0.25
 
     for p in p_values:
-        purge_data()
         print(f"\n---> Simulating p = {p} <---")
-        file_string = str(p).replace('.', 'p')
-        tricritical(p, q, num_simulations, save_series=False, save_cluster=True)
-        compile_changes("tricritical", range(num_simulations), plot_name=file_string)
-        plot_changes(file_string)
+        tricritical_final(p, q, num_simulations)
 
     p_values = [0.56, 0.57]
     q = 0.5
 
     for p in p_values:
-        purge_data()
         print(f"\n---> Simulating p = {p} <---")
-        file_string = str(p).replace('.', 'p')
-        tricritical(p, q, num_simulations, save_series=False, save_cluster=True)
-        compile_changes("tricritical", range(num_simulations), plot_name=file_string)
-        plot_changes(file_string)
+        tricritical_final(p, q, num_simulations)
 
     p_values = [0.43, 0.44]
     q = 0.75
 
     for p in p_values:
-        purge_data()
         print(f"\n---> Simulating p = {p} <---")
-        file_string = str(p).replace('.', 'p')
-        tricritical(p, q, num_simulations, save_series=False, save_cluster=True)
-        compile_changes("tricritical", range(num_simulations), plot_name=file_string)
-        plot_changes(file_string)
+        tricritical_final(p, q, num_simulations)
