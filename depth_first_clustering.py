@@ -89,7 +89,7 @@ def make_random_lattice(n, p):
 
 if __name__ == '__main__':
     periodic = True
-    connectivity = 2
+    connectivity = 1
     n = 10
     p = 0.3
 
@@ -99,6 +99,12 @@ if __name__ == '__main__':
     for i in range(len(cluster_distribution)):
         print(f"Cluster size {i}: {cluster_distribution[i]} clusters")
 
+    plt.figure(figsize=(10, 5))
+    plt.subplot(121)
+    plt.title("Random lattice")
+    plt.imshow(random_lattice)
+    plt.subplot(122)
+    plt.title("After clustering")
     if periodic:
         plt.imshow(apply_periodic_boundary(label(random_lattice, background=0, connectivity=connectivity)))
     else:

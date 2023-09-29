@@ -5,20 +5,24 @@ results_path = "C://Code//Github//vegetation-dynamics//results"
 model = "tricritical"
 dataset = "100x100_final"
 
+options(spatialwarnings.constants.reltol = 1e-6)
+options(spatialwarnings.constants.maxit = 1e8)
+
 # q_folder = "q0"
 # q_value = "0"
 # p_values = c("0p616", "0p618", "0p62", "0p625", "0p63", "0p64", "0p65", "0p7", "0p72")
+#p_values = c("0p65")
 
 # q_folder = "q0p25"
 # q_value = "0p25"
 # p_values = c("0p566", "0p569", "0p57", "0p575", "0p58", "0p59", "0p62", "0p64")
 
-# q_folder = "q0p5"
-# q_value = "0p5"
-# p_values = c("0p498", "0p5", "0p502", "0p504", "0p506", "0p508", "0p51", "0p52", "0p53", "0p55")
+q_folder = "q0p5"
+q_value = "0p5"
+p_values = c("0p498", "0p5", "0p502", "0p504", "0p506", "0p508", "0p51", "0p52", "0p53", "0p55")
 
 # q_folder = "q0p75"
-# q_value = "0p75"
+#q_value = "0p75"
 # p_values = c("0p399", "0p4", "0p401", "0p403", "0p405", "0p41", "0p42")
 
 root_path = file.path(results_path, model, q_folder, dataset)
@@ -32,38 +36,23 @@ for (p in p_values) {
   source_python("lattice_parser.py")
   lattices = load_lattices(file_path)
   
-  outputs = indicator_psdtype(lattices, wrap=TRUE)
+  psd_object = patchdistr_sews(lattices, best_by = "BIC", fit_lnorm = FALSE, merge = TRUE, wrap = TRUE)
+  psd_stats = psd_object$psd_type
   
-  pl_bics = c()
-  tpl_bics = c()
-  exp_bics = c()
+  psd_plot = plot_distr(psd_object, best_only = FALSE)
+  png(filename=paste(p, "_", q_folder, ".png", sep = ""))
+  plot(psd_plot)
+  dev.off()
   
-  for (output in outputs) {
-    pl_bic = output$BIC[1]
-    if (is.nan(pl_bic) == FALSE) {
-      pl_bics = append(pl_bics, pl_bic)
-    }
-    
-    tpl_bic = output$BIC[2]
-    if (is.nan(tpl_bic) == FALSE) {
-      tpl_bics = append(tpl_bics, tpl_bic)
-    }
-    
-    exp_bic = output$BIC[3]
-    if (is.nan(exp_bic) == FALSE) {
-      exp_bics = append(exp_bics, exp_bic)
-    }
-  }
+  pl_bic = psd_stats$BIC[1]
+  tpl_bic = psd_stats$BIC[2]
+  exp_bic = psd_stats$BIC[3]
   
-  pl_bic_mean = sum(pl_bics) / length(pl_bics)
-  tpl_bic_mean = sum(tpl_bics) / length(tpl_bics)
-  exp_bic_mean = sum(exp_bics) / length(exp_bics)
+  print(paste("Power law BIC:", pl_bic))
+  print(paste("TPL BIC:", tpl_bic))
+  print(paste("Exp BIC:", exp_bic))
   
-  print(pl_bic_mean)
-  print(tpl_bic_mean)
-  print(exp_bic_mean)
-  
-  data_frame = rbind(data_frame, c(p, pl_bic_mean, tpl_bic_mean, exp_bic_mean))
+  data_frame = rbind(data_frame, c(p, pl_bic, tpl_bic, exp_bic))
 }
 
 colnames(data_frame)[1] = "p"

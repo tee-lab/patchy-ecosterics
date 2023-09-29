@@ -5,9 +5,9 @@ from os import path
 if __name__ == '__main__':
     results_folder = path.join(path.dirname(path.dirname(__file__)), "results")
 
-    model = "scanlon_kalahari"
-    dataset = "100x100_residue"
-    param = "850"
+    model = "tricritical"
+    dataset = "q0//100x100_residue"
+    param = "0p72"
 
     file_name = param + "_residue_info.txt"
     # file_path = path.join(results_folder, model, subfolder, dataset, param)

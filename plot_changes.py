@@ -38,27 +38,43 @@ def plot_changes(filename, base_path = "outputs", calc_residue=False):
     plt.legend()
     plt.savefig(path.join(output_path, filename + '_cluster_growth_probabilities.png'))
     plt.show()
+    plt.close()
 
     cluster_ds_data = transpose(loadtxt(open(path.join(output_path, filename + '_cluster_ds.txt'), 'r')))
-    cluster_analyze_limit = min(1000, len(cluster_ds_data[0]))
+    cluster_analyze_limit = len(cluster_ds_data[0])
     cluster_ds_data = cluster_ds_data[:, :cluster_analyze_limit]
+
+    num_cutoff = 10000
+    sde_cutoff = -1
+    
+    for i in range(1, len(cluster_ds_data[3])):
+        if cluster_ds_data[3][i] < num_cutoff:
+            sde_cutoff = i
+            break
+
+    if sde_cutoff == -1:
+        sde_cutoff = len(cluster_ds_data[3])
+
+    print(sde_cutoff)
 
     plt.figure()
     plt.title("Mean Cluster Change")
     plt.xlabel("Cluster Size")
     plt.ylabel("Mean dS")
-    plt.plot(range(cluster_analyze_limit), cluster_ds_data[1])
-    plt.plot(range(cluster_analyze_limit), [0 for _ in range(cluster_analyze_limit)])
+    plt.plot(range(sde_cutoff), cluster_ds_data[1][:sde_cutoff])
+    plt.plot(range(sde_cutoff), [0 for _ in range(sde_cutoff)])
     plt.savefig(path.join(output_path, filename + '_cluster_mean_ds.png'))
     plt.show()
+    plt.close()
 
     plt.figure()
     plt.title("Mean Cluster Change Squared")
     plt.xlabel("Cluster Size")
     plt.ylabel("Mean dS^2")
-    plt.plot(range(cluster_analyze_limit), cluster_ds_data[2])
+    plt.plot(range(sde_cutoff), cluster_ds_data[2][:sde_cutoff])
     plt.savefig(path.join(output_path, filename + '_cluster_mean_ds_sq.png'))
     plt.show()
+    plt.close()
 
     plt.figure()
     plt.title("Number of Cluster Changes")
@@ -67,6 +83,7 @@ def plot_changes(filename, base_path = "outputs", calc_residue=False):
     plt.plot(range(cluster_analyze_limit), cluster_ds_data[3])
     plt.savefig(path.join(output_path, filename + '_cluster_num_changes.png'))
     plt.show()
+    plt.close()
 
     if calc_residue:
         residue_data = open(path.join(output_path, filename + '_residue_info.txt'), 'r').read().split('\n')
@@ -114,6 +131,7 @@ def plot_changes(filename, base_path = "outputs", calc_residue=False):
     plt.loglog(abs_changes[3:], abs_changes_histogram[3:])
     plt.savefig(path.join(output_path, filename + '_changes_abs_log_log.png'))
     plt.show()
+    plt.close()
 
     plt.figure()
     plt.title("Cluster Absolute Change Probabilities (log-log scale)")
@@ -122,6 +140,16 @@ def plot_changes(filename, base_path = "outputs", calc_residue=False):
     plt.loglog(abs_changes[3:], inverse_cdf[3:])
     plt.savefig(path.join(output_path, filename + '_changes_abs_log_log_inverse_cdf.png'))
     plt.show()
+    plt.close()
+
+    plt.figure()
+    plt.title("Cluster Absolute Change Probabilities (semilogy scale)")
+    plt.xlabel("|dS|")
+    plt.ylabel("Inverse CDF")
+    plt.semilogy(abs_changes[3:], inverse_cdf[3:])
+    plt.savefig(path.join(output_path, filename + '_changes_abs_semilogy_inverse_cdf.png'))
+    plt.show()
+    plt.close()
 
     cluster_distribution_data = transpose(loadtxt(open(path.join(output_path, filename + '_cluster_distribution.txt'), 'r')))
     cluster_sizes, num = cluster_distribution_data[0][1:], cluster_distribution_data[1][1:]
@@ -138,10 +166,9 @@ def plot_changes(filename, base_path = "outputs", calc_residue=False):
     plt.loglog(cluster_sizes, inverse_cdf, 'o')
     plt.savefig(path.join(output_path, filename + '_cluster_distribution_log_log.png'))
     plt.show()
+    plt.close()
 
 
 if __name__ == '__main__':
-    modified_base_path = path.join("results", "tricritical", "q0", "max_regime", "0p72")
-    # modified_base_path = path.join("results", "null_stochastic", "0p6")
-    # modified_base_path = path.join("results", "scanlon_kalahari", "700")
+    modified_base_path = path.join("results", "tricritical", "q0", "100x100_residue", "0p72")
     plot_changes("0p72", modified_base_path)

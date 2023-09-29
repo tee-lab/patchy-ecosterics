@@ -17,10 +17,12 @@ def single_update(lattice, r, m):
     i = randint(0, length)
     j = randint(0, length)
 
+    # probability: (1 - p)
     if lattice[i, j] == 0:
         if random() < r:
             lattice[i, j] = 1
             changed_coords = (i, j)
+    # probability: p
     else:
         if random() < m:
             lattice[i, j] = 0

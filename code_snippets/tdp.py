@@ -120,3 +120,24 @@ if __name__ == '__main__':
 
     #     with open(f"{q:.2f}.txt", "w") as f:
     #         f.write(output_string)
+
+
+    # COMPARE DIFFS
+    # purge_data()
+    # set_start_method("spawn")
+    # num_simulations = int(cpu_count() / 2)
+
+    # p = 0.65
+    # q = 0
+    # diffs = [1, 5, 10, 50]
+
+    # plt.figure()
+    # plt.title("Superimposed difference plots for various delta t")
+    # for diff in diffs:
+    #     changes = tricritical_coarse(p, q, diff, num_simulations)
+    #     plt.semilogy(changes, label=f"diff = {diff} N^2")
+    # plt.xlabel("Patch sizes in difference maps")
+    # plt.ylabel("Number of patches")
+    # plt.legend()
+    # plt.savefig("combined_diff_plots.png")
+    # plt.show()
