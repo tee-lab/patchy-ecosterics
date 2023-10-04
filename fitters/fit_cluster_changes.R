@@ -48,7 +48,7 @@ for (p in p_values) {
   exp_output = exp_fit(changes_icdf)
   b = exp_output$cutoff
   plot(x_range, log(changes_icdf / norm_factor), main=paste("cd of", p, "- semilogy plot + exp fit"))
-  lines(x_range, -b * x_range, main="exp fit")
+  plot(x_range, -b * x_range, main="Separate exp fit")
   
   # fit power-law
   pl_output = pl_fit(changes_icdf)

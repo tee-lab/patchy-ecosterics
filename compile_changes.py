@@ -30,6 +30,7 @@ from matplotlib import pyplot as plt
 from multiprocessing import Pool, set_start_method
 from numpy import histogram, zeros
 from os import makedirs, path
+from pickle import dump
 from tqdm import tqdm
 
 from depth_first_clustering import depth_first_clustering
@@ -218,10 +219,9 @@ def compile_changes(model_name, simulation_indices, plot_name='data', calc_resid
         output_string += f"{i} {mean} {mean_sq} {len(cluster_ds[i])}\n"
 
         if calc_residue and i > 0 and len(cluster_ds[i]) > 1000 and (i in [10, 20, 30, 40, 50, 70, 90, 100] or i % 500 == 0):
-            residue = [(value - mean) for value in cluster_ds[i]]
-            residue_int = [int(value) for value in residue]
-            min_bin = min(residue_int) - 1
-            max_bin = max(residue_int) + 1
+            residue = [int(value - mean) for value in cluster_ds[i]]
+            min_bin = min(residue) - 1
+            max_bin = max(residue) + 1
 
             freq, bins = histogram(residue, bins=[i for i in range(min_bin, max_bin + 1)])
             residue_info.append({
@@ -257,21 +257,20 @@ def compile_changes(model_name, simulation_indices, plot_name='data', calc_resid
                 num_growth += 1
             elif value == -1:
                 num_decay += 1
-            elif value == 2:
+            elif value > 1:
                 num_merge += 1
-            elif value == -2:
+            elif value < 1:
                 num_split += 1
 
         output_string += f"{i} {num_growth} {num_decay} {num_merge} {num_split}\n"
     fp.write(output_string)
     fp.close()
 
-
     print("Saving cluster change values ...")
     fp = open(path.join(folder_path, plot_name + '_changes.txt'), 'w')
     output_string = ""
     for change in changes:
-        output_string += f"{change + 1} {int(changes_histogram[change - min(changes)])}\n"
+        output_string += f"{change} {int(changes_histogram[change - min(changes)])}\n"
     fp.write(output_string)
     fp.close()
 
@@ -279,7 +278,7 @@ def compile_changes(model_name, simulation_indices, plot_name='data', calc_resid
     fp = open(path.join(folder_path, plot_name + '_cluster_distribution.txt'), 'w')
     output_string = ""
     for i, num in enumerate(cluster_distribution):
-        output_string += f"{i} {num}\n"
+        output_string += f"{i} {int(num)}\n"
     fp.write(output_string)
     fp.close()
 
@@ -290,6 +289,10 @@ def compile_changes(model_name, simulation_indices, plot_name='data', calc_resid
         output_string += f"{i} {density}\n"
     fp.write(output_string)
     fp.close()
+
+    print("Saving final lattices ...")
+    fp = open(path.join(folder_path, plot_name + '_final_lattices.pkl'), "wb")
+    dump(final_lattices, fp)
 
 
 if __name__ == '__main__':
