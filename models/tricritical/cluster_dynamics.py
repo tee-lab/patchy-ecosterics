@@ -1,7 +1,11 @@
 """
-This script is placed here to enable local imports from the models folder
-terminal.py will use the version of script in the root folder instead
-Refer to that file for documentation
+Given two lattices that differ by only one update,
+the get_cluster_dynamics() function returns a status object, which contains:
+1) Type of process undergone (growth, decay, appearance, disappearance, merge, split)
+2) Size of cluster(s) involved in the process
+3) Size of cluster(s) resulting from the process
+
+All other functions are helper functions for get_cluster_dynamics()
 """
 
 
@@ -29,7 +33,15 @@ def apply_periodic_boundary(labels):
     return labels
 
 
-def get_changed_lattice(old_labels, changed_coords):
+def get_changed_lattice(old_labels, changed_coords, periodic_boundary=True):
+    """
+    In most cases, it is possible to get the labels of the new lattice by looking at the old latice and the change it has undergone
+    Only in the case of a merge or a split, it is necessary to re-label the lattice
+    This optimization resulted in a 60x speedup
+    """ 
+    if periodic_boundary:   
+        old_labels = apply_periodic_boundary(old_labels)
+
     length = old_labels.shape[0]
     new_labels = old_labels.copy()
 
@@ -71,7 +83,10 @@ def get_changed_lattice(old_labels, changed_coords):
             new_labels[changed_coords] = 0
             new_labels = label(new_labels, background=0, connectivity=1)
 
-    return apply_periodic_boundary(new_labels)
+    if periodic_boundary:
+        return apply_periodic_boundary(new_labels)
+    else:
+        return new_labels
 
 
 def get_cluster_sizes(labelled_lattice, num_clusters):
@@ -191,21 +206,24 @@ def test_growth():
     changed_coords = (2, 3)
 
     old_labels = label(old_lattice, background=0, connectivity=1)
-    new_labels = get_changed_lattice(old_labels, changed_coords)
+    new_labels = get_changed_lattice(old_labels, changed_coords, periodic_boundary)
 
     status = get_cluster_dynamics(old_labels, new_labels, changed_coords)
     print(status)
 
     plt.figure(figsize=(8, 4))
     plt.subplot(121)
-    plt.title("Initial lattice")
+    if show_title:
+        plt.title("Initial lattice")
     plt.imshow(old_labels)
     plt.axis("off")
     plt.subplot(122)
-    plt.title("Grown cluster")
+    if show_title:
+        plt.title("Grown cluster")
     plt.imshow(new_labels)
     plt.axis("off")
-    # plt.savefig("growth.png", bbox_inches="tight")
+    if save:
+        plt.savefig("growth.png", bbox_inches="tight")
     plt.show()
 
 
@@ -219,21 +237,24 @@ def test_decay():
     changed_coords = (2, 2)
 
     old_labels = label(old_lattice, background=0, connectivity=1)
-    new_labels = get_changed_lattice(old_labels, changed_coords)
+    new_labels = get_changed_lattice(old_labels, changed_coords, periodic_boundary)
 
     status = get_cluster_dynamics(old_labels, new_labels, changed_coords)
     print(status)
 
     plt.figure(figsize=(8, 4))
     plt.subplot(121)
-    plt.title("Initial lattice")
+    if show_title:
+        plt.title("Initial lattice")
     plt.imshow(old_labels)
     plt.axis("off")
     plt.subplot(122)
-    plt.title("Decayed cluster")
+    if show_title:
+        plt.title("Decayed cluster")
     plt.imshow(new_labels)
     plt.axis("off")
-    # plt.savefig("decay.png", bbox_inches="tight")
+    if save:
+        plt.savefig("decay.png", bbox_inches="tight")
     plt.show()
 
 
@@ -250,21 +271,24 @@ def test_merge():
     changed_coords = (2, 2)
 
     old_labels = label(old_lattice, background=0, connectivity=1)
-    new_labels = get_changed_lattice(old_labels, changed_coords)
+    new_labels = get_changed_lattice(old_labels, changed_coords, periodic_boundary)
 
     status = get_cluster_dynamics(old_labels, new_labels, changed_coords)
     print(status)
 
     plt.figure(figsize=(8, 4))
     plt.subplot(121)
-    plt.title("Initial lattice")
+    if show_title:
+        plt.title("Initial lattice")
     plt.imshow(old_labels)
     plt.axis("off")
     plt.subplot(122)
-    plt.title("Merged cluster")
+    if show_title:
+        plt.title("Merged cluster")
     plt.imshow(new_labels)
     plt.axis("off")
-    # plt.savefig("merge.png", bbox_inches="tight")
+    if save:
+        plt.savefig("merge.png", bbox_inches="tight")
     plt.show()
 
 
@@ -281,21 +305,24 @@ def test_split():
     changed_coords = (2, 2)
 
     old_labels = label(old_lattice, background=0, connectivity=1)
-    new_labels = get_changed_lattice(old_labels, changed_coords)
+    new_labels = get_changed_lattice(old_labels, changed_coords, periodic_boundary)
     
     status = get_cluster_dynamics(old_labels, new_labels, changed_coords)
     print(status)
 
     plt.figure(figsize=(8, 4))
     plt.subplot(121)
-    plt.title("Initial lattice")
+    if show_title:
+        plt.title("Initial lattice")
     plt.axis("off")
     plt.imshow(old_labels)
     plt.subplot(122)
-    plt.title("Split cluster")
+    if show_title:
+        plt.title("Split cluster")
     plt.axis("off")
-    plt.imshow(new_labels)
-    # plt.savefig("split.png", bbox_inches="tight")
+    if save:
+        plt.imshow(new_labels)
+    plt.savefig("split.png", bbox_inches="tight")
     plt.show()
 
 def test_appearance():
@@ -308,21 +335,24 @@ def test_appearance():
     changed_coords = (0, 0)
 
     old_labels = label(old_lattice, background=0, connectivity=1)
-    new_labels = get_changed_lattice(old_labels, changed_coords)
+    new_labels = get_changed_lattice(old_labels, changed_coords, periodic_boundary)
 
     status = get_cluster_dynamics(old_labels, new_labels, changed_coords)
     print(status)
 
     plt.figure(figsize=(8, 4))
     plt.subplot(121)
-    plt.title("Initial lattice")
+    if show_title:
+        plt.title("Initial lattice")
     plt.axis("off")
     plt.imshow(old_labels)
     plt.subplot(122)
-    plt.title("Appeared cluster")
+    if show_title:
+        plt.title("Appeared cluster")
     plt.axis("off")
-    plt.imshow(new_labels)
-    # plt.savefig("appearance.png", bbox_inches="tight")
+    if save:
+        plt.imshow(new_labels)
+    plt.savefig("appearance.png", bbox_inches="tight")
     plt.show()
 
 
@@ -336,25 +366,32 @@ def test_disappearance():
     changed_coords = (0, 0)
 
     old_labels = label(old_lattice, background=0, connectivity=1)
-    new_labels = get_changed_lattice(old_labels, changed_coords)
+    new_labels = get_changed_lattice(old_labels, changed_coords, periodic_boundary)
     
     status = get_cluster_dynamics(old_labels, new_labels, changed_coords)
     print(status)
 
     plt.figure(figsize=(8, 4))
     plt.subplot(121)
-    plt.title("Initial lattice")
+    if show_title:
+        plt.title("Initial lattice")
     plt.imshow(old_labels)
     plt.axis('off')
     plt.subplot(122)
-    plt.title("Disappeared cluster")
+    if show_title:
+        plt.title("Disappeared cluster")
     plt.imshow(new_labels)
     plt.axis('off')
-    # plt.savefig("disappearance.png", bbox_inches="tight")
+    if save:
+        plt.savefig("disappearance.png", bbox_inches="tight")
     plt.show()
 
 
 if __name__ == '__main__':
+    show_title = True
+    periodic_boundary = True
+    save = False
+
     test_growth()
     test_decay()
     test_merge()

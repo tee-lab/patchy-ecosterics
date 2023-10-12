@@ -203,7 +203,7 @@ def simulate(data):
             if changed_coords is None:
                 cluster_data.append(None)
             else:
-                new_labels = get_changed_lattice(old_labels, changed_coords)
+                new_labels = get_changed_lattice(old_labels, changed_coords, periodic_boundary=True)
                 status = get_cluster_dynamics(old_labels, new_labels, changed_coords)
                 cluster_data.append(status)
                 old_labels = new_labels.copy()

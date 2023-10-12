@@ -9,9 +9,11 @@ All other functions are helper functions for get_cluster_dynamics()
 """
 
 
+from itertools import product
 from matplotlib import pyplot as plt
 from numba import njit
 from numpy import uint64, unique, zeros
+from random import random
 from skimage.measure import label
 
 
@@ -222,7 +224,8 @@ def test_growth():
         plt.title("Grown cluster")
     plt.imshow(new_labels)
     plt.axis("off")
-    plt.savefig("growth.png", bbox_inches="tight")
+    if save:
+        plt.savefig("growth.png", bbox_inches="tight")
     plt.show()
 
 
@@ -252,7 +255,8 @@ def test_decay():
         plt.title("Decayed cluster")
     plt.imshow(new_labels)
     plt.axis("off")
-    plt.savefig("decay.png", bbox_inches="tight")
+    if save:
+        plt.savefig("decay.png", bbox_inches="tight")
     plt.show()
 
 
@@ -285,7 +289,8 @@ def test_merge():
         plt.title("Merged cluster")
     plt.imshow(new_labels)
     plt.axis("off")
-    plt.savefig("merge.png", bbox_inches="tight")
+    if save:
+        plt.savefig("merge.png", bbox_inches="tight")
     plt.show()
 
 
@@ -317,9 +322,11 @@ def test_split():
     if show_title:
         plt.title("Split cluster")
     plt.axis("off")
-    plt.imshow(new_labels)
+    if save:
+        plt.imshow(new_labels)
     plt.savefig("split.png", bbox_inches="tight")
     plt.show()
+
 
 def test_appearance():
     old_lattice = zeros((4, 4), dtype=int)
@@ -346,7 +353,8 @@ def test_appearance():
     if show_title:
         plt.title("Appeared cluster")
     plt.axis("off")
-    plt.imshow(new_labels)
+    if save:
+        plt.imshow(new_labels)
     plt.savefig("appearance.png", bbox_inches="tight")
     plt.show()
 
@@ -377,13 +385,52 @@ def test_disappearance():
         plt.title("Disappeared cluster")
     plt.imshow(new_labels)
     plt.axis('off')
-    plt.savefig("disappearance.png", bbox_inches="tight")
+    if save:
+        plt.savefig("disappearance.png", bbox_inches="tight")
+    plt.show()
+
+
+def test_random():
+    length = 3
+    init_occupancy = 0.4
+
+    old_lattice = zeros((length, length), dtype=int)
+
+    for i, j in product(range(length), range(length)):
+        if random() < init_occupancy:
+            old_lattice[i, j] = 1
+    
+    changed_x = int(random() * length)
+    changed_y = int(random() * length)
+    new_lattice = old_lattice.copy()
+    new_lattice[changed_x, changed_y] = 1 - new_lattice[changed_x, changed_y]
+
+    old_labels = label(old_lattice, background=0, connectivity=1)
+    new_labels = get_changed_lattice(old_labels, (changed_x, changed_y), periodic_boundary)
+
+    status = get_cluster_dynamics(old_labels, new_labels, (changed_x, changed_y))
+    print(status)
+
+    plt.figure(figsize=(8, 4))
+    plt.subplot(121)
+    if show_title:
+        plt.title("Initial lattice")
+    plt.imshow(old_labels)
+    plt.axis("off")
+    plt.subplot(122)
+    if show_title:
+        plt.title("Changed lattice")
+    plt.imshow(new_labels)
+    plt.axis("off")
+    if save:
+        plt.savefig("random_test.png", bbox_inches="tight")
     plt.show()
 
 
 if __name__ == '__main__':
-    show_title = False
-    periodic_boundary = False
+    show_title = True
+    periodic_boundary = True
+    save = False
 
     test_growth()
     test_decay()
@@ -391,3 +438,6 @@ if __name__ == '__main__':
     test_split()
     test_appearance()
     test_disappearance()
+
+    for _ in range(1):
+        test_random()
