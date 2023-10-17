@@ -101,9 +101,8 @@ library(spatialwarnings)
 # Parameters for Alex
 results_path <- "..//results"
 model = "tricritical"
-dataset = "100x100_residue"
+dataset = "paper"
 options(spatialwarnings.constants.maxit = 1e4)
-
 
 q_folder = "q0"
 p_values = c("0p65") # ideal for debugging
