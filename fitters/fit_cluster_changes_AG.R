@@ -39,8 +39,8 @@ fit_distrs <- function(dS, tabulated_data) {
   plfit <- pl_fit(raw_occurrences, xmin = xmin)
   print("pl fit done")
   
-  # tplfit <- tpl_fit(raw_occurrences, xmin = xmin)
-  # print("tpl fit done")
+  tplfit <- tpl_fit(raw_occurrences, xmin = xmin)
+  print("tpl fit done")
 
   # Predict response. Here we use spatialwarnings internal functions, see
   # provided fitpsd.R code if you want to have the details.
@@ -50,15 +50,8 @@ fit_distrs <- function(dS, tabulated_data) {
   pl_probs <- spatialwarnings:::dpl(dS, plfit[["plexpo"]], xmin = xmin)
   pl_cprobs <- spatialwarnings:::ippl(dS, plfit[["plexpo"]], xmin = xmin)
   
-  # tpl_probs <- spatialwarnings:::dtpl(dS,
-                                      # tplfit[["plexpo"]],
-                                      # tplfit[["cutoff"]],
-                                      # xmin = xmin)
-  # tpl_cprobs <- spatialwarnings:::iptpl(dS,
-                                        # tplfit[["plexpo"]],
-                                        # tplfit[["cutoff"]],
-                                        # xmin = xmin)
-
+  tpl_probs <- spatialwarnings:::dtpl(dS,tplfit[["plexpo"]], tplfit[["cutoff"]], xmin = xmin)
+  tpl_cprobs <- spatialwarnings:::iptpl(dS, tplfit[["plexpo"]], tplfit[["cutoff"]], xmin = xmin)
 
   # Put predictions in df
   # column p contains the probabilities (P(x=k)), ip the inverse cumulative
@@ -71,6 +64,7 @@ fit_distrs <- function(dS, tabulated_data) {
 
   # Put fits in list object
   fits <- list(exp = expfit, pl = plfit)
+  # fits <- list(exp = expfit, pl = plfit, tpl = tplfit)
 
   # Compute observed distribution. p contains the probabilities (P(x=k)),
   # ip the inverse cumulative probs (P(x>=k)).
@@ -106,7 +100,7 @@ options(spatialwarnings.constants.maxit = 1e4)
 options(spatialwarnings.constants.reltol = 1e-4)
 
 q_folder = "q0"
-p_values = c("0p7") # ideal for debugging
+p_values = c("test") # ideal for debugging
 # p_values = c("0p616", "0p618", "0p62", "0p625", "0p63", "0p64", "0p65", "0p7", "0p72")
 
 # q_folder = "q0p25"

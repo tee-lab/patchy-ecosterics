@@ -38,44 +38,8 @@ from utils import load_automaton_data
 if __name__ == '__main__':
     set_start_method("spawn")
     num_simulations = cpu_count() - 1
-    p_values = [0.7, 0.72]
+    p_values = [0.7]
     q = 0
-
-    for p in p_values:
-        purge_data()
-        print(f"\n---> Simulating p = {p} <---")
-        file_string = str(p).replace('.', 'p')
-        tricritical(p, q, num_simulations, save_series=False, save_cluster=True)
-        compile_changes("tricritical", range(num_simulations), plot_name=file_string, calc_residue=True)
-        plot_changes(file_string)
-
-    
-    p_values = [0.566, 0.569, 0.57, 0.575, 0.58, 0.59, 0.62, 0.64]
-    q = 0.25
-
-    for p in p_values:
-        purge_data()
-        print(f"\n---> Simulating p = {p} <---")
-        file_string = str(p).replace('.', 'p')
-        tricritical(p, q, num_simulations, save_series=False, save_cluster=True)
-        compile_changes("tricritical", range(num_simulations), plot_name=file_string, calc_residue=True)
-        plot_changes(file_string)
-
-
-    p_values = [0.498, 0.5, 0.502, 0.504, 0.506, 0.508, 0.51, 0.52, 0.53, 0.55]
-    q = 0.5
-
-    for p in p_values:
-        purge_data()
-        print(f"\n---> Simulating p = {p} <---")
-        file_string = str(p).replace('.', 'p')
-        tricritical(p, q, num_simulations, save_series=False, save_cluster=True)
-        compile_changes("tricritical", range(num_simulations), plot_name=file_string, calc_residue=True)
-        plot_changes(file_string)
-
-    
-    p_values = [0.399, 0.4, 0.401, 0.403, 0.405, 0.41, 0.42]
-    q = 0.75
 
     for p in p_values:
         purge_data()
