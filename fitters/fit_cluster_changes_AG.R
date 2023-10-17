@@ -103,6 +103,7 @@ results_path <- "..//results"
 model = "tricritical"
 dataset = "paper"
 options(spatialwarnings.constants.maxit = 1e4)
+options(spatialwarnings.constants.reltol = 1e-4)
 
 q_folder = "q0"
 p_values = c("0p65") # ideal for debugging
