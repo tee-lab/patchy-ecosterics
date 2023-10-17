@@ -99,7 +99,7 @@ library(spatialwarnings)
 # dataset = "100x100_residue"
 
 # Parameters for Alex
-results_path <- "C://Code//Github//vegetation-dynamics//results"
+results_path <- "..//results"
 model = "tricritical"
 dataset = "100x100_residue"
 options(spatialwarnings.constants.maxit = 1e4)
