@@ -63,12 +63,12 @@ fit_distrs <- function(dS, tabulated_data) {
   # probs (P(x>=k)).
   predictions <- rbind(
     data.frame(psdtype = "exp", dS = dS, p = exp_probs, ip = exp_cprobs),
-    data.frame(psdtype = "pl",  dS = dS, p = pl_probs, ip = pl_cprobs),
+    data.frame(psdtype = "pl",  dS = dS, p = pl_probs, ip = pl_cprobs)
     # data.frame(psdtype = "tpl", dS = dS, p = tpl_probs, ip = tpl_cprobs)
   )
 
   # Put fits in list object
-  fits <- list(exp = expfit, pl = plfit, tpl = tplfit)
+  fits <- list(exp = expfit, pl = plfit)
 
   # Compute observed distribution. p contains the probabilities (P(x=k)),
   # ip the inverse cumulative probs (P(x>=k)).
@@ -156,7 +156,7 @@ for (p in p_values) {
     scale_y_continuous(trans = "log10") + # comment to remove log scale
     scale_x_continuous(trans = "log10") +
     labs(x = "dS", y = "P(x>=dS)")
-  png(filename=paste(p, "_", q_folder, "_icdf.png", sep=""))
+  ggsave(filename=paste(p, "_", q_folder, "_icdf.png", sep=""))
   
   print("Showing ICDF")
 
@@ -169,7 +169,7 @@ for (p in p_values) {
     scale_y_continuous(trans = "log10") +
     scale_x_continuous(trans = "log10") +
     labs(x = "dS", y = "P(x=dS)")
-  png(filename=paste(p, "_", q_folder, "_pdf.png", sep=""))
+  ggsave(filename=paste(p, "_", q_folder, "_pdf.png", sep=""))
   
   print("Showing PDF")
 
@@ -231,7 +231,7 @@ for (p in p_values) {
 #   print(paste("Truncated Power-law BIC:", tpl_bic))
 #   print(paste("Exponential BIC:", exp_bic))
 
-  print(paste("BICs (pl/tpl/exp): ", BICs[2], BICs[3], BICs[4]))
+  print(paste("BICs (pl/exp/tpl): ", BICs[2], BICs[3]))
 
   # append to data frame
   data_frame <- rbind(data_frame, BICs)
@@ -239,8 +239,8 @@ for (p in p_values) {
 
 colnames(data_frame)[1] = "p"
 colnames(data_frame)[2] = "PL"
-colnames(data_frame)[3] = "TPL"
-colnames(data_frame)[4] = "Exp"
+colnames(data_frame)[3] = "Exp"
+# colnames(data_frame)[4] = "TPL"
 
 # save BIC values as CSV
 write.csv(data_frame, paste(q_folder, "_cd", ".csv", sep=""))
