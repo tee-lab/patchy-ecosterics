@@ -46,8 +46,10 @@ fit_distrs <- function(dS, tabulated_data) {
   # provided fitpsd.R code if you want to have the details.
   exp_probs <- spatialwarnings:::ddisexp(dS, expfit[["cutoff"]], xmin = xmin)
   exp_cprobs <- spatialwarnings:::ipdisexp(dS, expfit[["cutoff"]], xmin = xmin)
+  
   pl_probs <- spatialwarnings:::dpl(dS, plfit[["plexpo"]], xmin = xmin)
   pl_cprobs <- spatialwarnings:::ippl(dS, plfit[["plexpo"]], xmin = xmin)
+  
   # tpl_probs <- spatialwarnings:::dtpl(dS,
                                       # tplfit[["plexpo"]],
                                       # tplfit[["cutoff"]],
@@ -62,8 +64,8 @@ fit_distrs <- function(dS, tabulated_data) {
   # column p contains the probabilities (P(x=k)), ip the inverse cumulative
   # probs (P(x>=k)).
   predictions <- rbind(
-    data.frame(psdtype = "exp", dS = dS, p = exp_probs, ip = exp_cprobs),
-    data.frame(psdtype = "pl",  dS = dS, p = pl_probs, ip = pl_cprobs)
+    data.frame(psdtype = "pl",  dS = dS, p = pl_probs, ip = pl_cprobs),
+    data.frame(psdtype = "exp", dS = dS, p = exp_probs, ip = exp_cprobs)
     # data.frame(psdtype = "tpl", dS = dS, p = tpl_probs, ip = tpl_cprobs)
   )
 
@@ -179,8 +181,9 @@ for (p in p_values) {
   n_obs <- sum(changes_distr)
   BICs <- c(p,
             calc_bic(distribs[["fits"]][["pl"]], n_obs),
-            calc_bic(distribs[["fits"]][["tpl"]], n_obs),
-            calc_bic(distribs[["fits"]][["exp"]], n_obs))
+            calc_bic(distribs[["fits"]][["exp"]], n_obs)
+            # calc_bic(distribs[["fits"]][["tpl"]], n_obs)
+            )
 
   # fit exp
   # Alex: OK, this is incorrect: exp_fit expects the observations of dS, not
