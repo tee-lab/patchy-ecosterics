@@ -7,6 +7,7 @@ calc_bic <- function(fit_output, data_len) {
   return(bic)
 }
 
+
 # This function will fit the three distributions to a tabulated set of change
 # sizes (dS).
 # dS is the change in size, tabulated data is the number of time each dS
@@ -38,8 +39,8 @@ fit_distrs <- function(dS, tabulated_data) {
   plfit <- pl_fit(raw_occurrences, xmin = xmin)
   print("pl fit done")
   
-  tplfit <- tpl_fit(raw_occurrences, xmin = xmin)
-  print("tpl fit done")
+  # tplfit <- tpl_fit(raw_occurrences, xmin = xmin)
+  # print("tpl fit done")
 
   # Predict response. Here we use spatialwarnings internal functions, see
   # provided fitpsd.R code if you want to have the details.
@@ -47,11 +48,11 @@ fit_distrs <- function(dS, tabulated_data) {
   exp_cprobs <- spatialwarnings:::ipdisexp(dS, expfit[["cutoff"]], xmin = xmin)
   pl_probs <- spatialwarnings:::dpl(dS, plfit[["plexpo"]], xmin = xmin)
   pl_cprobs <- spatialwarnings:::ippl(dS, plfit[["plexpo"]], xmin = xmin)
-  tpl_probs <- spatialwarnings:::dtpl(dS,
+  # tpl_probs <- spatialwarnings:::dtpl(dS,
                                       tplfit[["plexpo"]],
                                       tplfit[["cutoff"]],
                                       xmin = xmin)
-  tpl_cprobs <- spatialwarnings:::iptpl(dS,
+  # tpl_cprobs <- spatialwarnings:::iptpl(dS,
                                         tplfit[["plexpo"]],
                                         tplfit[["cutoff"]],
                                         xmin = xmin)
@@ -63,7 +64,7 @@ fit_distrs <- function(dS, tabulated_data) {
   predictions <- rbind(
     data.frame(psdtype = "exp", dS = dS, p = exp_probs, ip = exp_cprobs),
     data.frame(psdtype = "pl",  dS = dS, p = pl_probs, ip = pl_cprobs),
-    data.frame(psdtype = "tpl", dS = dS, p = tpl_probs, ip = tpl_cprobs)
+    # data.frame(psdtype = "tpl", dS = dS, p = tpl_probs, ip = tpl_cprobs)
   )
 
   # Put fits in list object
@@ -80,9 +81,6 @@ fit_distrs <- function(dS, tabulated_data) {
        fits = fits,
        obs = obs)
 }
-
-
-
 
 # Compute the inverse cumulative distribution of a set of values
 inv_cumu_distr <- function(xvals, yvals) {
@@ -158,6 +156,7 @@ for (p in p_values) {
     scale_y_continuous(trans = "log10") + # comment to remove log scale
     scale_x_continuous(trans = "log10") +
     labs(x = "dS", y = "P(x>=dS)")
+  png(filename=paste(p, "_", q_folder, "_icdf.png", sep=""))
   
   print("Showing ICDF")
 
@@ -170,6 +169,7 @@ for (p in p_values) {
     scale_y_continuous(trans = "log10") +
     scale_x_continuous(trans = "log10") +
     labs(x = "dS", y = "P(x=dS)")
+  png(filename=paste(p, "_", q_folder, "_pdf.png", sep=""))
   
   print("Showing PDF")
 
@@ -202,8 +202,6 @@ for (p in p_values) {
 #   lines(exp_prediction[, "x"], exp_prediction[ ,"y"],
 #         log = "y",
 #         col = "red")
-
-
 
 #   # We predict
 #   b = exp_output$cutoff
