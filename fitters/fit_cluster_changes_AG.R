@@ -106,7 +106,7 @@ options(spatialwarnings.constants.maxit = 1e4)
 options(spatialwarnings.constants.reltol = 1e-4)
 
 q_folder = "q0"
-p_values = c("0p65") # ideal for debugging
+p_values = c("0p7") # ideal for debugging
 # p_values = c("0p616", "0p618", "0p62", "0p625", "0p63", "0p64", "0p65", "0p7", "0p72")
 
 # q_folder = "q0p25"
