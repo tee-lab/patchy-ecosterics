@@ -16,17 +16,13 @@ fit_distrs <- function(dS, tabulated_data) {
   if ( all(diff(tabulated_data) < 0) ) {
     warning("Make sure your data is not the inverse cumulative function, i.e. N(dS>=k) instead of N(dS=k)")
   }
-  
-  print("in fit distrs")
 
   # Create a (very long) vector containing raw occurrences
   raw_occurrences <- unlist(lapply(seq_along(dS), function(i) {
     rep(dS[i], tabulated_data[i])
   }))
   
-  print(length(raw_occurrences))
-  
-  print("created raw occurrences")
+  print("Length of samples", str(length(raw_occurrences)))
 
   # Your distributions do not start at 0, so use an xmin here. This is
   # important to get the normalization constants of the distributions right
@@ -39,8 +35,10 @@ fit_distrs <- function(dS, tabulated_data) {
   plfit <- pl_fit(raw_occurrences, xmin = xmin)
   print("pl fit done")
   
-  tplfit <- tpl_fit(raw_occurrences, xmin = xmin)
-  print("tpl fit done")
+  if (fit_tpl) {
+    tplfit <- tpl_fit(raw_occurrences, xmin = xmin)
+    print("tpl fit done")
+  }
 
   # Predict response. Here we use spatialwarnings internal functions, see
   # provided fitpsd.R code if you want to have the details.
@@ -50,8 +48,11 @@ fit_distrs <- function(dS, tabulated_data) {
   pl_probs <- spatialwarnings:::dpl(dS, plfit[["plexpo"]], xmin = xmin)
   pl_cprobs <- spatialwarnings:::ippl(dS, plfit[["plexpo"]], xmin = xmin)
   
-  tpl_probs <- spatialwarnings:::dtpl(dS,tplfit[["plexpo"]], tplfit[["cutoff"]], xmin = xmin)
-  tpl_cprobs <- spatialwarnings:::iptpl(dS, tplfit[["plexpo"]], tplfit[["cutoff"]], xmin = xmin)
+  if (fit_tpl) {
+    options(spatialwarnings.constants.maxit = 1e3)
+    tpl_probs <- spatialwarnings:::dtpl(dS,tplfit[["plexpo"]], tplfit[["cutoff"]], xmin = xmin)
+    tpl_cprobs <- spatialwarnings:::iptpl(dS, tplfit[["plexpo"]], tplfit[["cutoff"]], xmin = xmin)
+  }
 
   # Put predictions in df
   # column p contains the probabilities (P(x=k)), ip the inverse cumulative
@@ -59,12 +60,18 @@ fit_distrs <- function(dS, tabulated_data) {
   predictions <- rbind(
     data.frame(psdtype = "pl",  dS = dS, p = pl_probs, ip = pl_cprobs),
     data.frame(psdtype = "exp", dS = dS, p = exp_probs, ip = exp_cprobs)
-    # data.frame(psdtype = "tpl", dS = dS, p = tpl_probs, ip = tpl_cprobs)
   )
+  if (fit_tpl) {
+    predictions <- rbind(predictions, data.frame(psdtype = "tpl", dS = dS, p = tpl_probs, ip = tpl_cprobs))
+  }
 
   # Put fits in list object
-  fits <- list(exp = expfit, pl = plfit)
-  # fits <- list(exp = expfit, pl = plfit, tpl = tplfit)
+  if (fit_tpl) {
+    fits <- list(exp = expfit, pl = plfit, tpl = tplfit)
+  }
+  else {
+    fits <- list(exp = expfit, pl = plfit)
+  }
 
   # Compute observed distribution. p contains the probabilities (P(x=k)),
   # ip the inverse cumulative probs (P(x>=k)).
@@ -88,16 +95,12 @@ inv_cumu_distr <- function(xvals, yvals) {
 library(reticulate)
 library(spatialwarnings)
 
-# results_path = "C://Code//Github//vegetation-dynamics//results"
-# model = "tricritical"
-# dataset = "100x100_residue"
-
-# Parameters for Alex
 results_path <- "..//results"
 model = "tricritical"
 dataset = "paper"
-options(spatialwarnings.constants.maxit = 1e4)
-options(spatialwarnings.constants.reltol = 1e-4)
+fit_tpl = TRUE
+
+# options(spatialwarnings.constants.reltol = 1e-4)
 
 q_folder = "q0"
 p_values = c("test") # ideal for debugging
@@ -152,9 +155,7 @@ for (p in p_values) {
     scale_y_continuous(trans = "log10") + # comment to remove log scale
     scale_x_continuous(trans = "log10") +
     labs(x = "dS", y = "P(x>=dS)")
-  ggsave(filename=paste(p, "_", q_folder, "_icdf.png", sep=""))
-  
-  print("Showing ICDF")
+  ggsave(filename=paste("..//outputs//", q_folder, "_", p, "_icdf.png", sep=""))
 
   # Show probability distribution
   ggplot(NULL) +
@@ -165,9 +166,7 @@ for (p in p_values) {
     scale_y_continuous(trans = "log10") +
     scale_x_continuous(trans = "log10") +
     labs(x = "dS", y = "P(x=dS)")
-  ggsave(filename=paste(p, "_", q_folder, "_pdf.png", sep=""))
-  
-  print("Showing PDF")
+  ggsave(filename=paste("..//outputs//", q_folder, "_", p, "_pdf.png", sep=""))
 
   # Extract bic for every fit. Note that the BIC takes the number of
   # observations, not the length of the vector in which you stored the
@@ -176,8 +175,10 @@ for (p in p_values) {
   BICs <- c(p,
             calc_bic(distribs[["fits"]][["pl"]], n_obs),
             calc_bic(distribs[["fits"]][["exp"]], n_obs)
-            # calc_bic(distribs[["fits"]][["tpl"]], n_obs)
             )
+  if (fit_tpl) {
+    BICs = append(BICs, calc_bic(distribs[["fits"]][["tpl"]], n_obs))
+  }
 
   # fit exp
   # Alex: OK, this is incorrect: exp_fit expects the observations of dS, not
@@ -228,7 +229,13 @@ for (p in p_values) {
 #   print(paste("Truncated Power-law BIC:", tpl_bic))
 #   print(paste("Exponential BIC:", exp_bic))
 
-  print(paste("BICs (pl/exp/tpl): ", BICs[2], BICs[3]))
+  # print(paste("BICs (pl/exp/tpl): ", BICs[2], BICs[3]))
+  if (fit_tpl) {
+    print(paste("BICs (pl/exp/tpl): ", BICs[2], BICs[3], BICs[4]))
+  }
+  else {
+    print(paste("BICs (pl/exp): ", BICs[2], BICs[3]))
+  }
 
   # append to data frame
   data_frame <- rbind(data_frame, BICs)
@@ -237,7 +244,9 @@ for (p in p_values) {
 colnames(data_frame)[1] = "p"
 colnames(data_frame)[2] = "PL"
 colnames(data_frame)[3] = "Exp"
-# colnames(data_frame)[4] = "TPL"
+if (fit_tpl) {
+  colnames(data_frame)[4] = "TPL"
+}
 
 # save BIC values as CSV
-write.csv(data_frame, paste(q_folder, "_cd", ".csv", sep=""))
+write.csv(data_frame, paste("..//outputs//", q_folder, "_cd", ".csv", sep=""))
