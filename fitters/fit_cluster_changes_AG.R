@@ -49,13 +49,13 @@ fit_distrs <- function(dS, tabulated_data) {
   pl_probs <- spatialwarnings:::dpl(dS, plfit[["plexpo"]], xmin = xmin)
   pl_cprobs <- spatialwarnings:::ippl(dS, plfit[["plexpo"]], xmin = xmin)
   # tpl_probs <- spatialwarnings:::dtpl(dS,
-                                      tplfit[["plexpo"]],
-                                      tplfit[["cutoff"]],
-                                      xmin = xmin)
+                                      # tplfit[["plexpo"]],
+                                      # tplfit[["cutoff"]],
+                                      # xmin = xmin)
   # tpl_cprobs <- spatialwarnings:::iptpl(dS,
-                                        tplfit[["plexpo"]],
-                                        tplfit[["cutoff"]],
-                                        xmin = xmin)
+                                        # tplfit[["plexpo"]],
+                                        # tplfit[["cutoff"]],
+                                        # xmin = xmin)
 
 
   # Put predictions in df
