@@ -102,16 +102,16 @@ fit_tpl = TRUE
 
 # options(spatialwarnings.constants.reltol = 1e-4)
 
-q_folder = "q0"
+# q_folder = "q0"
 # p_values = c("test") # small dataset, ideal for debugging
-p_values = c("0p62")
+# p_values = c("0p62")
 # p_values = c("0p616", "0p618", "0p62", "0p625", "0p63", "0p64", "0p65", "0p7", "0p72")
 
 # q_folder = "q0p25"
 # p_values = c("0p566", "0p568", "0p57", "0p575", "0p58", "0p59", "0p62", "0p64")
 
-# q_folder = "q0p5"
-# p_values = c("0p498", "0p5", "0p502", "0p504", "0p506", "0p508", "0p51", "0p52", "0p53", "0p55")
+q_folder = "q0p5"
+p_values = c("0p498", "0p5", "0p502", "0p504", "0p506", "0p508", "0p51", "0p52", "0p53", "0p55")
 
 # q_folder = "q0p75"
 # p_values = c("0p399", "0p4", "0p401", "0p403", "0p405", "0p41", "0p42")
@@ -185,7 +185,7 @@ for (p in p_values) {
     distribs[["fits"]][["exp"]]$cutoff
   )
   if (fit_tpl) {
-    tpl_fit_da = distribs[["fits"]][["tpl"]]
+    tpl_fit_data = distribs[["fits"]][["tpl"]]
     params = append(params, c(tpl_fit_data$plexpo, tpl_fit_data$cutoff))
   }
   all_data = append(BICs, params)
