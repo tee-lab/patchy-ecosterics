@@ -22,7 +22,7 @@ fit_distrs <- function(dS, tabulated_data) {
     rep(dS[i], tabulated_data[i])
   }))
   
-  print("Length of samples", str(length(raw_occurrences)))
+  print(paste("Length of samples", length(raw_occurrences)))
 
   # Your distributions do not start at 0, so use an xmin here. This is
   # important to get the normalization constants of the distributions right
@@ -102,15 +102,16 @@ fit_tpl = TRUE
 
 # options(spatialwarnings.constants.reltol = 1e-4)
 
-# q_folder = "q0"
-# p_values = c("test") # ideal for debugging
+q_folder = "q0"
+# p_values = c("test") # small dataset, ideal for debugging
+p_values = c("0p62")
 # p_values = c("0p616", "0p618", "0p62", "0p625", "0p63", "0p64", "0p65", "0p7", "0p72")
 
 # q_folder = "q0p25"
 # p_values = c("0p566", "0p568", "0p57", "0p575", "0p58", "0p59", "0p62", "0p64")
 
-q_folder = "q0p5"
-p_values = c("0p498", "0p5", "0p502", "0p504", "0p506", "0p508", "0p51", "0p52", "0p53", "0p55")
+# q_folder = "q0p5"
+# p_values = c("0p498", "0p5", "0p502", "0p504", "0p506", "0p508", "0p51", "0p52", "0p53", "0p55")
 
 # q_folder = "q0p75"
 # p_values = c("0p399", "0p4", "0p401", "0p403", "0p405", "0p41", "0p42")
@@ -172,64 +173,23 @@ for (p in p_values) {
   # observations, not the length of the vector in which you stored the
   # number of obs for each dS.
   n_obs <- sum(changes_distr)
-  BICs <- c(p,
-            calc_bic(distribs[["fits"]][["pl"]], n_obs),
-            calc_bic(distribs[["fits"]][["exp"]], n_obs)
-            )
+  BICs <- c(p, 
+    calc_bic(distribs[["fits"]][["pl"]], n_obs),
+    calc_bic(distribs[["fits"]][["exp"]], n_obs)
+  )
   if (fit_tpl) {
     BICs = append(BICs, calc_bic(distribs[["fits"]][["tpl"]], n_obs))
   }
+  
+  params <- c(distribs[["fits"]][["pl"]]$plexpo,
+    distribs[["fits"]][["exp"]]$cutoff
+  )
+  if (fit_tpl) {
+    tpl_fit_da = distribs[["fits"]][["tpl"]]
+    params = append(params, c(tpl_fit_data$plexpo, tpl_fit_data$cutoff))
+  }
+  all_data = append(BICs, params)
 
-  # fit exp
-  # Alex: OK, this is incorrect: exp_fit expects the observations of dS, not
-  # the already-tabulated data (= number of times a given dS appears). We can
-  # recreate it from your tabulated data by repeating values as needed.
-#   changes_distr_raw <- unlist(lapply(seq_along(changes_distr), function(i) {
-#     rep(dS[i], changes_distr[i])
-#   }))
-
-  # Here we fit with an xmin = 2 because you can't have dS below that value
-#   exp_output = exp_fit(changes_distr_raw, xmin = 2)
-#   y <- exp( - exp_output[["cutoff"]] * dS)
-#   exp_prediction <- inv_cumu_distr(dS, y)
-
-  # Show distribution and fit
-#   changes_icdf_norm <- inv_cumu_distr(dS, changes_distr)
-#   plot(dS, changes_icdf_norm, main = sprintf("cd of %s", p),
-#        log = "y")
-#   lines(exp_prediction[, "x"], exp_prediction[ ,"y"],
-#         log = "y",
-#         col = "red")
-
-#   # We predict
-#   b = exp_output$cutoff
-#   plot(x_range, log(changes_icdf / norm_factor),
-#        main = paste("cd of", p, "- semilogy plot + exp fit"))
-#
-#   lines(x_range, -b * x_range, main="exp fit")
-
-  # fit power-law
-#   pl_output = pl_fit(changes_icdf)
-#   exponent = pl_output$plexpo
-#   plot(log(x_range), log(changes_icdf / norm_factor), main=paste("cd of", p, "- log log plot + pl fit"))
-#   lines(log(x_range), log(x_range ^ -exponent), main="pl fit")
-
-  # fit tpl
-#   tpl_output = tpl_fit(changes_icdf)
-#   exponent = tpl_output$plexpo
-#   b = tpl_output$cutoff
-#   plot(log(x_range), log(changes_icdf / norm_factor), main=paste("cd of", p, "- log log plot + tpl fit"))
-#   lines(log(x_range), log((x_range ^ -exponent) * exp(-b * x_range)), main="tpl fit")
-
-  # calculate BIC values
-#   pl_bic = calc_bic(pl_output, data_len)
-#   tpl_bic = calc_bic(tpl_output, data_len)
-#   exp_bic = calc_bic(exp_output, data_len)
-#   print(paste("Power-law BIC:", pl_bic))
-#   print(paste("Truncated Power-law BIC:", tpl_bic))
-#   print(paste("Exponential BIC:", exp_bic))
-
-  # print(paste("BICs (pl/exp/tpl): ", BICs[2], BICs[3]))
   if (fit_tpl) {
     print(paste("BICs (pl/exp/tpl): ", BICs[2], BICs[3], BICs[4]))
   }
@@ -238,14 +198,25 @@ for (p in p_values) {
   }
 
   # append to data frame
-  data_frame <- rbind(data_frame, BICs)
+  data_frame <- rbind(data_frame, all_data)
 }
 
 colnames(data_frame)[1] = "p"
-colnames(data_frame)[2] = "PL"
-colnames(data_frame)[3] = "Exp"
+colnames(data_frame)[2] = "PL BIC"
+colnames(data_frame)[3] = "Exp BIC"
+
 if (fit_tpl) {
-  colnames(data_frame)[4] = "TPL"
+  colnames(data_frame)[4] = "TPL BIC"
+  next_index = 5
+} else {
+  next_index = 4
+}
+
+colnames(data_frame)[next_index] = "PL expo"
+colnames(data_frame)[next_index + 1] = "Exp trunc"
+if (fit_tpl) {
+  colnames(data_frame)[next_index + 2] = "TPL expo"
+  colnames(data_frame)[next_index + 3] = "TPL trunc"
 }
 
 # save BIC values as CSV
