@@ -25,11 +25,38 @@ This repository contains code to simulate the following models/automatons:
 
 Code for all models can be found inside the models folder. Each model has different versions of similar code that are intended for different purposes:
 
-1) in_place_processing.py: For tracking cluster dynamics. After equilibriation, this script will pass consecutive landscapes that differ by a single update to cluster_dynamics.py
-2) coarse_dynamics.py: Utilizes a difference map technique to approximate cluster dynamics across larger timescales
-3) dumper.py: Returns the final density associated with initialized parameter value(s), averaged across all ensembles. Ideal for plotting phase transitions/diagrams
-4) final_lattice.py: Saves all final lattices associated with initialized parameter value(s). Required for probing cluster size distribution
-5) spanning_cluster.py: Returns the percolation probability associated with initialized parameter value(s). Basically, it is the fraction of ensembles that have a percolation/spanning cluster
+1) `in_place_processing.py`: For tracking cluster dynamics. After equilibriation, this script will pass consecutive landscapes that differ by a single update to cluster_dynamics.py
+2) `coarse_dynamics.py`: Utilizes a difference map technique to approximate cluster dynamics across larger timescales
+3) `dumper.py`: Returns the final density associated with initialized parameter value(s), averaged across all ensembles. Ideal for plotting phase transitions/diagrams
+4) `final_lattice.py`: Saves all final lattices associated with initialized parameter value(s). Required for probing cluster size distribution
+5) `spanning_cluster.py`: Returns the percolation probability associated with initialized parameter value(s). Basically, it is the fraction of ensembles that have a percolation/spanning cluster
+
+## How to Run
+
+The entire repository needs to be downloaded since none of the scripts are self-contained. All versions of all models are imported in the `terminal.py` file. Used this file to run jobs. The 'code_snippets' folder contains lines of code for specific purposes. A particular snippet has been explained below:
+
+```python
+set_start_method("spawn")
+num_simulations = cpu_count() - 1
+p_values = [0.70, 0.71]
+q = 0.25
+
+for p in p_values:
+    purge_data()
+    print(f"\n---> Simulating p = {p} <---")
+    file_string = str(p).replace('.', 'p')
+    tricritical(p, q, num_simulations, save_series=False, save_cluster=True, calc_residue=True)
+    compile_changes("tricritical", range(num_simulations), plot_name=file_string)
+    plot_changes(file_string)
+```
+
+1) `set_start_method("spawn")`: required for proper parallelization
+2) `num_simulations = cpu_count() - 1`: specifies the number of simulations that will be run parallely
+3) `p_values = [0.70, 0.71]` and `q = 0.25`: we will simulate p = 0.7 and 0.71 for q = 0.25 (TDP)
+4) `purge_data()`: required to get rid of transient data created by step 5 from previous simulation
+5) `tricritical(p, q, num_simulations, save_series=False, save_cluster=True, calc_residue=True)`: simulates the TDP model using `in_place_processing.py` (hence, cluster dynamics will be tracked). Will not save time evolution of landscape, but will save cluster dynamics and also calculate residues (for deducing nature of noise). The saved files are dumped in the corresponding model's folder. If you intend to modify secondary model parameters like length of the landscape or time of the simulation/equilibration phase, then it can be done in the bottom of `in_place_processing.py`
+6) `compile_changes("tricritical", range(num_simulations), plot_name=file_string)`: Goes through the `tricritical` model folder and compiles relevant data into text files (prefixed with `file_string`) which is saved in the `outputs` folder
+7) `plot_changes(file_string)`: Goes through the `outputs` folder and plots graphs from the text files beginning with `file_string`
 
 The repository is organized as follows:
 
