@@ -1,6 +1,13 @@
 # vegetation-dynamics
 Investigating cluster dynamics in models of patchy ecosystems
 
+## Requirements
+
+This repository requires installation of compilers/interpreters of the following programming languages, and the corresponding packages/modules:
+
+1) Python: matplotlib, multiprocessing, numba, numpy, pickle, scikit-image, tqdm
+2) R: ggplot, reticulate, spatialwarnings (from [Genin et. al](https://besjournals.onlinelibrary.wiley.com/doi/10.1111/2041-210X.13058))
+
 ## Models
 
 This repository contains code to simulate the following models/automatons:
@@ -10,11 +17,19 @@ This repository contains code to simulate the following models/automatons:
 
 ![alt text](https://i.ibb.co/k95q8tF/tdp-schematic.png)
 
-4) Scanlon Model: This model is from [https://www.nature.com/articles/nature06060](Scanlon et. al). The only parameter in this model is rainfall. Ubiquitously produces power-law distribution in cluster sizes. Used in addition to gauge how cluster dynamics varies across models. This model is simulated using Markov chain Monte Carlo method, with the following transition rates:
+4) Scanlon Model: This model is from [Scanlon et. al](https://www.nature.com/articles/nature06060). The only parameter in this model is rainfall. Ubiquitously produces power-law distribution in cluster sizes. Used in addition to gauge how cluster dynamics varies across models. This model is simulated using Markov chain Monte Carlo method, with the following transition rates:
 
 ![alt text](https://i.ibb.co/vBR8qps/scanlon-equations.png)
 
 5) Contact Process: Tricritical Directed Percolation with q = 0 is known as Contact Process. Infact, TDP is actually an extension of this model
+
+Code for all models can be found inside the models folder. Each model has different versions of similar code that are intended for different purposes:
+
+1) in_place_processing.py: For tracking cluster dynamics. After equilibriation, this script will pass consecutive landscapes that differ by a single update to cluster_dynamics.py
+2) coarse_dynamics.py: Utilizes a difference map technique to approximate cluster dynamics across larger timescales
+3) dumper.py: Returns the final density associated with initialized parameter value(s), averaged across all ensembles. Ideal for plotting phase transitions/diagrams
+4) final_lattice.py: Saves all final lattices associated with initialized parameter value(s). Required for probing cluster size distribution
+5) spanning_cluster.py: Returns the percolation probability associated with initialized parameter value(s). Basically, it is the fraction of ensembles that have a percolation/spanning cluster
 
 The repository is organized as follows:
 
