@@ -1,14 +1,20 @@
 # vegetation-dynamics
 Investigating cluster dynamics in models of patchy ecosystems
 
-# Models
+## Models
 
 This repository contains code to simulate the following models/automatons:
 1) Static null model: A 2D lattice that is randomly assigned with 0's and 1's, based on some occupational probability 'p'. Used as benchmark for percolation transitions
-2) Stochastic null model: A model that is initialized with some fractional occupancy 'f', and evolves in a completely random manner (0 -> 1, 1 -> 0) whilst hovering around the initialized fractional occupancy. Used as control for cluster dynamics
-3) Tricritical Directed Percolation (TDP): The central model of this project. Proposed in [this paper](https://arxiv.org/abs/cond-mat/0608339). Initialized with two parameters, (p, q). The following schematic from [Sankaran et. al](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/2041-210X.13304)
+2) Stochastic null model: A model that is initialized with some fractional occupancy 'f', and evolves in a completely random manner (0 -> 1, 1 -> 0) whilst hovering around the initialized fractional occupancy. Proposed in [Kefi et. al](https://onlinelibrary.wiley.com/doi/full/10.1111/j.1461-0248.2010.01553.x). Used as control for cluster dynamics
+3) Tricritical Directed Percolation (TDP): The central model of this project. Proposed in [this paper](https://arxiv.org/abs/cond-mat/0608339). Initialized with two parameters, (p, q), the working of this model is decrbied by the following schematic from [Sankaran et. al](https://besjournals.onlinelibrary.wiley.com/doi/full/10.1111/2041-210X.13304)
+
 ![alt text](https://i.ibb.co/k95q8tF/tdp-schematic.png)
 
+4) Scanlon Model: This model is from [https://www.nature.com/articles/nature06060](Scanlon et. al). The only parameter in this model is rainfall. Ubiquitously produces power-law distribution in cluster sizes. Used in addition to gauge how cluster dynamics varies across models. This model is simulated using Markov chain Monte Carlo method, with the following transition rates:
+
+![alt text](https://i.ibb.co/vBR8qps/scanlon-equations.png)
+
+5) Contact Process: Tricritical Directed Percolation with q = 0 is known as Contact Process. Infact, TDP is actually an extension of this model
 
 The repository is organized as follows:
 
