@@ -1,5 +1,5 @@
-# vegetation-dynamics
-Investigating cluster dynamics in models of patchy ecosystems
+# patchy-ecosterics
+PATCHY ECOsystem cluSTER dynamICS: Investigating cluster dynamics in models of patchy ecosystems
 
 ## Requirements
 
