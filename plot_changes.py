@@ -57,8 +57,8 @@ def plot_changes(filename, base_path = "outputs", calc_residue=False):
 
     plt.figure()
     plt.title("Mean Cluster Change")
-    plt.xlabel("Cluster Size")
-    plt.ylabel("Mean dS")
+    plt.xlabel("Cluster Size x")
+    plt.ylabel("f(x)")
     plt.plot(range(sde_cutoff), cluster_ds_data[1][:sde_cutoff])
     plt.plot(range(sde_cutoff), [0 for _ in range(sde_cutoff)])
     plt.savefig(path.join(output_path, filename + '_cluster_mean_ds.png'))
@@ -66,9 +66,9 @@ def plot_changes(filename, base_path = "outputs", calc_residue=False):
     plt.close()
 
     plt.figure()
-    plt.title("Mean Cluster Change Squared")
-    plt.xlabel("Cluster Size")
-    plt.ylabel("Mean dS^2")
+    plt.title("Variance in Cluster Change")
+    plt.xlabel("Cluster Size x")
+    plt.ylabel("g(x)")
     plt.plot(range(sde_cutoff), cluster_ds_data[2][:sde_cutoff])
     plt.savefig(path.join(output_path, filename + '_cluster_mean_ds_sq.png'))
     plt.show()
@@ -212,5 +212,5 @@ def plot_changes(filename, base_path = "outputs", calc_residue=False):
 
 
 if __name__ == '__main__':
-    modified_base_path = path.join("results", "tricritical", "q0", "100x100_residue", "0p72")
-    plot_changes("0p72", modified_base_path)
+    modified_base_path = path.join("results", "tricritical", "q0", "paper", "0p65")
+    plot_changes("0p65", modified_base_path)
