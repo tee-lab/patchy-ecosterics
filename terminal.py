@@ -38,7 +38,8 @@ from utils import load_automaton_data
 if __name__ == '__main__':
     set_start_method("spawn")
     num_simulations = cpu_count() - 1
-    p_values = [0.65, 0.72]
+
+    p_values = [0.74]
     q = 0
 
     for p in p_values:
@@ -47,4 +48,25 @@ if __name__ == '__main__':
         file_string = str(p).replace('.', 'p')
         tricritical(p, q, num_simulations, save_series=False, save_cluster=True)
         compile_changes("tricritical", range(num_simulations), plot_name=file_string, calc_residue=True)
+        plot_changes(file_string)
+
+    p_values = [0.54, 0.57]
+    q = 0.5
+
+    for p in p_values:
+        purge_data()
+        print(f"\n---> Simulating p = {p} <---")
+        file_string = str(p).replace('.', 'p')
+        tricritical(p, q, num_simulations, save_series=False, save_cluster=True)
+        compile_changes("tricritical", range(num_simulations), plot_name=file_string, calc_residue=True)
+        plot_changes(file_string)
+
+    rainfalls = [300, 400, 500, 600, 700, 770, 800, 830, 900]
+
+    for rainfall in rainfalls:
+        purge_data()
+        print(f"\n---> Simulating rainfall = {rainfall} <---")
+        file_string = str(rainfall).replace('.', 'p')
+        scanlon_kalahari(rainfall, num_simulations, save_series=False, save_cluster=True)
+        compile_changes("scanlon_kalahari", range(num_simulations), plot_name=file_string, calc_residue=True)
         plot_changes(file_string)
