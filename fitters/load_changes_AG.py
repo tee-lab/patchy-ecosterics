@@ -26,7 +26,7 @@ def load_changes(file_path):
     # for i in range(len(abs_changes_histogram)):
         # icdf_histogram[i] = sum(abs_changes_histogram[i:])
 
-    return array(abs_changes_histogram, dtype=int)
+    return array(abs_changes_histogram, dtype=float)
 
 
 # if __name__ == '__main__':

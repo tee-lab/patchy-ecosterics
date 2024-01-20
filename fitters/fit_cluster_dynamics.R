@@ -49,7 +49,7 @@ fit_distrs <- function(dS, tabulated_data) {
   pl_cprobs <- spatialwarnings:::ippl(dS, plfit[["plexpo"]], xmin = xmin)
   
   if (fit_tpl) {
-    options(spatialwarnings.constants.maxit = 1e3)
+    options(spatialwarnings.constants.maxit = 1e4)
     tpl_probs <- spatialwarnings:::dtpl(dS,tplfit[["plexpo"]], tplfit[["cutoff"]], xmin = xmin)
     tpl_cprobs <- spatialwarnings:::iptpl(dS, tplfit[["plexpo"]], tplfit[["cutoff"]], xmin = xmin)
   }
@@ -92,6 +92,7 @@ inv_cumu_distr <- function(xvals, yvals) {
   data.frame(x = xvals, y = cdistr)
 }
 
+library(ggplot2)
 library(reticulate)
 library(spatialwarnings)
 
