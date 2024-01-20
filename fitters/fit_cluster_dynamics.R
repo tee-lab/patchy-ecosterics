@@ -49,7 +49,7 @@ fit_distrs <- function(dS, tabulated_data) {
   pl_cprobs <- spatialwarnings:::ippl(dS, plfit[["plexpo"]], xmin = xmin)
   
   if (fit_tpl) {
-    options(spatialwarnings.constants.maxit = 1e4)
+    options(spatialwarnings.constants.maxit = 1e3)
     tpl_probs <- spatialwarnings:::dtpl(dS,tplfit[["plexpo"]], tplfit[["cutoff"]], xmin = xmin)
     tpl_cprobs <- spatialwarnings:::iptpl(dS, tplfit[["plexpo"]], tplfit[["cutoff"]], xmin = xmin)
   }
