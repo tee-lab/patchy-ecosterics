@@ -4,9 +4,10 @@ from tqdm import tqdm
 
 
 def load_residue_data(file_path, file_name, cluster_size):
+    print(file_path, file_name, cluster_size)
     residue_data = open(path.join(file_path, file_name), "r").readlines()
 
-    for data in residue_data[:-1]:
+    for data in residue_data:
         size, bins, freq = data.split(':')
         min_bin, max_bin = bins.split(',')
         freqs = list(map(int, freq.split(',')))
@@ -22,7 +23,7 @@ def load_residue_data(file_path, file_name, cluster_size):
 if __name__ == '__main__':
     results_path = path.join(path.dirname(__file__), "..", "results")
     cluster_sizes = [10, 50, 100]
-    position = 3
+    position = 1
 
     models = []
     model_names = []
@@ -32,15 +33,15 @@ if __name__ == '__main__':
 
     models.append(path.join("tricritical", "q0"))
     model_names.append("Contact Process")
-    model_datasets.append("100x100_residue")
+    model_datasets.append("paper")
 
     models.append(path.join("tricritical", "q0p5"))
     model_names.append("TDP (q = 0.5)")
-    model_datasets.append("100x100_residue")
+    model_datasets.append("paper")
 
     models.append(path.join("scanlon_kalahari"))
     model_names.append("Scanlon")
-    model_datasets.append("100x100_residue")
+    model_datasets.append("paper")
 
     if position == 1:
         cluster_sizes = [10, 20, 30]
@@ -59,11 +60,11 @@ if __name__ == '__main__':
         model_params.append(0.7)
         model_densities.append(0.48)
 
-        model_params.append(0.53)
-        model_densities.append(0.43)
+        model_params.append(0.54)
+        model_densities.append(0.49)
 
-        model_params.append(700)
-        model_densities.append(0.43)
+        model_params.append(770)
+        model_densities.append(0.49)
     elif position == 3:
         cluster_sizes = [10, 50, 100]
 

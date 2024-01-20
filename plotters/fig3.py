@@ -40,14 +40,14 @@ if __name__ == '__main__':
     model_names.append("TDP (q = 0.5)")
     model_datasets.append("paper")
     model_params.append([0.51, 0.54, 0.55])
-    model_densities.append([0.25, 0.43, 0.53])
+    model_densities.append([0.25, 0.49, 0.53])
     model_variables.append("p")
 
     models.append(path.join("scanlon_kalahari"))
     model_names.append("Scanlon")
     model_datasets.append("paper")
     model_params.append([500, 770, 830])
-    model_densities.append([0.26, 0.43, 0.54])
+    model_densities.append([0.26, 0.49, 0.54])
     model_variables.append("rainfall")
 
     # models.append(path.join("tricritical", "q0p25"))
@@ -115,7 +115,7 @@ if __name__ == '__main__':
             if j == 0:
                 plt.xlim([0, 100])
             elif j == 1:
-                plt.xlim([0, 1000])
+                plt.xlim([0, 1500])
             elif j == 2:
                 plt.xlim([0, 5000])
 
