@@ -38,8 +38,29 @@ from utils import load_automaton_data
 if __name__ == '__main__':
     set_start_method("spawn")
     num_simulations = cpu_count() - 1
+    p_values = [0.585, 0.63]
+    q = 0.25
 
-    f_values = [0.49]
+    for p in p_values:
+        purge_data()
+        print(f"\n---> Simulating p = {p} <---")
+        file_string = str(p).replace('.', 'p')
+        tricritical(p, q, num_simulations, save_series=False, save_cluster=True, calc_residue=True)
+        compile_changes("tricritical", range(num_simulations), plot_name=file_string)
+        plot_changes(file_string)
+
+    p_values = [0.418]
+    q = 0.75
+
+    for p in p_values:
+        purge_data()
+        print(f"\n---> Simulating p = {p} <---")
+        file_string = str(p).replace('.', 'p')
+        tricritical(p, q, num_simulations, save_series=False, save_cluster=True, calc_residue=True)
+        compile_changes("tricritical", range(num_simulations), plot_name=file_string)
+        plot_changes(file_string)
+
+    f_values = [0.5]
 
     for f in f_values:
         purge_data()
