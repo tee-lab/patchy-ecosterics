@@ -22,8 +22,7 @@ def load_residue_data(file_path, file_name, cluster_size):
 
 if __name__ == '__main__':
     results_path = path.join(path.dirname(__file__), "..", "results")
-    cluster_sizes = [10, 50, 100]
-    position = 1
+    position = 3
 
     models = []
     model_names = []
@@ -31,51 +30,77 @@ if __name__ == '__main__':
     model_densities = []
     model_datasets = []
 
-    models.append(path.join("tricritical", "q0"))
-    model_names.append("Contact Process")
+    # models.append(path.join("tricritical", "q0"))
+    # model_names.append("Contact Process")
+    # model_datasets.append("paper")
+
+    # models.append(path.join("tricritical", "q0p5"))
+    # model_names.append("TDP (q = 0.5)")
+    # model_datasets.append("paper")
+
+    # models.append(path.join("scanlon_kalahari"))
+    # model_names.append("Scanlon")
+    # model_datasets.append("paper")
+
+    models.append(path.join("tricritical", "q0p25"))
+    model_names.append("TDP (q = 0.25)")
     model_datasets.append("paper")
 
-    models.append(path.join("tricritical", "q0p5"))
-    model_names.append("TDP (q = 0.5)")
-    model_datasets.append("paper")
-
-    models.append(path.join("scanlon_kalahari"))
-    model_names.append("Scanlon")
+    models.append(path.join("tricritical", "q0p75"))
+    model_names.append("TDP (q = 0.75)")
     model_datasets.append("paper")
 
     if position == 1:
         cluster_sizes = [10, 20, 30]
 
-        model_params.append(0.65)
-        model_densities.append(0.27)
+        # model_params.append(0.65)
+        # model_densities.append(0.27)
 
-        model_params.append(0.51)
-        model_densities.append(0.25)
+        # model_params.append(0.51)
+        # model_densities.append(0.25)
 
-        model_params.append(500)
-        model_densities.append(0.26)
+        # model_params.append(500)
+        # model_densities.append(0.26)
+
+        model_params.append(0.585)
+        model_densities.append(0.24)
+
+        model_params.append(0.405)
+        model_densities.append(0.24)
     elif position == 2:
         cluster_sizes = [10, 50, 100]
 
-        model_params.append(0.7)
-        model_densities.append(0.48)
+        # model_params.append(0.7)
+        # model_densities.append(0.48)
 
-        model_params.append(0.54)
-        model_densities.append(0.49)
+        # model_params.append(0.53)
+        # model_densities.append(0.43)
 
-        model_params.append(770)
-        model_densities.append(0.49)
+        # model_params.append(770)
+        # model_densities.append(0.49)
+
+        model_params.append(0.62)
+        model_densities.append(0.45)
+
+        model_params.append(0.41)
+        model_densities.append(0.38)
     elif position == 3:
         cluster_sizes = [10, 50, 100]
 
-        model_params.append(0.72)
-        model_densities.append(0.54)
+        # model_params.append(0.72)
+        # model_densities.append(0.54)
 
-        model_params.append(0.55)
-        model_densities.append(0.53)
+        # model_params.append(0.55)
+        # model_densities.append(0.53)
 
-        model_params.append(830)
-        model_densities.append(0.54)
+        # model_params.append(850)
+        # model_densities.append(0.56)
+
+        model_params.append(0.64)
+        model_densities.append(0.52)
+
+        model_params.append(0.42)
+        model_densities.append(0.52)
 
     num_cols = len(cluster_sizes)
     num_rows = len(models)
@@ -140,5 +165,6 @@ if __name__ == '__main__':
             plt.tight_layout()
 
     plt.figlegend(loc="upper right", fontsize=legend_size, bbox_to_anchor=(0.99, 0.99))
+    plt.tight_layout()
     plt.savefig(f"fig5_{position}.png", dpi=300)
     plt.show()
