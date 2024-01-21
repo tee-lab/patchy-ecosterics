@@ -2,7 +2,8 @@ library(reticulate)
 library(spatialwarnings)
 
 results_path = "C://Code//Github//vegetation-dynamics//results"
-model = "tricritical"
+# model = "tricritical"
+model = "scanlon_kalahari"
 dataset = "paper"
 
 options(spatialwarnings.constants.reltol = 1e-8)
@@ -17,18 +18,28 @@ options(spatialwarnings.constants.maxit = 1e8)
 # q_value = "0p25"
 # p_values = c("0p566", "0p569", "0p57", "0p575", "0p58", "0p59", "0p62", "0p64", "0p65", "0p66")
 
-q_folder = "q0p5"
-q_value = "0p5"
-p_values = c("0p498", "0p5", "0p502", "0p504", "0p506", "0p508", "0p51", "0p52", "0p53", "0p54", "0p55", "0p57")
+# q_folder = "q0p5"
+# q_value = "0p5"
+# p_values = c("0p498", "0p5", "0p502", "0p504", "0p506", "0p508", "0p51", "0p52", "0p53", "0p54", "0p55", "0p57")
 
 # q_folder = "q0p75"
 # q_value = "0p75"
 # p_values = c("0p399", "0p4", "0p401", "0p403", "0p405", "0p41", "0p42", "0p43", "0p44")
 
-root_path = file.path(results_path, model, q_folder, dataset)
+root_path = file.path(results_path, model, dataset)
 data_frame = data.frame()
 
-for (p in p_values) {
+rainfall_values = c("300", "400", "500", "600", "700", "770", "830", "850", "900")
+
+if (model == "tricritical") {
+  values = p_values
+  root_path = file.path(results_path, model, q_folder, dataset)
+} else {
+  values = rainfall_values
+  root_path = file.path(results_path, model, dataset)
+}
+
+for (p in values) {
   print(paste("<--- Analyzing", p, "--->"))
   
   file_name = paste(p, "_final_lattices.pkl", sep="")
@@ -40,7 +51,13 @@ for (p in p_values) {
   psd_stats = psd_object$psd_type
   
   psd_plot = plot_distr(psd_object, best_only = FALSE)
-  png(filename=paste(p, "_", q_folder, ".png", sep = ""))
+  
+  if (model == "tricritical") {
+    png(filename=paste(p, "_", q_folder, ".png", sep = ""))
+  } else {
+    png(filename=paste(p, ".png", sep = ""))
+  }
+  
   plot(psd_plot)
   dev.off()
   
@@ -57,11 +74,21 @@ for (p in p_values) {
   print(paste("TPL BIC:", tpl_bic))
   print(paste("Exp BIC:", exp_bic))
   
-  p_float = as.double(gsub("p", ".", p))
+  if (model == "tricritical") {
+    p_float = as.double(gsub("p", ".", p))
+  } else {
+    p_float = as.integer(p)
+  }
+  
   data_frame = rbind(data_frame, c(p_float, pl_bic, tpl_bic, exp_bic, pl_expo, exp_trunc, tpl_expo, tpl_trunc))
 }
 
-colnames(data_frame)[1] = "p"
+if (model == "tricritical") {
+  colnames(data_frame)[1] = "p"
+} else {
+  colnames(data_frame)[1] = "rainfall"
+}
+
 colnames(data_frame)[2] = "PL"
 colnames(data_frame)[3] = "TPL"
 colnames(data_frame)[4] = "Exp"
@@ -72,4 +99,8 @@ colnames(data_frame)[8] = "TPL trunc"
 
 data_frame[is.na(data_frame)] = 0
 
-write.csv(data_frame, paste(q_folder, "_csd", ".csv", sep=""))
+if (model == "tricritical") {
+  write.csv(data_frame, paste(q_folder, "_csd", ".csv", sep=""))
+} else {
+  write.csv(data_frame, paste("scanlon_csd", ".csv", sep=""))
+}
