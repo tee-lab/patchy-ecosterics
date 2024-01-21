@@ -122,6 +122,7 @@ data_frame = data.frame()
 root_path = file.path(results_path, model, q_folder, dataset)
 
 for (p in p_values) {
+  p_float = as.double(gsub("p", ".", p))
   print(paste("<--- Analyzing", p, "--->"))
 
   # load data
@@ -174,7 +175,7 @@ for (p in p_values) {
   # observations, not the length of the vector in which you stored the
   # number of obs for each dS.
   n_obs <- sum(changes_distr)
-  BICs <- c(p, 
+  BICs <- c(p_float, 
     calc_bic(distribs[["fits"]][["pl"]], n_obs),
     calc_bic(distribs[["fits"]][["exp"]], n_obs)
   )

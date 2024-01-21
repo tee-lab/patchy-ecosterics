@@ -36,36 +36,15 @@ from utils import load_automaton_data
 
 
 if __name__ == '__main__':
+    # CLUSTER DYNAMICS
     set_start_method("spawn")
     num_simulations = cpu_count() - 1
-    p_values = [0.585, 0.63]
-    q = 0.25
+    rainfall_values = [850]
 
-    for p in p_values:
+    for rainfall in rainfall_values:
         purge_data()
-        print(f"\n---> Simulating p = {p} <---")
-        file_string = str(p).replace('.', 'p')
-        tricritical(p, q, num_simulations, save_series=False, save_cluster=True, calc_residue=True)
-        compile_changes("tricritical", range(num_simulations), plot_name=file_string)
-        plot_changes(file_string)
-
-    p_values = [0.418]
-    q = 0.75
-
-    for p in p_values:
-        purge_data()
-        print(f"\n---> Simulating p = {p} <---")
-        file_string = str(p).replace('.', 'p')
-        tricritical(p, q, num_simulations, save_series=False, save_cluster=True, calc_residue=True)
-        compile_changes("tricritical", range(num_simulations), plot_name=file_string)
-        plot_changes(file_string)
-
-    f_values = [0.5]
-
-    for f in f_values:
-        purge_data()
-        print(f"\n---> Simulating f = {f} <---")
-        file_string = str(f).replace('.', 'p')
-        null_stochastic(f, num_simulations, save_series=False, save_cluster=True)
-        compile_changes("null_stochastic", range(num_simulations), plot_name=file_string)
-        plot_changes(file_string)
+        print(f"\n---> Simulating rainfall = {rainfall} <---")
+        file_string = str(rainfall).replace('.', 'p')
+        scanlon_kalahari(rainfall, num_simulations, save_series=False, save_cluster=True)
+        compile_changes("scanlon_kalahari", range(num_simulations), plot_name=file_string, calc_residue=True)
+        plot_changes(file_string, calc_residue=True)

@@ -19,10 +19,8 @@ if __name__ == '__main__':
     # p_values = [0.399, 0.4, 0.401, 0.403, 0.405, 0.41, 0.42]
     # p_values = [300, 400, 500, 600, 700, 770, 800, 830, 900]
 
-    # params = p_values
-    # prefixes = [str(p).replace('.', 'p') for p in params]
-
-    prefixes = ["q0"]
+    params = p_values
+    prefixes = [str(p).replace('.', 'p') for p in params]
 
     for prefix in prefixes:
         makedirs(path.join(output_path, prefix), exist_ok=True)
