@@ -97,7 +97,8 @@ library(reticulate)
 library(spatialwarnings)
 
 results_path <- "..//results"
-model = "tricritical"
+# model = "tricritical"
+model = "scanlon_kalahari"
 dataset = "paper"
 fit_tpl = TRUE
 
@@ -112,17 +113,32 @@ fit_tpl = TRUE
 # p_values = c("0p566", "0p568", "0p57", "0p575", "0p58", "0p59", "0p62", "0p64")
 
 # q_folder = "q0p5"
-p_values = c("0p498", "0p5", "0p502", "0p504", "0p506", "0p508", "0p51", "0p52", "0p53", "0p54", "0p55", "0p57")
+# p_values = c("0p498", "0p5", "0p502", "0p504", "0p506", "0p508", "0p51", "0p52", "0p53", "0p54", "0p55", "0p57")
 
 # q_folder = "q0p75"
 # p_values = c("0p399", "0p4", "0p401", "0p403", "0p405", "0p41", "0p42")
 
+root_path = file.path(results_path, model, dataset)
 data_frame = data.frame()
 
-root_path = file.path(results_path, model, q_folder, dataset)
+# rainfall_values = c("300", "400", "500", "600", "700", "770", "830", "850", "900")
+rainfall_values = c("300")
 
-for (p in p_values) {
-  p_float = as.double(gsub("p", ".", p))
+if (model == "tricritical") {
+  values = p_values
+  root_path = file.path(results_path, model, q_folder, dataset)
+} else {
+  values = rainfall_values
+  root_path = file.path(results_path, model, dataset)
+}
+
+for (p in values) {
+  if (model == "tricritical") {
+    p_float = as.double(gsub("p", ".", p))
+  } else {
+    p_float = as.integer(p)
+  }
+ 
   print(paste("<--- Analyzing", p, "--->"))
 
   # load data
@@ -158,7 +174,13 @@ for (p in p_values) {
     scale_y_continuous(trans = "log10") + # comment to remove log scale
     scale_x_continuous(trans = "log10") +
     labs(x = "dS", y = "P(x>=dS)")
-  ggsave(filename=paste("..//outputs//", q_folder, "_", p, "_icdf.png", sep=""))
+  
+  if (model == "tricritical") {
+    ggsave(filename=paste("..//outputs//", q_folder, "_", p, "_icdf.png", sep=""))
+  } else {
+    ggsave(filename=paste("..//outputs//", p, "_icdf.png", sep=""))
+  }
+  
 
   # Show probability distribution
   ggplot(NULL) +
@@ -169,7 +191,11 @@ for (p in p_values) {
     scale_y_continuous(trans = "log10") +
     scale_x_continuous(trans = "log10") +
     labs(x = "dS", y = "P(x=dS)")
-  ggsave(filename=paste("..//outputs//", q_folder, "_", p, "_pdf.png", sep=""))
+  if (model == "tricritical") {
+    ggsave(filename=paste("..//outputs//", q_folder, "_", p, "_pdf.png", sep=""))
+  } else {
+    ggsave(filename=paste("..//outputs//", p, "_pdf.png", sep=""))
+  }
 
   # Extract bic for every fit. Note that the BIC takes the number of
   # observations, not the length of the vector in which you stored the
@@ -203,7 +229,12 @@ for (p in p_values) {
   data_frame <- rbind(data_frame, all_data)
 }
 
-colnames(data_frame)[1] = "p"
+if (model == "tricritical") {
+  colnames(data_frame)[1] = "p"
+} else {
+  colnames(data_frame)[1] = "rainfall"
+}
+
 colnames(data_frame)[2] = "PL BIC"
 colnames(data_frame)[3] = "Exp BIC"
 
@@ -222,4 +253,9 @@ if (fit_tpl) {
 }
 
 # save BIC values as CSV
-write.csv(data_frame, paste("..//outputs//", q_folder, "_cd", ".csv", sep=""))
+if (model == "tricritical") {
+  write.csv(data_frame, paste("..//outputs//", q_folder, "_cd", ".csv", sep=""))
+} else {
+  write.csv(data_frame, paste("..//outputs//", "scanlon_cd", ".csv", sep=""))
+}
+
