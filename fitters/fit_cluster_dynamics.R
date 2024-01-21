@@ -121,8 +121,8 @@ fit_tpl = TRUE
 root_path = file.path(results_path, model, dataset)
 data_frame = data.frame()
 
-# rainfall_values = c("300", "400", "500", "600", "700", "770", "830", "850", "900")
-rainfall_values = c("300")
+rainfall_values = c("300", "400", "500", "600", "700", "770", "800" ,"830", "850", "900")
+# rainfall_values = c("300")
 
 if (model == "tricritical") {
   values = p_values
