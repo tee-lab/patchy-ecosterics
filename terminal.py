@@ -39,12 +39,13 @@ if __name__ == '__main__':
     # CLUSTER DYNAMICS
     set_start_method("spawn")
     num_simulations = cpu_count() - 1
-    rainfall_values = [850]
+    p_values = [0.535]
+    q = 0.5
 
-    for rainfall in rainfall_values:
+    for p in p_values:
         purge_data()
-        print(f"\n---> Simulating rainfall = {rainfall} <---")
-        file_string = str(rainfall).replace('.', 'p')
-        scanlon_kalahari(rainfall, num_simulations, save_series=False, save_cluster=True)
-        compile_changes("scanlon_kalahari", range(num_simulations), plot_name=file_string, calc_residue=True)
-        plot_changes(file_string, calc_residue=True)
+        print(f"\n---> Simulating p = {p} <---")
+        file_string = str(p).replace('.', 'p')
+        tricritical(p, q, num_simulations, save_series=False, save_cluster=True, calc_residue=True)
+        compile_changes("tricritical", range(num_simulations), plot_name=file_string)
+        plot_changes(file_string)
