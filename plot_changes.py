@@ -21,7 +21,7 @@ def trim_log_probabilities(y):
     return y[:start_index + 1]
 
 
-def plot_changes(filename, base_path = "outputs", calc_residue=False):
+def plot_changes(filename, base_path = "outputs", calc_residue=True):
     output_path = path.join(path.dirname(__file__), base_path)
     makedirs(output_path, exist_ok=True)
 
