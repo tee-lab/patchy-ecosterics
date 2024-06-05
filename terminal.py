@@ -39,8 +39,8 @@ if __name__ == '__main__':
     # CLUSTER DYNAMICS
     set_start_method("spawn")
     num_simulations = cpu_count() - 1
-    p_values = [0.535]
-    q = 0.5
+    p_values = [0.28, 0.283, 0.284, 0.285, 0.29]
+    q = 0.92
 
     for p in p_values:
         purge_data()

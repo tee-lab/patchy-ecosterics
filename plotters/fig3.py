@@ -127,10 +127,13 @@ if __name__ == '__main__':
             if row != num_rows - 1:
                 plt.xticks([])
 
-            # ax = plt.gca()
-            # axins = ax.inset_axes([0.15, 0.1, 0.4, 0.3])
-            # axins.plot(cluster_sizes, mean_ds_sq)
-            # axins.plot(null_cluster_sizes, null_mean_ds_sq)
+            if row == 2 and j == 1:
+                ax = plt.gca()
+                lim = 200
+                axins = ax.inset_axes([0.3, 0.2, 0.6, 0.5])
+                axins.plot(cluster_sizes[:lim], mean_ds[:lim], 'b-')
+                axins.plot(null_cluster_sizes[:lim], null_mean_ds[:lim], '0.8')
+                axins.axhline(y=0, linestyle="--")
 
             plt.title(chr(65 + row) + str(j + 1), loc="left", fontsize=title_size)
 
@@ -138,5 +141,5 @@ if __name__ == '__main__':
             plt.tight_layout()
 
     plt.figlegend(loc="upper right", fontsize=legend_size, bbox_to_anchor=(0.99, 0.99))
-    plt.savefig("fig3.png", dpi=300)
+    plt.savefig("fig3_raw.png", dpi=300)
     plt.show()

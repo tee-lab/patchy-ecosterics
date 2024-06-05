@@ -161,5 +161,5 @@ if __name__ == '__main__':
             plt.tight_layout()
 
     plt.figlegend(loc="upper right", fontsize=legend_size, bbox_to_anchor=(0.99, 0.99))
-    plt.savefig("fig2.png", dpi=300)
+    plt.savefig("fig2_raw.png", dpi=300)
     plt.show()
