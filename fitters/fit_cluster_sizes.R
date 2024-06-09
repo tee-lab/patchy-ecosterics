@@ -3,7 +3,7 @@ library(spatialwarnings)
 
 results_path = "C://Code//Github//vegetation-dynamics//results"
 # model = "tricritical"
-model = "scanlon_kalahari"
+model = "tricritical"
 dataset = "paper"
 
 options(spatialwarnings.constants.reltol = 1e-8)
@@ -26,10 +26,14 @@ options(spatialwarnings.constants.maxit = 1e8)
 # q_value = "0p75"
 # p_values = c("0p399", "0p4", "0p401", "0p403", "0p405", "0p41", "0p42", "0p43", "0p44")
 
+q_folder = "q0p92"
+q_value = "0p92"
+p_values = c("0p282", "0p283", "0p284", "0p285", "0p29")
+
 root_path = file.path(results_path, model, dataset)
 data_frame = data.frame()
 
-rainfall_values = c("300", "400", "500", "600", "700", "770", "830", "850", "900")
+# rainfall_values = c("300", "400", "500", "600", "700", "770", "830", "850", "900")
 
 if (model == "tricritical") {
   values = p_values

@@ -115,7 +115,7 @@ if __name__ == '__main__':
 
         plt.subplot(len(models), 1 + len(model_params[0]), row * num_cols + col)
 
-        plt.title(chr(65 + row), fontsize=title_size, loc="left")
+        plt.title(model_name, fontsize=title_size, loc="left")
         
         plt.xlabel(model_variable, fontsize=label_size)
         plt.ylabel("density", fontsize=label_size)

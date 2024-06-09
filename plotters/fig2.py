@@ -128,10 +128,10 @@ if __name__ == '__main__':
                 plt.xlabel("change in cluster size ($\Delta$s)", fontsize=label_size)
             if j == 0:
                 plt.ylabel("P ($\Delta$S > $\Delta$s)", fontsize=label_size)
-            if j == num_cols - 1:
-                plt.ylabel(model_name, fontsize=label_size, rotation=270, labelpad=15)
-                ax = plt.gca()
-                ax.yaxis.set_label_position("right")
+            # if j == num_cols - 1:
+            #     plt.ylabel(model_name, fontsize=label_size, rotation=270, labelpad=15)
+            #     ax = plt.gca()
+            #     ax.yaxis.set_label_position("right")
 
             if row == 0 and j == 0:
                 plt.loglog(cluster_sizes, inverse_cdf, "b-", label=f"model")
@@ -161,5 +161,5 @@ if __name__ == '__main__':
             plt.tight_layout()
 
     plt.figlegend(loc="upper right", fontsize=legend_size, bbox_to_anchor=(0.99, 0.99))
-    plt.savefig("fig2_raw.png", dpi=300)
+    plt.savefig("fig2.png", dpi=300)
     plt.show()

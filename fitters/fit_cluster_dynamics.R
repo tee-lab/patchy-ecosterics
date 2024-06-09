@@ -97,8 +97,8 @@ library(reticulate)
 library(spatialwarnings)
 
 results_path <- "..//results"
-# model = "tricritical"
-model = "scanlon_kalahari"
+model = "tricritical"
+# model = "scanlon_kalahari"
 dataset = "paper"
 fit_tpl = TRUE
 
@@ -118,10 +118,13 @@ fit_tpl = TRUE
 # q_folder = "q0p75"
 # p_values = c("0p399", "0p4", "0p401", "0p403", "0p405", "0p41", "0p42")
 
+q_folder = "q0p92"
+p_values = c("0p282", "0p283", "0p284", "0p285", "0p29")
+
 root_path = file.path(results_path, model, dataset)
 data_frame = data.frame()
 
-rainfall_values = c("300", "400", "500", "600", "700", "770", "800" ,"830", "850", "900")
+# rainfall_values = c("300", "400", "500", "600", "700", "770", "800" ,"830", "850", "900")
 # rainfall_values = c("300")
 
 if (model == "tricritical") {
