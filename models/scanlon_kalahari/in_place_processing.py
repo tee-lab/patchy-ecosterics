@@ -183,7 +183,7 @@ def scanlon_kalahari(rainfall_ext = 800, num_parallel = 10, save_series = False,
     length = 100
     rainfall = rainfall_ext
     f_carrying = get_forest_cover(rainfall)
-    r_influence = 2
+    r_influence = 1
     immediacy = 24
 
     eq_time = 1000

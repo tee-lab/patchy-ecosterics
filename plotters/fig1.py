@@ -167,12 +167,12 @@ if __name__ == '__main__':
             if j != 0:
                 plt.yticks([])
 
-            if j == 2:
-                plt.ylabel(model_name, fontsize=label_size, rotation=270, labelpad=15)
-                ax = plt.gca()
-                ax.yaxis.set_label_position("right")
+            # if j == 2:
+            #     plt.ylabel(model_name, fontsize=label_size, rotation=270, labelpad=15)
+            #     ax = plt.gca()
+            #     ax.yaxis.set_label_position("right")
             plt.tight_layout()
 
     plt.figlegend(loc="upper right", fontsize=legend_size, bbox_to_anchor=(0.99, 0.99))
-    plt.savefig("fig1_raw.png", dpi=300)
+    plt.savefig("fig1.png", dpi=300)
     plt.show()
