@@ -71,7 +71,7 @@ def get_density(lattice, i, j, r_influence, immediacy):
     for a in range(max(i - r_influence, 0), min(i + r_influence + 1, length)):
         for b in range(max(j - r_influence, 0), min(j + r_influence + 1, length)):
             distance = sqrt((a - i) ** 2 + (b - j) ** 2)
-            if distance < r_influence:
+            if distance <= r_influence:
                 weightage_term = 1 - (distance / immediacy)
                 density += weightage_term * lattice[a, b]
                 normalization += weightage_term
