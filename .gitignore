@@ -3,3 +3,4 @@ models/*/*.pkl
 info.txt
 outputs/
 commands.txt
+*_final_lattices.pkl
