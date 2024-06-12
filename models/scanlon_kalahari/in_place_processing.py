@@ -180,14 +180,14 @@ def save_data(record, rainfall):
 def scanlon_kalahari(rainfall_ext = 800, num_parallel = 10, save_series = False, save_cluster = True):
     # model parameters
     global length, rainfall, f_carrying, r_influence, immediacy, eq_time, simulation_time
-    length = 100
+    length = 256
     rainfall = rainfall_ext
     f_carrying = get_forest_cover(rainfall)
-    r_influence = 4
+    r_influence = 8
     immediacy = 24
 
     eq_time = 1000
-    simulation_time = 2000
+    simulation_time = 1000
 
     print(f"Simulating {num_parallel} automata in parallel...")
     data = [(simulation_index, save_series, save_cluster, length, eq_time, simulation_time, f_carrying, r_influence, immediacy) for simulation_index in range(num_parallel)]

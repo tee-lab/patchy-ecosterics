@@ -36,9 +36,20 @@ from utils import load_automaton_data
 
 
 if __name__ == '__main__':
-    # CLUSTER DYNAMICS
-    set_start_method("spawn")
+    # set_start_method("spawn")
     num_simulations = 50
+    p_values = [0.55]
+    q = 0.5
+
+    for p in p_values:
+        purge_data()
+        print(f"\n---> Simulating p = {p} <---")
+        file_string = str(p).replace('.', 'p')
+        tricritical(p, q, num_simulations, save_series=False, save_cluster=True, calc_residue=True)
+        compile_changes("tricritical", range(num_simulations), plot_name=file_string)
+        plot_changes(file_string)
+
+
     rainfall_values = [500, 770, 850]
 
     for rainfall in rainfall_values:
