@@ -45,7 +45,7 @@ if __name__ == '__main__':
         purge_data()
         print(f"\n---> Simulating p = {p} <---")
         file_string = str(p).replace('.', 'p')
-        tricritical(p, q, num_simulations, save_series=False, save_cluster=True, calc_residue=True)
+        tricritical(p, q, num_simulations, save_series=False, save_cluster=True)
         compile_changes("tricritical", range(num_simulations), plot_name=file_string)
         plot_changes(file_string)
 
