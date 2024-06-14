@@ -36,7 +36,7 @@ from utils import load_automaton_data
 
 
 if __name__ == '__main__':
-    # set_start_method("spawn")
+    set_start_method("spawn")
     num_simulations = 50
     p_values = [0.55]
     q = 0.5
